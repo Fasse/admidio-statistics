@@ -1,0 +1,221 @@
+@CHARSET "ISO-8859-1";
+
+/* #form_sta_config {
+	border:     1px solid #7d7d7d;
+	padding-left: 10px;
+	padding-right: 10px;
+} */
+
+.stdDiv {
+	border: 1px solid #7d7d7d;
+	margin: 5px 0px;
+	padding: 5px;
+	width: 100%;
+	overflow-x: auto;
+}
+
+.helpRight {
+	float: right;
+}
+
+.InputLabelBox {
+	height: 25px;
+	margin-top: 5px;
+}
+
+.textLabel {
+	margin-top: 3px;
+	float: left;
+}
+
+.textInput {
+	float: right;
+
+	width: 288px;
+}
+
+.roleInput {
+	float: right;
+
+	width: 294px;
+}
+
+#statistic_std_role {
+	float: right;
+
+	width: 294px;
+}
+
+.form-control{
+	float: right;
+	width: 294px;
+
+}
+
+
+/*Regeln für die Tabelle mit den Spaltendefinitionen*/
+
+/* .col_conf_tbl {
+	background-color: #adff2f;
+	border:2px solid #7d7d7d;
+	border-collapse: collapse;
+} */
+
+.iconTextLink {
+	font-size: 10pt;
+}
+
+.col_conf_tbl_col_first_first {
+	min-width: 125px;
+	color: #449ba6;
+	font-size: 110%;
+}
+
+.col_conf_tbl_col_last_first {
+	font-size: 90%;
+}
+
+.col_conf_tbl_row_first {
+	font-weight: bold;
+}
+
+.col_conf_tbl_row_label {
+	color: orange;
+	font-weight: bold;
+}
+
+.col_conf_tbl_col_label,.col_conf_tbl_col_label_second,.col_conf_tbl_col_label_last
+	{
+	border: 2px solid orange;
+}
+
+.col_conf_tbl_row_profile_field {
+	color: #add8e6;
+	font-weight: bold;
+}
+
+.col_conf_tbl_col_profile_field,.col_conf_tbl_col_profile_field_second,.col_conf_tbl_col_profile_field_last
+	{
+	border: 2px solid #add8e6;
+}
+
+.col_conf_tbl_row_condition {
+	color: #add8e6;
+	font-weight: bold;
+}
+
+.col_conf_tbl_col_condition,.col_conf_tbl_col_condition_second,.col_conf_tbl_col_condition_last
+	{
+	border: 2px solid #add8e6;
+}
+
+.col_conf_tbl_row_func_arg {
+	color: #9acd32;
+	font-weight: bold;
+}
+
+.col_conf_tbl_col_func_arg,.col_conf_tbl_col_func_arg_second,.col_conf_tbl_col_func_arg_last
+	{
+	border: 2px solid #9acd32;
+}
+
+.col_conf_tbl_row_func_main {
+	color: #9acd32;
+	font-weight: bold;
+}
+
+.col_conf_tbl_col_func_main,.col_conf_tbl_col_func_main_second,.col_conf_tbl_col_func_main_last
+	{
+	border: 2px solid #9acd32;
+}
+
+.col_conf_tbl_row_func_total {
+	color: #fa8072;
+	font-weight: bold;
+}
+
+.col_conf_tbl_col_func_total,.col_conf_tbl_col_func_total_second,.col_conf_tbl_col_func_total_last
+	{
+	border: 2px solid #fa8072;
+}
+
+.col_conf_tbl select {
+	width: 124px;
+}
+
+.col_conf_tbl input {
+	width: 118px;
+}
+
+/*Regeln für die Tabelle mit den Zeilendefinitionen*/
+
+/* .row_conf_tbl {
+	background-color: #40e0d0;
+	border:1px solid #7d7d7d;
+	border-collapse: collapse;
+} */
+
+/*.row_conf_tbl_row{
+	font-style: italic;
+}*/
+.row_conf_tbl_col_last {
+	background-color: inherit;
+}
+
+.row_conf_tbl_col_label,.row_conf_tbl_col_label_second {
+	border: 2px solid orange;
+}
+
+.row_conf_tbl_col_first_first {
+	min-width: 125px;
+	color: #449ba6;
+	font-size: 110%;
+}
+
+.row_conf_tbl_col_first_last {
+	font-size: 90%;
+}
+
+.row_conf_tbl_col_label_first {
+	color: orange;
+	font-weight: bold;
+}
+
+.row_conf_tbl_col_profile_field {
+	border: 2px solid #87cefa;
+}
+
+.row_conf_tbl_col_profile_field_first {
+	color: #87cefa;
+	font-weight: bold;
+}
+
+.row_conf_tbl_col_condition {
+	border: 2px solid #87cefa;
+}
+
+.row_conf_tbl_col_condition_first {
+	color: #87cefa;
+	font-weight: bold;
+}
+
+.row_conf_tbl_col_first,.row_conf_tbl_col_first_first,.row_conf_tbl_col_first_second
+	{
+	font-weight: bold;
+}
+
+.row_conf_tbl_row_first {
+
+}
+
+.row_conf_tbl_row_last {
+
+}
+
+.row_conf_tbl select {
+	width: 124px;
+}
+
+.row_conf_tbl input {
+	width: 118px;
+}
