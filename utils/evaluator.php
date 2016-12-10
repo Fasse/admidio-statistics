@@ -10,11 +10,7 @@
  */
 
 require_once('../includes.php');
-require_once(SERVER_PATH.'/adm_program/system/classes/profilefields.php');
 require_once(STATISTICS_PATH.'/statistic_objects/statistic.php');
-
-//Es wird eine durch uns erweiterte Version des condition parsers von admidio verwendet
-require_once ('condition_parser.php');
 
 class Evaluator {
 
@@ -482,49 +478,54 @@ class Evaluator {
     }
 
     public function getSQLFromUserConditions ($userFieldID, $condition) {
-        global $gL10n, $gProfileFields;
+        global $gL10n, $gProfileFields, $gLogger;
 
-        //Vergleichszeichen ersetzen
-        $condition = str_replace('>','}',$condition);
-        $condition = str_replace('<','{',$condition);
+        $SQLCondStr = '';
 
-        //mögliche Feldtypen, die der Condition Parser von admidio erkennt: date, string, checkbox, int
-        $userFieldType = $this->getProfileFieldTypeFromID($userFieldID);
+        if(strtoupper($condition) !== 'FEHLT')
+        {
+            //Vergleichszeichen ersetzen
+            $condition = str_replace('>','}',$condition);
+            $condition = str_replace('<','{',$condition);
 
-        //Wie wenn der User keine Condition angegeben hätte
-        //$condition = str_replace('VORHANDEN','',$condition);
+            //mögliche Feldtypen, die der Condition Parser von admidio erkennt: date, string, checkbox, int
+            $userFieldType = $this->getProfileFieldTypeFromID($userFieldID);
 
-        switch ($userFieldType) {
-            case 'DATE' :
-                $dataType = 'date';
-                break;
-            case 'TEXT':
-            case 'URL':
-            case 'EMAIL':
-                $dataType = 'string';
-                break;
-            case 'CHECKBOX':
-                $dataType = 'checkbox';
-                $arrCheckboxValues = array($gL10n->get('SYS_YES'), $gL10n->get('SYS_NO'), 'true', 'false');
-                $arrCheckboxKeys   = array(1, 0, 1, 0);
-                $condition = str_replace(array_map('admStrToLower',$arrCheckboxValues), $arrCheckboxKeys, admStrToLower($condition));
-                break;
-            case 'NUMERIC':
-                $dataType = 'int';
-                break;
-            case 'DROPDOWN':
-            case 'RADIO_BUTTON':
-                $dataType = 'string'; //eigentlich $dataType = 'int';
-                // replace all field values with their internal numbers
-                $arrListValues = $gProfileFields->getPropertyById($userFieldID, 'usf_value_list', 'text');
-                $condition = str_replace(array_map('admStrToLower',$arrListValues), array_keys($arrListValues), admStrToLower($condition));
-                break;
-            default:
-                $dataType = 'string';
+            //Wie wenn der User keine Condition angegeben hätte
+            //$condition = str_replace('VORHANDEN','',$condition);
+
+            switch ($userFieldType) {
+                case 'DATE' :
+                    $dataType = 'date';
+                    break;
+                case 'TEXT':
+                case 'URL':
+                case 'EMAIL':
+                    $dataType = 'string';
+                    break;
+                case 'CHECKBOX':
+                    $dataType = 'checkbox';
+                    $arrCheckboxValues = array($gL10n->get('SYS_YES'), $gL10n->get('SYS_NO'), 'true', 'false');
+                    $arrCheckboxKeys   = array(1, 0, 1, 0);
+                    $condition = str_replace(array_map('admStrToLower',$arrCheckboxValues), $arrCheckboxKeys, admStrToLower($condition));
+                    break;
+                case 'NUMERIC':
+                    $dataType = 'int';
+                    break;
+                case 'DROPDOWN':
+                case 'RADIO_BUTTON':
+                    $dataType = 'string'; //eigentlich $dataType = 'int';
+                    // replace all field values with their internal numbers
+                    $arrListValues = $gProfileFields->getPropertyById($userFieldID, 'usf_value_list', 'text');
+                    $condition = str_replace(array_map('admStrToLower',$arrListValues), array_keys($arrListValues), admStrToLower($condition));
+                    break;
+                default:
+                    $dataType = 'string';
+            }
+
+            $condParser = new ConditionParser();
+            $SQLCondStr = $condParser->makeSqlStatement($condition, 'usd_value', $dataType, '');
         }
-
-        $condParser = new ConditionParser();
-        $SQLCondStr = $condParser->makeSqlStatement($condition, 'usd_value', $dataType);
 
         return $SQLCondStr;
     }

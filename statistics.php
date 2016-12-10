@@ -16,8 +16,8 @@
  *
  *****************************************************************************/
 
-require(SERVER_PATH. '/adm_plugins/statistics/includes.php');
-require(SERVER_PATH. '/adm_plugins/statistics/config.php');
+require(ADMIDIO_PATH. '/adm_plugins/statistics/includes.php');
+require(ADMIDIO_PATH. '/adm_plugins/statistics/config.php');
 
 define('LINK_TEXT_INSTALLATION','Installation / Deinstallation');
 define('LINK_TEXT_OVERWIEW','Statistiken');
@@ -103,13 +103,13 @@ foreach ($plgAllowInstall AS $i)
         $statisticsMenu = new Menu('Statistics', 'Statistiken');
 
         if ($showOverview) {
-            $statisticsMenu->addItem('overview', $g_root_path. '/adm_plugins/' . $plugin_folder_name . '/gui/overview.php', LINK_TEXT_OVERWIEW, THEME_PATH. '/icons/lists.png" alt="'. LINK_TEXT_OVERWIEW . '" title="'. LINK_TEXT_OVERWIEW);
+            $statisticsMenu->addItem('overview', ADMIDIO_URL. '/adm_plugins/' . $plugin_folder_name . '/gui/overview.php', LINK_TEXT_OVERWIEW, THEME_PATH. '/icons/lists.png" alt="'. LINK_TEXT_OVERWIEW . '" title="'. LINK_TEXT_OVERWIEW);
         }
         if ($showConfig) {
-            $statisticsMenu->addItem('config', $g_root_path. '/adm_plugins/' . $plugin_folder_name . '/gui/editor.php', LINK_TEXT_CONFIG, THEME_PATH. '/icons/options.png" alt="'. LINK_TEXT_CONFIG . '" title="'. LINK_TEXT_CONFIG);
+            $statisticsMenu->addItem('config', ADMIDIO_URL. '/adm_plugins/' . $plugin_folder_name . '/gui/editor.php', LINK_TEXT_CONFIG, THEME_PATH. '/icons/options.png" alt="'. LINK_TEXT_CONFIG . '" title="'. LINK_TEXT_CONFIG);
         }
         if ($showInstall) {
-            $statisticsMenu->addItem('install', $g_root_path. '/adm_plugins/' . $plugin_folder_name . '/install/install.php', LINK_TEXT_INSTALLATION, THEME_PATH. '/icons/backup.png" alt="'. LINK_TEXT_INSTALLATION . '" title="'. LINK_TEXT_INSTALLATION);
+            $statisticsMenu->addItem('install', ADMIDIO_URL. '/adm_plugins/' . $plugin_folder_name . '/install/install.php', LINK_TEXT_INSTALLATION, THEME_PATH. '/icons/backup.png" alt="'. LINK_TEXT_INSTALLATION . '" title="'. LINK_TEXT_INSTALLATION);
         }
         echo' <div id="plgStatistics" class="admidio-plugin-content">';
         echo $statisticsMenu->show();

@@ -150,7 +150,7 @@ if ($pluginInstalled) {
         	$category = '';
         	$fieldNumberShow  = $fieldNumberIntern + 1;
 
-        	$selectBoxHtml = '<select size="1" id="'.$fieldId.'" name="'.$fieldId.'" '.$optAttributes.'>';
+        	$selectBoxHtml = '<select class="form-control" size="1" id="'.$fieldId.'" name="'.$fieldId.'" '.$optAttributes.'>';
 
         	if ($zeroValue != false){
         		$zeroSelected = '';
@@ -282,7 +282,7 @@ if ($pluginInstalled) {
         {
             global $gL10n;
 
-            $selectBoxHtml = '<select size="1" id="'.$fieldId.'" name="'.$fieldId.'" '.$optAttributes.'>';
+            $selectBoxHtml = '<select class="form-control" size="1" id="'.$fieldId.'" name="'.$fieldId.'" '.$optAttributes.'>';
             if($createFirstEntry == true)
             {
                 $selectBoxHtml .= '<option value=" "';
@@ -354,16 +354,16 @@ if ($pluginInstalled) {
                         src="'. THEME_PATH. '/icons/help.png" alt="Help" title="Handbuch des Statistik-Plugins öffnen" /></a>
 
                 <h3>Allgemeine Angaben zur Statistik</h3>
-                <div class ="InputLabelBox">
-                    <span class="textLabel">Titel der Statistik</span>
-                    <input class ="textInput" type="text" name="statistic_title" id="statistic_title" value="'.$statistic->getTitle().'">
+                <div class ="InputLabelBox form-group">
+                    <span class="textLabel control-label">Titel der Statistik</span>
+                    <input class ="textInput form-control" type="text" name="statistic_title" id="statistic_title" value="'.$statistic->getTitle().'">
                 </div>
-                <div class ="InputLabelBox">
-                    <span class="textLabel">Untertitel der Statistik</span>
-                    <input class ="textInput" type="text" name="statistic_subtitle" id="statistic_subtitle" value="'.$statistic->getSubtitle().'">
+                <div class ="InputLabelBox form-group">
+                    <span class="textLabel control-label">Untertitel der Statistik</span>
+                    <input class ="textInput form-control" type="text" name="statistic_subtitle" id="statistic_subtitle" value="'.$statistic->getSubtitle().'">
                 </div>
-                <div class ="InputLabelBox">
-                    <span class="textLabel">Standardrolle der Statistik</span>
+                <div class ="InputLabelBox form-group">
+                    <span class="textLabel control-label">Standardrolle der Statistik</span>
                     <a class="admidio-icon-link" data-toggle="modal" data-target="#admidio_modal" href="help.php?help_id=533">
                         <img class="iconHelpLink" src="'. THEME_PATH. '/icons/help.png" alt="Help" title="Hilfe zur Standardrolle anzeigen" />
                     </a>'
@@ -385,12 +385,12 @@ if ($pluginInstalled) {
             $page->addHtml('
             <div class= "stdDiv" id="div_table'.$tc.'_config">
                 <h3>'.($tc+1).'. Tabelle</h3>
-                <div class ="InputLabelBox">
-                    <span class="textLabel">Titel der Tabelle</span>
-                    <input class ="textInput" type="text" name="table'.$tc.'_title" id="table'.$tc.'_title" value="'.$tables[$tc]->getTitle().'">
+                <div class ="InputLabelBox form-group">
+                    <span class="textLabel control-label">Titel der Tabelle</span>
+                    <input class ="textInput form-control" type="text" name="table'.$tc.'_title" id="table'.$tc.'_title" value="'.$tables[$tc]->getTitle().'">
                 </div>
-                <div class ="InputLabelBox">
-                    <span class="textLabel">Rolle der Tabelle</span>
+                <div class ="InputLabelBox form-group">
+                    <span class="textLabel control-label">Rolle der Tabelle</span>
                     <a class="admidio-icon-link" data-toggle="modal" data-target="#admidio_modal" href="help.php?help_id=542">
                         <img class="iconHelpLink" src="'. THEME_PATH. '/icons/help.png" alt="Help" title="Hilfe zur Rolle der Tabelle anzeigen" />
                     </a>'
@@ -463,7 +463,7 @@ if ($pluginInstalled) {
                             	$page->addHtml('<a href="javascript: editStructure(\'addcol\',\''.$tc.'\')" title="Spalte hinzufügen"><img class="iconLink, helpRight" src="'. THEME_PATH. '/icons/add.png" alt="Spalte hinzufügen"/></a>');
                             }
                         }else{
-                            $page->addHtml('<input name="table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow].'" id="table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow].'" type="text">');
+                            $page->addHtml('<input class="form-control" name="table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow].'" id="table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow].'" type="text">');
                         }
                     }
                     $page->addHtml('</td>');
@@ -509,7 +509,7 @@ if ($pluginInstalled) {
                         if ($frmCol == 0){
                             $page->addHtml('Kopfzeile');
                         }elseif ($frmCol == 1){
-                            $page->addHtml('<input name="table'.$tc.'_first_column_label" id="table'.$tc.'_first_column_label" type="text" value="'.$tables[$tc]->getFirstColumnLabel().'">');
+                            $page->addHtml('<input class="form-control" name="table'.$tc.'_first_column_label" id="table'.$tc.'_first_column_label" type="text" value="'.$tables[$tc]->getFirstColumnLabel().'">');
                         }
                     }elseif ($rc == $nrOfRows-1){
                     }else{
@@ -527,11 +527,11 @@ if ($pluginInstalled) {
                             }
 
                         }elseif($frmCol == 1){
-                            $page->addHtml('<input name="table'.$tc.'_row'.$rowIdf.'_'.$formRowInputNames[$frmCol].'" id="table'.$tc.'_row'.$rowIdf.'_'.$formRowInputNames[$frmCol].'" type="text" value="'.$rows[$rowIdf]->getLabel().'">');
+                            $page->addHtml('<input class="form-control" name="table'.$tc.'_row'.$rowIdf.'_'.$formRowInputNames[$frmCol].'" id="table'.$tc.'_row'.$rowIdf.'_'.$formRowInputNames[$frmCol].'" type="text" value="'.$rows[$rowIdf]->getLabel().'">');
                         }elseif($frmCol == 2){
                         	generateProfileFieldSelectBox('Alle',true,false,false,$rows[$rowIdf]->getCondition()->getProfileFieldID(),'table'.$tc.'_row'.$rowIdf.'_'.$formRowInputNames[$frmCol],'onchange="disableConditionInput(this)"');
                         }elseif($frmCol == 3){
-                            $page->addHtml('<input name="table'.$tc.'_row'.$rowIdf.'_'.$formRowInputNames[$frmCol].'" id="table'.$tc.'_row'.$rowIdf.'_'.$formRowInputNames[$frmCol].'" type="text" value="'.$rows[$rowIdf]->getCondition()->getUserCondition().'">');
+                            $page->addHtml('<input class="form-control" name="table'.$tc.'_row'.$rowIdf.'_'.$formRowInputNames[$frmCol].'" id="table'.$tc.'_row'.$rowIdf.'_'.$formRowInputNames[$frmCol].'" type="text" value="'.$rows[$rowIdf]->getCondition()->getUserCondition().'">');
                         }elseif($frmCol == 4){
                         	if ($effectiveNrOfRows > 1){
                         		$page->addHtml('<a href="javascript: editStructure(\'delrow\',\''.$tc.'\',\'\',\''.$rowIdf.'\')" title="Zeile löschen"><img class="iconLink" src="'. THEME_PATH. '/icons/delete.png" alt="Zeile löschen"/></a>');
@@ -570,7 +570,7 @@ if ($pluginInstalled) {
             $page->addHtml('</div>');
         }
 //         echo    '<a rel="colorboxHelp" href="help.php?help_id=428"><img class="iconHelpLink" src="'. THEME_PATH. '/icons/help.png" alt="Help" title="Hilfe zum Hinzufügen von Tabellen anzeigen" /></a>';
-        $page->addHtml('<br /><input type="button" name="show_statistic" value="Statistik anzeigen" onclick="javascript: doFormSubmit(\'show\')" />');
+        $page->addHtml('<br /><input class="btn btn-default btn-primary" type="button" name="show_statistic" value="Statistik anzeigen" onclick="javascript: doFormSubmit(\'show\')" />');
         $page->addHtml('<a class="admidio-icon-link" data-toggle="modal" data-target="#admidio_modal" href="help.php?help_id=427"><img class="iconHelpLink" src="'. THEME_PATH. '/icons/help.png" alt="Help" title="Hilfe zur Statistik-Vorschau anzeigen" /></a>');
         $page->addHtml('</form>');
     } else  {
@@ -587,7 +587,7 @@ if ($pluginInstalled) {
     $text = 'Zur Installation';
     $link = '../install/install.php';
     $page->addHtml('<p><form action="'. $link . '" method="post"  >
-                            <input type="submit" name="action" value="' . $text . '" />
+                            <input class="btn btn-default btn-primary" type="submit" name="action" value="' . $text . '" />
                         </form>
                     </p>');
 }

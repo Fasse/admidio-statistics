@@ -75,7 +75,7 @@ if ($pluginInstalled) {
         } else {
             $page->addHtml('<p>Es wurden <b>' . count($staIDs) . '</b> Statistik-Definitionen gefunden:</p>');
             $page->addHtml('<p>W&auml;hlen Sie eine Statistik aus, welche angezeigt werden soll:</p>');
-            
+
             //Create table object
             $tableOverview = new HtmlTable($class_table, null, true, true);
             // create array with all column heading values
@@ -98,14 +98,14 @@ if ($pluginInstalled) {
 
     } else {
         if ($gValidLogin) {
-            $page->addHtml('Sie haben keine Berechtigung, diese Seite anzuzeigen.');
+            $page->addHtml('<p>Sie haben keine Berechtigung, diese Seite anzuzeigen.</p>');
         }
     }
 } else {
-        $page->addHtml('Das Plugin ist nicht installiert, bitte zuerst installieren.');
+        $page->addHtml('<p>Das Plugin ist nicht installiert, bitte zuerst installieren.</p>');
         $text = 'Zur Installation';
         $link = '../install/install.php';
-        
+
         $navbarPlugin = new HtmlForm('navbar_statistics_installation', $link, $page, array('type' => 'default', 'setFocus' => false));
         $navbarPlugin->addSubmitButton('btn_send', $text);
         $page->addHtml($navbarPlugin->show(false));

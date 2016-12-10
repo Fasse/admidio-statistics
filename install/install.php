@@ -72,7 +72,7 @@ if($hasAccess == true) {
 
     $navbarPlugin = new HtmlForm('navbar_statistics_installation', null, $page, array('action' => 'install.php', 'type' => 'default', 'setFocus' => false));
     $navbarPlugin->openGroupBox('');
-    
+
     // Aufrufen der Entsprechenden Installationsschrittes
     if ($installState == 4 && !checkPreviousInstallations()){
         //"Installation abgeschlossen!"
@@ -82,7 +82,7 @@ if($hasAccess == true) {
         $navbarPlugin = new HtmlForm('navbar_statistics_installation', 'install.php', $page, array('type' => 'default', 'setFocus' => false));
         $navbarPlugin->openGroupBox('');
     }
-        
+
     if ($installState == 1){
         $page->addHtml(askInstallationStart($page));
     }elseif ($installState == 2){
@@ -140,7 +140,7 @@ function askInstallationStart($page){
     $navbarPlugin->addDescription('Willkommen zur Installation des Admidio-Statistik-Plugin');
     $navbarPlugin->addSelectBox('install-state', 'Aktion', $selectionBox);
     $navbarPlugin->addSubmitButton('btn_send', 'Aktion ausführen');
-    $navbarPlugin->closeGroupBox(); 
+    $navbarPlugin->closeGroupBox();
     $page->addHtml($navbarPlugin->show(false));
 }
 
@@ -148,7 +148,7 @@ function askInstallationStart($page){
 function showActionButton ($type='home') {
     global $navbarPlugin;
     global $page;
-    
+
     switch ($type) {
         case 'home':
             $value = 1;
@@ -182,17 +182,18 @@ function showActionButton ($type='home') {
     $page->addHtml($navbarPlugin->show(false));
 
 }
-    
+
 //Prüfung auf bereits vorhandene Tabellen in der Datenbank
 function checkPreviousInstallations(){
-    global $gDb;
+    global $gDb, $gLogger;
 
     $sql = 'SELECT * FROM ' . TBL_STATISTICS;
-    $result = $gDb->query($sql,false);
-    if ($result) {
-        return TRUE;
+    $pdoStatement = $gDb->query($sql,false);
+    if ($pdoStatement !== false && $pdoStatement->rowCount() > 0) {
+        $gLogger->info('1::'.$pdoStatement->rowCount());
+        return true;
     } else {
-        return FALSE;
+        return false;
     }
 }
 
@@ -205,7 +206,7 @@ function saveOldDefinitionData(){
 //Installation des Plugins
 function startInstallation(){
     global $navbarPlugin;
-    
+
     executeSQLSktipt('db_statistic_install.sql');
     $navbarPlugin->addDescription('Die Tabellen für das Plugin wurden in der Admidio-Datenbank angelegt.');
     addStatisticTemplates();
@@ -270,7 +271,7 @@ function addStatisticTemplates() {
     $staDB->saveStatistic($statistic0);
     $staDB->saveStatistic($statistic1);
     $staDB->saveStatistic($statistic2);
-} 
+}
 
 
 //Ausführen von angegebenen SQL-Skripts
@@ -308,7 +309,7 @@ function restoreOldDefinitionData(){
 //Abschluss der Installation
 function deleteOldTables(){
     global $navbarPlugin;
-    
+
     executeSQLSktipt('db_statistic_delete.sql');
     $navbarPlugin->addDescription('Die Tabellen des Plugins, welche nicht mehr benötigt werden, wurden aus der Admidio-Datenbank entfernt.');
 }
