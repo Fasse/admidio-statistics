@@ -95,7 +95,7 @@ class FormElements
                        OR cat_org_id IS NULL )
                        '.$condition.'
                  ORDER BY cat_sequence, rol_name';
-        $result_lst = $gDb->query($sql);
+        $rolesStatement = $gDb->query($sql);
 
         // Selectbox mit allen selektierten Rollen zusammensetzen
         $act_category = '';
@@ -118,7 +118,7 @@ class FormElements
                 $selectBoxHtml .= '>'.$gL10n->get('SYS_ALL').' ('.$gL10n->get('SYS_ALSO_VISITORS').')</option>';
             }
 
-            while($row = $gDb->fetch_array($result_lst))
+            while($row = $rolesStatement->fetch())
             {
                 if($gCurrentUser->hasRightViewRole($row['rol_id']))
                 {
