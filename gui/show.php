@@ -51,17 +51,28 @@ foreach ($plgAllowShow AS $i)
     }
 }
 
-if($hasAccess == true) {
+if($hasAccess == true)
+{
     // Html-Kopf wird geschrieben
     $page = new HtmlPage('Statistik');
     $page->setTitle('Statistik');
-        
-    if ($getStaId > 0){
-        $staDB = new DBAccess();
-        $statisticDefinition = $staDB->getStatistic($getStaId);
-        $staCalc = new Evaluator();
-        $statistic = $staCalc->calculateStatistic($statisticDefinition);
-    } else {
+
+    if ($getStaId > 0)
+    {
+        try
+        {
+            $staDB = new DBAccess();
+            $statisticDefinition = $staDB->getStatistic($getStaId);
+            $staCalc = new Evaluator();
+            $statistic = $staCalc->calculateStatistic($statisticDefinition);
+        }
+        catch (AdmException $e)
+        {
+            $e->showHtml();
+        }
+    }
+    else
+    {
         $gMessage->show('Keine Statistiken gefunden!');
     }
 
@@ -87,11 +98,11 @@ if($hasAccess == true) {
         } else {
             $tableRole = $statistic->getStandardRoleID();
         }
-        
+
         $showTable = new HtmlTable('tableStatistic', null, true, true);
 
         $page->addHtml('Rolle ' . $staCalc->getRoleNameFromID($tableRole) . ', ' . $staCalc->getUserCountFromRoleId($tableRole) .' Eintr&auml;ge');
-        
+
         $columnHeading = array();
 
         if($table->getFirstColumnLabel() == '' )
@@ -115,13 +126,13 @@ if($hasAccess == true) {
                     $columnHeading[] = $columns[$c]->getLabel();
                 }
             }
-            
+
         $showTable->addRowHeadingByArray($columnHeading);
 
         $rows = $table->getRows();
 
         for ($r = 0; $r < count($rows); ++$r) {
-            
+
             $columnValues = array();
             if ($rows[$r]->getLabel() == ' ')
             {
@@ -141,7 +152,7 @@ if($hasAccess == true) {
         $htmlShowTable = $showTable->show(false);
         $page->addHtml($htmlShowTable);
     }
-    
+
     $page->show();
 
 } else {
