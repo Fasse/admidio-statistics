@@ -12,9 +12,9 @@
 require_once('../includes.php');
 require_once(STATISTICS_PATH.'/statistic_objects/statistic.php');
 
-class Evaluator {
-
-    protected $DEBUG_MODE=false;
+class Evaluator
+{
+    protected $DEBUG_MODE = false;
 
     //Wandelt eine Statistikdefinition in eine Statistik mit berechneten Werten um.
     public function calculateStatistic($staDef) {
@@ -384,10 +384,8 @@ class Evaluator {
                 $userCondition = $condition->getUserCondition();
                 $profileFieldID = $condition->getProfileFieldID();
 
-                //Wandelt die Bedingung, die der User eingegeben hat, in ein SQL-Statement um
-                $SQLCondition = $this->getSQLFromUserConditions($profileFieldID, $userCondition);
-
-                switch  ($userCondition) {
+                switch  ($userCondition)
+                {
                     case 'FEHLT':
                         $sql = 'SELECT DISTINCT(mem_usr_id) FROM ' .  TBL_MEMBERS. ' WHERE mem_end = \'9999-12-31\' AND mem_rol_id = '.$roleID . ' AND mem_usr_id NOT IN (SELECT DISTINCT(usd_usr_id) FROM ' . TBL_USER_DATA . ' WHERE usd_usf_id = ' . $profileFieldID .')';
                         break;
@@ -396,6 +394,9 @@ class Evaluator {
                         $sql = 'SELECT * FROM '. TBL_MEMBERS.' JOIN ' . TBL_USER_DATA . ' ON mem_usr_id = usd_usr_id WHERE mem_end = \'9999-12-31\' AND mem_rol_id = '.$roleID . ' AND usd_usf_id = ' . $profileFieldID;
                         break;
                     default:
+                        //Wandelt die Bedingung, die der User eingegeben hat, in ein SQL-Statement um
+                        $SQLCondition = $this->getSQLFromUserConditions($profileFieldID, $userCondition);
+
                         $sql = 'SELECT * FROM '. TBL_MEMBERS.' JOIN ' . TBL_USER_DATA . ' ON mem_usr_id = usd_usr_id WHERE mem_end = \'9999-12-31\' AND mem_rol_id = '.$roleID . ' AND usd_usf_id = ' . $profileFieldID . $SQLCondition;
                         break;
                 }
