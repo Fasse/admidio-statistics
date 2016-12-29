@@ -225,11 +225,11 @@ function addStatisticTemplates() {
     $statistic1 = new Statistic(null,$currentOrgID, 'Altersstatistik ','Altersstatistik' ,'Jahr ' . date('Y'), 2);
     $tbl1 = new StatisticTable('Nach Altergsgruppen', null,'Altersgruppen');
     $tbl1->addRow(new StatisticTableRow('0-6 Jahre',new StatisticCondition('>=0j AND <=6j',10)));
-    $tbl1->addRow(new StatisticTableRow('7-14 Jahre',new StatisticCondition('>=6j AND <=14j',10)));
-    $tbl1->addRow(new StatisticTableRow('15-18 Jahre',new StatisticCondition('>=14j AND <=18j',10)));
-    $tbl1->addRow(new StatisticTableRow('19-26 Jahre',new StatisticCondition('>=18j AND <=26j',10)));
-    $tbl1->addRow(new StatisticTableRow('27-40 Jahre',new StatisticCondition('>=26j AND <=40j',10)));
-    $tbl1->addRow(new StatisticTableRow('41-60 Jahre',new StatisticCondition('>=40j AND <=60j',10)));
+    $tbl1->addRow(new StatisticTableRow('7-14 Jahre',new StatisticCondition('>=7j AND <=14j',10)));
+    $tbl1->addRow(new StatisticTableRow('15-18 Jahre',new StatisticCondition('>=15j AND <=18j',10)));
+    $tbl1->addRow(new StatisticTableRow('19-26 Jahre',new StatisticCondition('>=19j AND <=26j',10)));
+    $tbl1->addRow(new StatisticTableRow('27-40 Jahre',new StatisticCondition('>=27j AND <=40j',10)));
+    $tbl1->addRow(new StatisticTableRow('41-60 Jahre',new StatisticCondition('>=41j AND <=60j',10)));
     $tbl1->addRow(new StatisticTableRow('ab 61 Jahre',new StatisticCondition('>=61j',10)));
     $tbl1->addRow(new StatisticTableRow('Keine Angabe',new StatisticCondition('FEHLT',10)));
     $tbl1->addColumn(new StatisticTableColumn('Männlich',new StatisticCondition('Männlich',11),new StatisticFunction('#',''),'sum'));

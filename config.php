@@ -15,12 +15,12 @@
 'Listenberechtigte' :   nur Benutzer mit dem Recht "Mitgliederlisten aller Rollen einsehen"
 '<Rollenname>'    :     nur Mitglieder dieser Rolle
 
-Beispiel:  $plgFreigabe = array('Webmaster');
+Beispiel:  $plgFreigabe = array('Administrator');
 
 Um eine Funktion für mehrere Benutzergruppen freizuschalten,
 einfach das array um die jeweilige Benutzergruppe erweitern
 
-Beispiel:  $plgFreigabe = ('Webmaster','Vorstand','Rollenname1','Rollenname2');  */
+Beispiel:  $plgFreigabe = ('Administrator','Vorstand','Rollenname1','Rollenname2');  */
 
 /* ***** Berechtigungen fuer das Plugin ***** */
 
