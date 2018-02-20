@@ -243,6 +243,9 @@ class Evaluator
                 case 'TEXT':
                     $result = max($records);
                     break;
+                case 'DECIMAL':
+                    $result = max($records);
+                    break;
             }
         }
         return $result;
@@ -270,6 +273,9 @@ class Evaluator
                 case 'TEXT':
                     $result = min($records);
                     break;
+                case 'DECIMAL':
+                    $result = min($records);
+                    break;
             }
         }
 
@@ -293,6 +299,9 @@ class Evaluator
                     $result = array_sum($years) / count($years);
                     break;
                 case 'NUMERIC':
+                    $result =  array_sum($records) / count($records);
+                    break;
+                case 'DECIMAL':
                     $result =  array_sum($records) / count($records);
                     break;
             }
@@ -319,6 +328,9 @@ class Evaluator
                     $result = array_sum($years);
                     break;
                 case 'NUMERIC':
+                    $result = array_sum($records);
+                    break;
+                case 'DECIMAL':
                     $result = array_sum($records);
                     break;
             }
