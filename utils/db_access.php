@@ -10,7 +10,7 @@
  * Parameters:
  *
  *****************************************************************************/
-require_once(SERVER_PATH . '/adm_program/system/classes/tableaccess.php');
+
 require_once('../includes.php');
 require_once('db_constants.php');
 

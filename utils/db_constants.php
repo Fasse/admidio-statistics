@@ -8,10 +8,10 @@
  *
  *****************************************************************************/
 
-define('TBL_STATISTICS', $g_tbl_praefix . '_statistics');
-define('TBL_TABLES', $g_tbl_praefix . '_statistics_tables');
-define('TBL_COLUMNS',  $g_tbl_praefix . '_statistics_columns');
-define('TBL_ROWS',  $g_tbl_praefix . '_statistics_rows');
+define('TBL_STATISTICS', TABLE_PREFIX . '_statistics');
+define('TBL_TABLES', TABLE_PREFIX . '_statistics_tables');
+define('TBL_COLUMNS',  TABLE_PREFIX . '_statistics_columns');
+define('TBL_ROWS',  TABLE_PREFIX . '_statistics_rows');
 
 define('TBL_STA_ID' , 'sta_id');
 define('TBL_STA_ORG_ID' , 'sta_org_id');

@@ -16,8 +16,8 @@
  *
  *****************************************************************************/
 
-require(ADMIDIO_PATH. '/adm_plugins/statistics/includes.php');
-require(ADMIDIO_PATH. '/adm_plugins/statistics/config.php');
+require(__DIR__. '/includes.php');
+require(__DIR__. '/config.php');
 
 define('LINK_TEXT_INSTALLATION','Installation / Deinstallation');
 define('LINK_TEXT_OVERWIEW','Statistiken');

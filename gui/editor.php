@@ -75,7 +75,7 @@ if ($pluginInstalled) {
         	$oldCategoryNameIntern = '';
         	$posEndOfMasterData = 0;
 
-        	foreach($gProfileFields->mProfileFields as $field){
+        	foreach($gProfileFields->getProfileFields() as $field){
         		// at the end of category master data save positions for loginname and username
         		// they will be added after profile fields loop
         		if($masterData == true && $oldCategoryNameIntern == 'MASTER_DATA'
@@ -207,7 +207,7 @@ if ($pluginInstalled) {
 /*         $actualProfileFieldsWithSelect [0] = 'Auswahl';
         $actualProfileFieldsWithNo [0] = 'Alle';
         //Aktuell verfügbare Profilfelder auslesen.
-        foreach($gProfileFields->mProfileFields as $field)
+        foreach($gProfileFields->getProfileFields() as $field)
         {
             //$actualProfileFields[$field->getValue('usf_id')] = $field->getValue('usf_name');
             $actualProfileFieldsWithSelect[$field->getValue('usf_id')] = $field->getValue('usf_name');
