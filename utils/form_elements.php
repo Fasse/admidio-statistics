@@ -89,7 +89,7 @@ class FormElements
 
         $sql = 'SELECT * FROM '. TBL_ROLES. ', '. TBL_CATEGORIES. '
                  WHERE rol_valid   = '.$active_roles.'
-                   AND cat_name_intern <> \'CONFIRMATION_OF_PARTICIPATION\'
+                   AND cat_name_intern <> \'EVENTS\'
                    AND rol_cat_id  = cat_id
                    AND (  cat_org_id  = '. $gCurrentOrganization->getValue('org_id'). '
                        OR cat_org_id IS NULL )
