@@ -1,6 +1,6 @@
 <?php
 /******************************************************************************
- * Statistiken V 2.3.1 (kompatibel mit Admidio 3.3)
+ * Statistiken V 2.3.2 (kompatibel mit Admidio 3.3)
  *
  * Beta Version
  *
