@@ -14,7 +14,6 @@
  *****************************************************************************/
 
 require_once('../includes.php');
-require_once(SERVER_PATH.'/adm_program/system/classes/tableroles.php');
 require_once(STATISTICS_PATH.'/statistic_objects/statistic.php');
 require_once(STATISTICS_PATH.'/utils/db_access.php');
 require_once(STATISTICS_PATH.'/utils/evaluator.php');

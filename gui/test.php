@@ -20,7 +20,6 @@
 
 //Import benötigter Skripts
 require_once('../includes.php');
-require_once(SERVER_PATH.'/adm_program/system/classes/formelements.php');
 require_once(STATISTICS_PATH.'/utils/db_access.php');
 require_once(STATISTICS_PATH.'/statistic_objects/statistic.php');
 

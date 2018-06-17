@@ -14,7 +14,6 @@
 
 require_once('../includes.php');
 require_once(SERVER_PATH.'/adm_program/system/login_valid.php');
-require_once(SERVER_PATH.'/adm_program/system/classes/tableroles.php');
 require_once(STATISTICS_PATH.'/utils/db_access.php');
 global $gNavigation;
 
@@ -27,7 +26,7 @@ $page = new HtmlPage();
 $page->setTitle('Statistik');
 
 $statisticsOverview = $page->getMenu();
-$statisticsOverview->addItem('menu_item_back', $gNavigation->getPreviousUrl(), $gL10n->get('SYS_BACK'), 'back.png');
+$statisticsOverview->addItem('menu_item_back', $gNavigation->getPreviousUrl(), $gL10n->get('SYS_BACK'), 'fa-arrow-circle-left');
 
 //DB-Hilfsklasse instanzieren
 $staDBHandler = new DBAccess();
