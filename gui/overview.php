@@ -26,7 +26,7 @@ $page = new HtmlPage();
 $page->setTitle('Statistik');
 
 $statisticsOverview = $page->getMenu();
-$statisticsOverview->addItem('menu_item_back', $gNavigation->getPreviousUrl(), $gL10n->get('SYS_BACK'), 'fa-arrow-circle-left');
+$statisticsOverview->addItem('menu_item_back', $gNavigation->getPreviousUrl(), $gL10n->get('SYS_BACK'), 'back.png');
 
 //DB-Hilfsklasse instanzieren
 $staDBHandler = new DBAccess();
