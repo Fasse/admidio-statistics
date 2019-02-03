@@ -21,6 +21,7 @@ global $gNavigation;
 
 // Check Parameter
 $getStaId = admFuncVariableIsValid($_GET, 'sta_id','numeric');
+$getMode  = admFuncVariableIsValid($_GET, 'mode', 'string', array('defaultValue' => 'html', 'validValues' => array('html', 'print')));
 
 // Url fuer die Zuruecknavigation merken
 $gNavigation->addUrl(CURRENT_URL);
@@ -75,9 +76,27 @@ if($hasAccess == true)
         $gMessage->show('Keine Statistiken gefunden!');
     }
 
-    $statisticsShow = $page->getMenu();
-    $statisticsShow->addItem('menu_item_back', $gNavigation->getPreviousUrl(), $gL10n->get('SYS_BACK'), 'back.png');
+    $page->addJavascript('
+        $("#menu_item_print_view").click(function () {
+            window.open("'. ADMIDIO_URL . FOLDER_PLUGINS . '/statistics/gui/show.php?" +
+            "sta_id='.$getStaId.'&mode=print", "_blank");
+        });', true);
 
+    if ($getMode == 'print')
+    {
+        $page->hideThemeHtml();
+        $page->hideMenu();
+        $page->setPrintMode();
+    }
+    else
+    {
+        $statisticsShow = $page->getMenu();
+        $statisticsShow->addItem('menu_item_back', $gNavigation->getPreviousUrl(), $gL10n->get('SYS_BACK'), 'back.png');
+        
+        // link to print preview
+        $statisticsShow->addItem('menu_item_print_view', '#', $gL10n->get('LST_PRINT_PREVIEW'), 'print.png');
+    }
+    
     $page->addHtml('<div>');
     //Hauptitel
     $page->setHeadline(($statistic->getTitle() == '' ? '': $statistic->getTitle()));
@@ -98,10 +117,18 @@ if($hasAccess == true)
             $tableRole = $statistic->getStandardRoleID();
         }
 
+                if ($getMode == 'print')
+        { 
+            $showTable = new HtmlTable('tableStatistic', null, false, false,'table table-condensed table-striped');   
+        }
+        else
+        {
+        
         $showTable = new HtmlTable('tableStatistic', null, true, true);
-
+          }
         $page->addHtml('Rolle ' . $staCalc->getRoleNameFromID($tableRole) . ', ' . $staCalc->getUserCountFromRoleId($tableRole) .' Eintr&auml;ge');
-
+        
+        $columnAlign  = array();
         $columnHeading = array();
 
         if($table->getFirstColumnLabel() == '' )
@@ -112,7 +139,8 @@ if($hasAccess == true)
         {
             $columnHeading[] = $table->getFirstColumnLabel();
         }
-
+        
+        $columnAlign[] = 'left';
         $columns = $table->getColumns();
 
             for ($c= 0;$c < count($columns); ++$c) {
@@ -124,8 +152,10 @@ if($hasAccess == true)
                 {
                     $columnHeading[] = $columns[$c]->getLabel();
                 }
+                $columnAlign[] = 'left';
             }
-
+            
+        $showTable->setColumnAlignByArray($columnAlign);
         $showTable->addRowHeadingByArray($columnHeading);
 
         $rows = $table->getRows();
