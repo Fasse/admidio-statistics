@@ -29,32 +29,8 @@ $page = new HtmlPage('Statistik-Plugin Installation');
 $statisticsInstallationMenu = $page->getMenu();
 $statisticsInstallationMenu->addItem('menu_item_back', $gNavigation->getPreviousUrl(), $gL10n->get('SYS_BACK'), 'back.png');
 
-//Überprüfen, ob der Benutzer Zugriff auf die Seite hat
-$hasAccess = false;
-foreach ($plgAllowInstall AS $i)
-{
-    if($i == 'Benutzer'
-        && $gValidLogin == true)
-    {
-        $hasAccess = true;
-    }
-    elseif($i == 'Rollenverwalter'
-        && $gCurrentUser->assignRoles())
-    {
-        $hasAccess = true;
-    }
-    elseif($i == 'Listenberechtigte'
-        && $gCurrentUser->viewAllLists())
-    {
-        $hasAccess = true;
-    }
-    elseif(hasRole($i))
-    {
-        $hasAccess = true;
-    }
-}
 
-if($hasAccess == true) {
+if($gCurrentUser->isAdministrator()) {
     //Übergabevariablen prüfen
     if (isset($_POST['install-state']) && is_numeric($_POST['install-state'])){
         $installState = $_POST['install-state'];

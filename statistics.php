@@ -74,45 +74,26 @@ foreach ($plgAllowConfig AS $i)
 }
 
 $showInstall = false;
-
-foreach ($plgAllowInstall AS $i)
+if($gCurrentUser->isAdministrator())
 {
-    if($i == 'Benutzer'
-        && $gValidLogin == true)
-    {
-        $showInstall = true;
-    }
-    elseif($i == 'Rollenverwalter'
-        && $gCurrentUser->assignRoles())
-    {
-        $showInstall = true;
-    }
-    elseif($i == 'Listenberechtigte'
-        && $gCurrentUser->viewAllLists())
-    {
-        $hasAccess = true;
-    }
-    elseif(hasRole($i))
-    {
-        $showInstall = true;
-    }
+    $showInstall = true;
 }
 
-    if ($showOverview || $showConfig || $showInstall) {
-        // Create menu
-        $statisticsMenu = new Menu('Statistics', 'Statistiken');
+if ($showOverview || $showConfig || $showInstall) {
+    // Create menu
+    $statisticsMenu = new Menu('Statistics', 'Statistiken');
 
-        if ($showOverview) {
-            $statisticsMenu->addItem('overview', ADMIDIO_URL. '/adm_plugins/' . $plugin_folder_name . '/gui/overview.php', LINK_TEXT_OVERWIEW, THEME_PATH. '/icons/lists.png" alt="'. LINK_TEXT_OVERWIEW . '" title="'. LINK_TEXT_OVERWIEW);
-        }
-        if ($showConfig) {
-            $statisticsMenu->addItem('config', ADMIDIO_URL. '/adm_plugins/' . $plugin_folder_name . '/gui/editor.php', LINK_TEXT_CONFIG, THEME_PATH. '/icons/options.png" alt="'. LINK_TEXT_CONFIG . '" title="'. LINK_TEXT_CONFIG);
-        }
-        if ($showInstall) {
-            $statisticsMenu->addItem('install', ADMIDIO_URL. '/adm_plugins/' . $plugin_folder_name . '/install/install.php', LINK_TEXT_INSTALLATION, THEME_PATH. '/icons/backup.png" alt="'. LINK_TEXT_INSTALLATION . '" title="'. LINK_TEXT_INSTALLATION);
-        }
-        echo' <div id="plgStatistics" class="admidio-plugin-content">';
-        echo $statisticsMenu->show();
-        echo' </div>';
+    if ($showOverview) {
+        $statisticsMenu->addItem('overview', ADMIDIO_URL. '/adm_plugins/' . $plugin_folder_name . '/gui/overview.php', LINK_TEXT_OVERWIEW, THEME_PATH. '/icons/lists.png" alt="'. LINK_TEXT_OVERWIEW . '" title="'. LINK_TEXT_OVERWIEW);
     }
+    if ($showConfig) {
+        $statisticsMenu->addItem('config', ADMIDIO_URL. '/adm_plugins/' . $plugin_folder_name . '/gui/editor.php', LINK_TEXT_CONFIG, THEME_PATH. '/icons/options.png" alt="'. LINK_TEXT_CONFIG . '" title="'. LINK_TEXT_CONFIG);
+    }
+    if ($showInstall) {
+        $statisticsMenu->addItem('install', ADMIDIO_URL. '/adm_plugins/' . $plugin_folder_name . '/install/install.php', LINK_TEXT_INSTALLATION, THEME_PATH. '/icons/backup.png" alt="'. LINK_TEXT_INSTALLATION . '" title="'. LINK_TEXT_INSTALLATION);
+    }
+    echo' <div id="plgStatistics" class="admidio-plugin-content">';
+    echo $statisticsMenu->show();
+    echo' </div>';
+}
 ?>

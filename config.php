@@ -24,9 +24,6 @@ Beispiel:  $plgFreigabe = ('Administrator','Vorstand','Rollenname1','Rollenname2
 
 /* ***** Berechtigungen fuer das Plugin ***** */
 
-//Legt fest, wer das Plugin installieren/deinstallieren darf
-$plgAllowInstall = array('Administrator');
-
 //Legt fest, wer Statistiken anzeigen darf
 $plgAllowShow = array('Administrator');
 
