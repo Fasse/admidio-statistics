@@ -15,3 +15,4 @@ drop table if exists %PREFIX%_statistics_rows cascade;
 drop table if exists %PREFIX%_statistics_columns cascade;
 drop table if exists %PREFIX%_statistics_tables cascade;
 drop table if exists %PREFIX%_statistics cascade;
+delete from %PREFIX%_menu where men_name_intern IN ('statistics', 'statistics_editor');

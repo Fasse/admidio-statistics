@@ -22,6 +22,7 @@
  *****************************************************************************/
 //Import benötigter Skripts
 require_once('../includes.php');
+require_once('install_functions.php');
 require_once(STATISTICS_PATH.'/statistic_objects/statistic.php');
 require_once(STATISTICS_PATH.'/utils/db_access.php');
 
@@ -50,7 +51,7 @@ if($gCurrentUser->isAdministrator()) {
     $navbarPlugin->openGroupBox('');
 
     // Aufrufen der Entsprechenden Installationsschrittes
-    if ($installState == 4 && !checkPreviousInstallations()){
+    if ($installState == 4 && !statCheckPreviousInstallations()){
         //"Installation abgeschlossen!"
         $navbarPlugin = new HtmlForm('navbar_statistics_installation', '../gui/editor.php', $page, array('type' => 'default', 'setFocus' => false));
         $navbarPlugin->openGroupBox('');
@@ -63,7 +64,7 @@ if($gCurrentUser->isAdministrator()) {
         $page->addHtml(askInstallationStart($page));
     }elseif ($installState == 2){
         $navbarPlugin->addDescription('Es wird jetzt geprüft, ob bereits eine Version des Statistik-Plugins installiert ist:');
-        if (checkPreviousInstallations()) {
+        if (statCheckPreviousInstallations()) {
             $navbarPlugin->addDescription('Es ist bereits eine Version des Plugin installiert. <br/> Bitte das Plugin zuerst deinstallieren.');
             showActionButton('home');
         } else {
@@ -73,7 +74,7 @@ if($gCurrentUser->isAdministrator()) {
     }elseif ($installState == 3){
         $navbarPlugin->addDescription('Es ist bereits eine Version des Statistik-Plugins installiert, bitte geben sie an, ob vorhandene Statistik-Definitionen beibehalten werden sollen.');
     }elseif ($installState == 4){
-        if (checkPreviousInstallations()) {
+        if (statCheckPreviousInstallations()) {
             $navbarPlugin->addDescription('Es ist bereits eine Version des Plugin installiert. Bitte diese zuerst deinstallieren.');
             showActionButton('home');
         } else {
@@ -82,7 +83,7 @@ if($gCurrentUser->isAdministrator()) {
             showActionButton('config');
         }
     }elseif ($installState == 5){
-        if (checkPreviousInstallations()) {
+        if (statCheckPreviousInstallations()) {
             $navbarPlugin->addDescription('Mit diesem Vorgang wird das Plugin entfernt und alle gespeicherten Statistik-Konfigurationen gelöscht!');
             showActionButton('uninstall');
         } else {
@@ -90,7 +91,6 @@ if($gCurrentUser->isAdministrator()) {
             showActionButton('home');
         }
     }elseif ($installState == 6){
-        //echo "Installation abgeschlossen!";
         $navbarPlugin->addDescription('Deinstallation erfolgreich.');
         deleteOldTables();
         showActionButton('home');
@@ -99,7 +99,8 @@ if($gCurrentUser->isAdministrator()) {
     }
 } else {
     if ($gValidLogin) {
-        $navbarPlugin->addDescription('Sie haben keine Berechtigung, diese Seite anzuzeigen.');
+        $gMessage->show($gL10n->get('SYS_NO_RIGHTS'));
+        // => EXIT
     } else {
         require_once(SERVER_PATH.'/adm_program/system/login_valid.php');
     }
@@ -159,23 +160,8 @@ function showActionButton ($type='home') {
 
 }
 
-//Prüfung auf bereits vorhandene Tabellen in der Datenbank
-function checkPreviousInstallations(){
-    global $gDb, $gLogger;
-
-    $sql = 'SELECT * FROM ' . TBL_STATISTICS;
-    $pdoStatement = $gDb->query($sql,false);
-    if ($pdoStatement !== false && $pdoStatement->rowCount() > 0) {
-        $gLogger->info('1::'.$pdoStatement->rowCount());
-        return true;
-    } else {
-        return false;
-    }
-}
-
 //Backup bereits vorhandener Statistikdefinitionen
 function saveOldDefinitionData(){
-
 
 }
 
@@ -186,6 +172,7 @@ function startInstallation(){
     executeSQLSktipt('db_statistic_install.sql');
     $navbarPlugin->addDescription('Die Tabellen für das Plugin wurden in der Admidio-Datenbank angelegt.');
     addStatisticTemplates();
+    statAddMenu();
     $navbarPlugin->addDescription('Beispielstatistiken wurden hinzugefügt.');
 }
 

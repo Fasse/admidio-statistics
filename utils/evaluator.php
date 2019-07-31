@@ -9,7 +9,6 @@
  ****************************************************************************
  */
 
-require_once('../includes.php');
 require_once(STATISTICS_PATH.'/statistic_objects/statistic.php');
 
 class Evaluator

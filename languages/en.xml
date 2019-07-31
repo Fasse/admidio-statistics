@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+    <string name="PLG_STATISTICS_STATISTICS">Statistics</string>
+    <string name="PLG_STATISTICS_STATISTICS_DESC">Presentation of various statistics. The statistics may include evaluations on specific fields or role members. The statistics can be created or edited via the associated editor.</string>
+    <string name="PLG_STATISTICS_STATISTICS_EDITOR">Statistic editor</string>
+    <string name="PLG_STATISTICS_STATISTICS_EDITOR_DESC">The editor for creating or editing statistics. This editor can be used to configure all settings and evaluation options of a statistic. Existing statistics can be changed or extended.</string>
+</resources>

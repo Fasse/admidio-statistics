@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="PLG_STATISTICS_STATISTICS">Statistiken</string>
+    <string name="PLG_STATISTICS_STATISTICS_DESC">Darstellung verschiedener Statistiken. Die Statistiken können Auswertungen auf bestimmte Felder oder Rollenmitglieder enthalten. Die Statistiken können über den zugehörigen Editor angelegt oder bearbeitet werden.</string>
+    <string name="PLG_STATISTICS_STATISTICS_EDITOR">Statistikeditor</string>
+    <string name="PLG_STATISTICS_STATISTICS_EDITOR_DESC">Der Editor zum Anlegen oder Bearbeiten von Statistiken. Über diesen Editor können sämtliche Einstellungen und Auswertungsmöglichkeiten einer Statistik konfiguriert werden. Bestehende Statistiken können verändert oder erweitert werden.</string>
+</resources>

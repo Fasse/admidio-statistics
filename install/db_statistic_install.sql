@@ -20,7 +20,7 @@ CREATE TABLE %PREFIX%_statistics
 	sta_subtitle 		VARCHAR(200),
 	sta_std_role 		INTEGER 			unsigned NOT NULL,
 	PRIMARY KEY (sta_id)
-) 
+)
 
 engine = InnoDB
 auto_increment = 1
@@ -38,7 +38,7 @@ CREATE TABLE %PREFIX%_statistics_tables
 	stt_first_column_label 		VARCHAR(50),
 	stt_sta_id 			        INTEGER 					unsigned NOT NULL,
 	PRIMARY KEY (stt_id)
-) 
+)
 
 engine = InnoDB
 auto_increment = 1
@@ -59,7 +59,7 @@ CREATE TABLE %PREFIX%_statistics_columns
 	stc_function_total 			VARCHAR(50),
 	stc_stt_id   				INTEGER 					unsigned NOT NULL,
 	PRIMARY KEY (stc_id)
-) 
+)
 
 engine = InnoDB
 auto_increment = 1
@@ -77,7 +77,7 @@ CREATE TABLE %PREFIX%_statistics_rows
 	str_profile_field 		VARCHAR(50),
 	str_stt_id 				INTEGER 					unsigned NOT NULL,
 	PRIMARY KEY (str_id)
-) 
+)
 
 engine = InnoDB
 auto_increment = 1

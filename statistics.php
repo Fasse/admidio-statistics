@@ -16,8 +16,10 @@
  *
  *****************************************************************************/
 
-require(__DIR__. '/includes.php');
+require_once(__DIR__. '/includes.php');
+require_once(__DIR__. '/utils/db_constants.php');
 require(__DIR__. '/config.php');
+require_once(__DIR__. '/install/install_functions.php');
 
 define('LINK_TEXT_INSTALLATION','Installation / Deinstallation');
 define('LINK_TEXT_OVERWIEW','Statistiken');
@@ -80,20 +82,20 @@ if($gCurrentUser->isAdministrator())
 }
 
 if ($showOverview || $showConfig || $showInstall) {
-    // Create menu
-    $statisticsMenu = new Menu('Statistics', 'Statistiken');
+     $sql = 'SELECT men_id FROM ' . TBL_MENU . '
+              WHERE men_name_intern IN (\'statistics\', \'statistics_editor\')';
+     $statement = $gDb->query($sql);
 
-    if ($showOverview) {
-        $statisticsMenu->addItem('overview', ADMIDIO_URL. '/adm_plugins/' . $plugin_folder_name . '/gui/overview.php', LINK_TEXT_OVERWIEW, THEME_PATH. '/icons/lists.png" alt="'. LINK_TEXT_OVERWIEW . '" title="'. LINK_TEXT_OVERWIEW);
+     if($statement->rowCount() === 0)
+     {
+        if(statCheckPreviousInstallations())
+        {
+            statAddMenu();
+        }
+        else
+        {
+            echo 'Please install plugin statistics first!';
+        }
     }
-    if ($showConfig) {
-        $statisticsMenu->addItem('config', ADMIDIO_URL. '/adm_plugins/' . $plugin_folder_name . '/gui/editor.php', LINK_TEXT_CONFIG, THEME_PATH. '/icons/options.png" alt="'. LINK_TEXT_CONFIG . '" title="'. LINK_TEXT_CONFIG);
-    }
-    if ($showInstall) {
-        $statisticsMenu->addItem('install', ADMIDIO_URL. '/adm_plugins/' . $plugin_folder_name . '/install/install.php', LINK_TEXT_INSTALLATION, THEME_PATH. '/icons/backup.png" alt="'. LINK_TEXT_INSTALLATION . '" title="'. LINK_TEXT_INSTALLATION);
-    }
-    echo' <div id="plgStatistics" class="admidio-plugin-content">';
-    echo $statisticsMenu->show();
-    echo' </div>';
 }
 ?>
