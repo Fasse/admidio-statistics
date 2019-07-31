@@ -43,31 +43,25 @@ require_once('../includes.php');
 require_once(STATISTICS_PATH.'/utils/db_access.php');
 require_once(STATISTICS_PATH.'/statistic_objects/statistic.php');
 
-//Überprüfen, ob der Benutzer Zugriff auf die Seite hat
-$hasAccess = false;
-foreach ($plgAllowConfig AS $i)
-{
-	if($i == 'Benutzer'
-			&& $gValidLogin == true)
-	{
-		$hasAccess = true;
-	}
-	elseif($i == 'Rollenverwalter'
-			&& $gCurrentUser->assignRoles())
-	{
-		$hasAccess = true;
-	}
-	elseif($i == 'Listenberechtigte'
-			&& $gCurrentUser->viewAllLists())
-	{
-		$hasAccess = true;
-	}
-	elseif(hasRole($i))
-	{
-		$hasAccess = true;
-	}
-}
 
+// check if the current user has the right to view the statistics
+$sql = 'SELECT men_id FROM ' . TBL_MENU . ' WHERE men_name_intern = \'statistics_editor\' ';
+$statement = $gDb->query($sql);
+$row = $statement->fetch();
+
+// Read current roles rights of the menu entry
+$displayMenu = new RolesRights($gDb, 'menu_view', $row['men_id']);
+$rolesDisplayRight = $displayMenu->getRolesIds();
+
+// check for right to show the menu
+if (count($rolesDisplayRight) > 0 && !$displayMenu->hasRight($gCurrentUser->getRoleMemberships()))
+{
+    $hasAccess = false;
+}
+else
+{
+    $hasAccess = true;
+}
 
 if($hasAccess == true) {
 	//Auslesen der Übergabe Parameter
@@ -75,7 +69,7 @@ if($hasAccess == true) {
 	$getScrollPos = admFuncVariableIsValid($_GET, 'scroll_pos', 'numeric', array('defaultValue' => 0));
 	$getName      ='';
 	$staDBHandler = new DBAccess();
-	
+
 	//echo 'Mode:'.$getMode;
 	//echo '<br />StaID:'.$getStaID;
 	//echo '<br />Name:'.$getName;
@@ -242,69 +236,69 @@ function editStructure($statisticToEdit){
 
 			$tmpTables = $tmpStatistic->getTables();
 			$tableToEdit = $tmpTables[$getTableNr];
-			 
+
 			$originalRows = $tableToEdit->getRows();
 			$duplicatedRows = array($originalRows[$getRowNr]);
 			array_splice($originalRows, $getRowNr,0,$duplicatedRows);
-			 
+
 			$tableToEdit->setRowArray($originalRows);
-			 
+
 			break;
 		case 'duplcol':
 			$getColNr       = admFuncVariableIsValid($_GET, 'editcolnr', 'numeric', array('defaultValue' => 0));
 
 			$tmpTables = $tmpStatistic->getTables();
 			$tableToEdit = $tmpTables[$getTableNr];
-			 
+
 			$originalColumns = $tableToEdit->getColumns();
 			$duplicatedColumns = array($originalColumns[$getColNr]);
 			array_splice($originalColumns, $getColNr,0,$duplicatedColumns);
-			 
+
 			$tableToEdit->setColumnArray($originalColumns);
-			 	 
+
 			break;
 		case 'dupltable':
 			$tmpTables = $tmpStatistic->getTables();
 			$tableToEdit = $tmpTables[$getTableNr];
-			 
+
 			$duplicatedTables = array($tableToEdit);
 			array_splice($tmpTables, $getTableNr,0,$duplicatedTables);
-			 
+
 			$tmpStatistic->setTableArray($tmpTables);
 			break;
 		case 'mvrow':
 			$getRowNr       = admFuncVariableIsValid($_GET, 'editrownr', 'numeric', array('defaultValue' => 0));
 			$mvUp       	= admFuncVariableIsValid($_GET, 'mvupwards', 'boolean');
-			 
+
 			$tmpTables = $tmpStatistic->getTables();
 			$tableToEdit = $tmpTables[$getTableNr];
-			 
+
 			$originalRows = $tableToEdit->getRows();
-			
+
 			moveArrayElement($originalRows, $getRowNr, $mvUp);
-			
+
 			$tableToEdit->setRowArray($originalRows);
-			 
+
 			break;
 		case 'mvcol':
 			$getColNr       = admFuncVariableIsValid($_GET, 'editcolnr', 'numeric', array('defaultValue' => 0));
 			$mvUp       	= admFuncVariableIsValid($_GET, 'mvupwards', 'boolean');
-			 
+
 			$tmpTables = $tmpStatistic->getTables();
 			$tableToEdit = $tmpTables[$getTableNr];
-			 
+
 			$originalColumns = $tableToEdit->getColumns();
 			moveArrayElement($originalColumns, $getColNr, $mvUp);
-			 
+
 			$tableToEdit->setColumnArray($originalColumns);
-			 
-			 
-			 
+
+
+
 			break;
 		case 'mvtable':
 			$mvUp       	= admFuncVariableIsValid($_GET, 'mvupwards', 'boolean');
 			$tmpTables = $tmpStatistic->getTables();
-			
+
 			moveArrayElement($tmpTables, $getTableNr, $mvUp);
 			$tmpStatistic->setTableArray($tmpTables);
 			break;

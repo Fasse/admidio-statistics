@@ -26,29 +26,23 @@ $getMode  = admFuncVariableIsValid($_GET, 'mode', 'string', array('defaultValue'
 // Url fuer die Zuruecknavigation merken
 $gNavigation->addUrl(CURRENT_URL);
 
-//Überprüfen, ob der Benutzer Zugriff auf die Seite hat
-$hasAccess = false;
-foreach ($plgAllowShow AS $i)
+// check if the current user has the right to view the statistics
+$sql = 'SELECT men_id FROM ' . TBL_MENU . ' WHERE men_name_intern = \'statistics\' ';
+$statement = $gDb->query($sql);
+$row = $statement->fetch();
+
+// Read current roles rights of the menu entry
+$displayMenu = new RolesRights($gDb, 'menu_view', $row['men_id']);
+$rolesDisplayRight = $displayMenu->getRolesIds();
+
+// check for right to show the menu
+if (count($rolesDisplayRight) > 0 && !$displayMenu->hasRight($gCurrentUser->getRoleMemberships()))
 {
-    if($i == 'Benutzer'
-        && $gValidLogin == true)
-    {
-        $hasAccess = true;
-    }
-    elseif($i == 'Rollenverwalter'
-        && $gCurrentUser->assignRoles())
-    {
-        $hasAccess = true;
-    }
-    elseif($i == 'Listenberechtigte'
-        && $gCurrentUser->viewAllLists())
-    {
-        $hasAccess = true;
-    }
-    elseif(hasRole($i))
-    {
-        $hasAccess = true;
-    }
+    $hasAccess = false;
+}
+else
+{
+    $hasAccess = true;
 }
 
 if($hasAccess == true)
@@ -92,11 +86,11 @@ if($hasAccess == true)
     {
         $statisticsShow = $page->getMenu();
         $statisticsShow->addItem('menu_item_back', $gNavigation->getPreviousUrl(), $gL10n->get('SYS_BACK'), 'back.png');
-        
+
         // link to print preview
         $statisticsShow->addItem('menu_item_print_view', '#', $gL10n->get('LST_PRINT_PREVIEW'), 'print.png');
     }
-    
+
     $page->addHtml('<div>');
     //Hauptitel
     $page->setHeadline(($statistic->getTitle() == '' ? '': $statistic->getTitle()));
@@ -118,16 +112,16 @@ if($hasAccess == true)
         }
 
                 if ($getMode == 'print')
-        { 
-            $showTable = new HtmlTable('tableStatistic', null, false, false,'table table-condensed table-striped');   
+        {
+            $showTable = new HtmlTable('tableStatistic', null, false, false,'table table-condensed table-striped');
         }
         else
         {
-        
+
         $showTable = new HtmlTable('tableStatistic', null, true, true);
           }
         $page->addHtml('Rolle ' . $staCalc->getRoleNameFromID($tableRole) . ', ' . $staCalc->getUserCountFromRoleId($tableRole) .' Eintr&auml;ge');
-        
+
         $columnAlign  = array();
         $columnHeading = array();
 
@@ -139,7 +133,7 @@ if($hasAccess == true)
         {
             $columnHeading[] = $table->getFirstColumnLabel();
         }
-        
+
         $columnAlign[] = 'left';
         $columns = $table->getColumns();
 
@@ -154,7 +148,7 @@ if($hasAccess == true)
                 }
                 $columnAlign[] = 'left';
             }
-            
+
         $showTable->setColumnAlignByArray($columnAlign);
         $showTable->addRowHeadingByArray($columnHeading);
 
@@ -186,7 +180,8 @@ if($hasAccess == true)
 
 } else {
     if ($gValidLogin) {
-        $gMessage->show('Sie haben keine Berechtigung, diese Seite anzuzeigen.');
+        $gMessage->show($gL10n->get('SYS_NO_RIGHTS'));
+        // => EXIT
     } else {
         require_once(SERVER_PATH.'/adm_program/system/login_valid.php');
     }

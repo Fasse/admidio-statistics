@@ -30,29 +30,23 @@ $staDBHandler = new DBAccess();
 //Überprüfen, ob das Plugin installiert ist
 $pluginInstalled = $staDBHandler->getPluginInstalled();
 
-//Überprüfen, ob der Benutzer Zugriff auf die Seite hat
-$hasAccess = false;
-foreach ($plgAllowConfig AS $i)
+// check if the current user has the right to view the statistics
+$sql = 'SELECT men_id FROM ' . TBL_MENU . ' WHERE men_name_intern = \'statistics_editor\' ';
+$statement = $gDb->query($sql);
+$row = $statement->fetch();
+
+// Read current roles rights of the menu entry
+$displayMenu = new RolesRights($gDb, 'menu_view', $row['men_id']);
+$rolesDisplayRight = $displayMenu->getRolesIds();
+
+// check for right to show the menu
+if (count($rolesDisplayRight) > 0 && !$displayMenu->hasRight($gCurrentUser->getRoleMemberships()))
 {
-    if($i == 'Benutzer'
-        && $gValidLogin == true)
-    {
-        $hasAccess = true;
-    }
-    elseif($i == 'Rollenverwalter'
-        && $gCurrentUser->assignRoles())
-    {
-        $hasAccess = true;
-    }
-    elseif($i == 'Listenberechtigte'
-        && $gCurrentUser->viewAllLists())
-    {
-        $hasAccess = true;
-    }
-    elseif(hasRole($i))
-    {
-        $hasAccess = true;
-    }
+    $hasAccess = false;
+}
+else
+{
+    $hasAccess = true;
 }
 
 if ($pluginInstalled) {
@@ -576,7 +570,8 @@ if ($pluginInstalled) {
     } else  {
 
         if ($gValidLogin) {
-            $gMessage->show('<p>Sie haben keine Berechtigung, diese Seite anzuzeigen.</p>');
+            $gMessage->show($gL10n->get('SYS_NO_RIGHTS'));
+            // => EXIT
         } else {
             require_once(SERVER_PATH.'/adm_program/system/login_valid.php');
         }
