@@ -232,11 +232,11 @@ if ($pluginInstalled) {
         $statistic = $staDBHandler->getStatistic(1);
 
         //Arrays für die Beschriftung des Eingabe-Dialoges und die Bezeichnungen der Felder erzeugen.
-        $formColumnLabels = array('Spalten','Bezeichnung','Auswahl','Bedingung','Auswerten','Funktion','Total-Funktion','');
+        $formColumnLabels = array($gL10n->get('PLG_STATISTICS_COLUMNS'),$gL10n->get('SYS_DESIGNATION'),$gL10n->get('PLG_STATISTICS_SELECTION'),$gL10n->get('SYS_CONDITION'),$gL10n->get('PLG_STATISTICS_EVALUATE'),$gL10n->get('PLG_STATISTICS_FUNCTION'),$gL10n->get('PLG_STATISTICS_SUM_FUNCTION'),'');
         $formColumnInputNames = array('first','label','profile_field','condition','func_arg','func_main','func_total','last');
         $formColumnInputSelectValues = array(/* 'profile_field'=>$actualProfileFieldsWithNo, *//* 'func_arg'=>$actualProfileFieldsWithSelect, */'func_main'=>$actualFunctions,'func_total'=>$actualFunctionsTotal);
-        $formRowLabels = array("Zeilen","Bezeichnung","Auswahl","Bedingung","");
-        $formRowInputNames = array("first","label","profile_field","condition","last");
+        $formRowLabels = array($gL10n->get('PLG_STATISTICS_ROWS'),$gL10n->get('SYS_DESIGNATION'),$gL10n->get('PLG_STATISTICS_SELECTION'),$gL10n->get('SYS_CONDITION'),'');
+        $formRowInputNames = array('first','label','profile_field','condition','last');
         /* $formRowInputSelectValues = array('profile_field'=>$actualProfileFieldsWithNo); */
 
 
@@ -249,14 +249,14 @@ if ($pluginInstalled) {
         }*/
 
         function generateClassSuffix($actualElement, $nrOfElements){
-            $classSuffix = "";
+            $classSuffix = '';
 
             if ($actualElement == 0){
-                $classSuffix = "_first";
+                $classSuffix = '_first';
             }elseif($actualElement == 1){
-                $classSuffix = "_second";
+                $classSuffix = '_second';
             }elseif($actualElement == $nrOfElements-1){
-                $classSuffix = "_last";
+                $classSuffix = '_last';
             }
 
             return $classSuffix;
@@ -305,9 +305,9 @@ if ($pluginInstalled) {
         $stdFrameStyle = 'border:1px solid #7d7d7d; margin: 10px 0px;padding: 10px; overflow: auto;';
 
         // Html-Kopf wird geschrieben
-        $page = new HtmlPage('Statistik Konfigurieren');
+        $page = new HtmlPage($gL10n->get('PLG_STATISTICS_CONFIGURE_STATISTIC'));
         $page->enableModal();
-        $page->setTitle('Statistik Konfigurieren');
+        $page->setTitle($gL10n->get('PLG_STATISTICS_CONFIGURE_STATISTIC'));
         $page->addHeader('
 			<link rel="stylesheet" type="text/css" href="../stylesheets/editor-stylesheet.css">
             <script src="../utils/editor-scripts.js" type="text/javascript"></script>');

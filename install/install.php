@@ -26,7 +26,7 @@ require_once('install_functions.php');
 require_once(STATISTICS_PATH.'/statistic_objects/statistic.php');
 require_once(STATISTICS_PATH.'/utils/db_access.php');
 
-$page = new HtmlPage('Statistik-Plugin Installation');
+$page = new HtmlPage($gL10n->get('PLG_STATISTICS_INSTALLATION_STATISTICS_PLUGIN'));
 $statisticsInstallationMenu = $page->getMenu();
 $statisticsInstallationMenu->addItem('menu_item_back', $gNavigation->getPreviousUrl(), $gL10n->get('SYS_BACK'), 'back.png');
 
@@ -111,45 +111,44 @@ $page->show();
 
 //Fragen ob die Installation gestartet werden soll.
 function askInstallationStart($page){
-    global $navbarPlugin;
+    global $navbarPlugin, $gL10n;
 	// Create install options
-	$selectionBox = array(2 => 'Installieren', 5 => 'Deinstallieren');
-    $navbarPlugin->addDescription('Willkommen zur Installation des Admidio-Statistik-Plugin');
-    $navbarPlugin->addSelectBox('install-state', 'Aktion', $selectionBox);
-    $navbarPlugin->addSubmitButton('btn_send', 'Aktion ausführen');
+	$selectionBox = array(2 => $gL10n->get('PLG_STATISTICS_INSTALL'), 5 => $gL10n->get('PLG_STATISTICS_UNINSTALL'));
+    $navbarPlugin->addDescription($gL10n->get('PLG_STATISTICS_WELCOME_HEADLINE'));
+    $navbarPlugin->addSelectBox('install-state', $gL10n->get('PLG_STATISTICS_ACTION'), $selectionBox);
+    $navbarPlugin->addSubmitButton('btn_send', $gL10n->get('PLG_STATISTICS_PERFORM_ACTION'));
     $navbarPlugin->closeGroupBox();
     $page->addHtml($navbarPlugin->show(false));
 }
 
 
 function showActionButton ($type='home') {
-    global $navbarPlugin;
-    global $page;
+    global $navbarPlugin, $gL10n, $page;
 
     switch ($type) {
         case 'home':
             $value = 1;
-            $text = 'Zurück zum Start';
+            $text = $gL10n->get('PLG_STATISTICS_PERFORM_ACTION');
             $link = 'install.php';
             break;
         case 'install':
             $value = 4;
-            $text = 'Plugin jetzt installieren';
+            $text = $gL10n->get('PLG_STATISTICS_INSTALL_PLUGIN');
             $link = 'install.php';
             break;
         case 'askUninstall':
             $value = 5;
-            $text = 'Zur Deinstallation';
+            $text = $gL10n->get('PLG_STATISTICS_CONTINUE_TO_UNINSTALL');
             $link = 'install.php';
             break;
         case 'uninstall':
             $value = 6;
-            $text = 'Plugin jetzt deinstallieren';
+            $text = $gL10n->get('PLG_STATISTICS_UNINSTALL_PLUGIN');
             $link = 'install.php';
             break;
         case 'config':
             $value = 1;
-            $text = 'Zum Statistikeditor';
+            $text = $gL10n->get('PLG_STATISTICS_CONTINUE_TO_STATISTICS_EDITOR');
             $link = '../gui/editor.php';
             break;
     }
@@ -167,17 +166,17 @@ function saveOldDefinitionData(){
 
 //Installation des Plugins
 function startInstallation(){
-    global $navbarPlugin;
+    global $navbarPlugin, $gL10n;
 
     executeSQLSktipt('db_statistic_install.sql');
-    $navbarPlugin->addDescription('Die Tabellen für das Plugin wurden in der Admidio-Datenbank angelegt.');
+    $navbarPlugin->addDescription($gL10n->get('PLG_STATISTICS_TABLES_CREATED'));
     addStatisticTemplates();
     statAddMenu();
-    $navbarPlugin->addDescription('Beispielstatistiken wurden hinzugefügt.');
+    $navbarPlugin->addDescription($gL10n->get('PLG_STATISTICS_EXAMPLES_ADDED'));
 }
 
 function addStatisticTemplates() {
-    global $gCurrentOrganization;
+    global $gCurrentOrganization, $gL10n;
     $currentOrgID = $gCurrentOrganization->getValue('org_id','');;
 
 
@@ -185,48 +184,48 @@ function addStatisticTemplates() {
     $statistic0 = new Statistic(null,$currentOrgID, 'TEMPORARY STATISTIC',null,null, null);
 
     //Altersstatistik
-    $statistic1 = new Statistic(null,$currentOrgID, 'Altersstatistik ','Altersstatistik' ,'Jahr ' . date('Y'), 2);
-    $tbl1 = new StatisticTable('Nach Altergsgruppen', null,'Altersgruppen');
-    $tbl1->addRow(new StatisticTableRow('0-6 Jahre',new StatisticCondition('>=0j AND <=6j',10)));
-    $tbl1->addRow(new StatisticTableRow('7-14 Jahre',new StatisticCondition('>=7j AND <=14j',10)));
-    $tbl1->addRow(new StatisticTableRow('15-18 Jahre',new StatisticCondition('>=15j AND <=18j',10)));
-    $tbl1->addRow(new StatisticTableRow('19-26 Jahre',new StatisticCondition('>=19j AND <=26j',10)));
-    $tbl1->addRow(new StatisticTableRow('27-40 Jahre',new StatisticCondition('>=27j AND <=40j',10)));
-    $tbl1->addRow(new StatisticTableRow('41-60 Jahre',new StatisticCondition('>=41j AND <=60j',10)));
-    $tbl1->addRow(new StatisticTableRow('ab 61 Jahre',new StatisticCondition('>=61j',10)));
-    $tbl1->addRow(new StatisticTableRow('Keine Angabe',new StatisticCondition('FEHLT',10)));
-    $tbl1->addColumn(new StatisticTableColumn('Männlich',new StatisticCondition('Männlich',11),new StatisticFunction('#',''),'sum'));
-    $tbl1->addColumn(new StatisticTableColumn('Weiblich',new StatisticCondition('Weiblich',11),new StatisticFunction('#',''),'sum'));
-    $tbl1->addColumn(new StatisticTableColumn('Keine Angabe',new StatisticCondition('FEHLT',11),new StatisticFunction('#',''),'sum'));
-    $tbl1->addColumn(new StatisticTableColumn('Gesamt',new StatisticCondition(null,null),new StatisticFunction('#',''),'sum'));
+    $statistic1 = new Statistic(null,$currentOrgID, $gL10n->get('PLG_STATISTICS_AGE_STATISTICS'), $gL10n->get('PLG_STATISTICS_AGE_STATISTICS') , $gL10n->get('PLG_STATISTICS_YEAR') . ' ' . date('Y'), 2);
+    $tbl1 = new StatisticTable($gL10n->get('PLG_STATISTICS_BY_AGE_GROUPS'), null, $gL10n->get('PLG_STATISTICS_AGE_GROUPS'));
+    $tbl1->addRow(new StatisticTableRow($gL10n->get('PLG_STATISTICS_XY_YEARS', array('0-6')),new StatisticCondition('>=0j AND <=6j',10)));
+    $tbl1->addRow(new StatisticTableRow($gL10n->get('PLG_STATISTICS_XY_YEARS', array('7-14')),new StatisticCondition('>=7j AND <=14j',10)));
+    $tbl1->addRow(new StatisticTableRow($gL10n->get('PLG_STATISTICS_XY_YEARS', array('15-18')),new StatisticCondition('>=15j AND <=18j',10)));
+    $tbl1->addRow(new StatisticTableRow($gL10n->get('PLG_STATISTICS_XY_YEARS', array('19-26')),new StatisticCondition('>=19j AND <=26j',10)));
+    $tbl1->addRow(new StatisticTableRow($gL10n->get('PLG_STATISTICS_XY_YEARS', array('27-40')),new StatisticCondition('>=27j AND <=40j',10)));
+    $tbl1->addRow(new StatisticTableRow($gL10n->get('PLG_STATISTICS_XY_YEARS', array('41-60')),new StatisticCondition('>=41j AND <=60j',10)));
+    $tbl1->addRow(new StatisticTableRow($gL10n->get('PLG_STATISTICS_XY_YEARS', array('>= 61')),new StatisticCondition('>=61j',10)));
+    $tbl1->addRow(new StatisticTableRow($gL10n->get('PLG_STATISTICS_NO_INFORMATION'),new StatisticCondition('FEHLT',10)));
+    $tbl1->addColumn(new StatisticTableColumn($gL10n->get('SYS_MALE'),new StatisticCondition($gL10n->get('SYS_MALE'),11),new StatisticFunction('#',''),'sum'));
+    $tbl1->addColumn(new StatisticTableColumn($gL10n->get('SYS_FEMALE'),new StatisticCondition($gL10n->get('SYS_FEMALE'),11),new StatisticFunction('#',''),'sum'));
+    $tbl1->addColumn(new StatisticTableColumn($gL10n->get('PLG_STATISTICS_NO_INFORMATION'),new StatisticCondition('FEHLT',11),new StatisticFunction('#',''),'sum'));
+    $tbl1->addColumn(new StatisticTableColumn($gL10n->get('PLG_STATISTICS_TOTAL'),new StatisticCondition(null,null),new StatisticFunction('#',''),'sum'));
     $statistic1->addTable($tbl1);
 
     //Statistik über die Vollständigkeit der Profile
-    $statistic2 = new Statistic(null,$currentOrgID, 'Profilvollständigkeit','Vollständigkeit der Profilangaben ' ,'', 2);
-    $tbl6 = new StatisticTable('Nach Vollständigkeit', null,'Profilfeld');
-    $tbl6->addRow(new StatisticTableRow('Name',new StatisticCondition('VORHANDEN',1)));
-    $tbl6->addRow(new StatisticTableRow('Vorname',new StatisticCondition('VORHANDEN',2)));
-    $tbl6->addRow(new StatisticTableRow('Adresse',new StatisticCondition('VORHANDEN',3)));
-    $tbl6->addRow(new StatisticTableRow('PLZ',new StatisticCondition('VORHANDEN',4)));
-    $tbl6->addRow(new StatisticTableRow('Ort',new StatisticCondition('VORHANDEN',5)));
-    $tbl6->addRow(new StatisticTableRow('Land',new StatisticCondition('VORHANDEN',6)));
-    $tbl6->addRow(new StatisticTableRow('Telefonnummer',new StatisticCondition('VORHANDEN',7)));
-    $tbl6->addRow(new StatisticTableRow('Mögliche Angaben',new StatisticCondition('',0)));
-    $tbl6->addColumn(new StatisticTableColumn('Anzahl',new StatisticCondition(null,null),new StatisticFunction('#',''),''));
-    $tbl6->addColumn(new StatisticTableColumn('Prozent',new StatisticCondition(null,null),new StatisticFunction('%',''),''));
+    $statistic2 = new Statistic(null,$currentOrgID, $gL10n->get('PLG_STATISTICS_PROFILE_COMPLETENESS'), $gL10n->get('PLG_STATISTICS_COMPLETENESS_OF_PROFILE') ,'', 2);
+    $tbl6 = new StatisticTable($gL10n->get('PLG_STATISTICS_AFTER_COMPLETENESS'), null,$gL10n->get('MEM_PROFILE_FIELD'));
+    $tbl6->addRow(new StatisticTableRow($gL10n->get('SYS_SURNAME'),new StatisticCondition('VORHANDEN',1)));
+    $tbl6->addRow(new StatisticTableRow($gL10n->get('SYS_FIRST_NAME'),new StatisticCondition('VORHANDEN',2)));
+    $tbl6->addRow(new StatisticTableRow($gL10n->get('SYS_ADDRESS'),new StatisticCondition('VORHANDEN',3)));
+    $tbl6->addRow(new StatisticTableRow($gL10n->get('SYS_POSTCODE'),new StatisticCondition('VORHANDEN',4)));
+    $tbl6->addRow(new StatisticTableRow($gL10n->get('SYS_CITY'),new StatisticCondition('VORHANDEN',5)));
+    $tbl6->addRow(new StatisticTableRow($gL10n->get('SYS_COUNTRY'),new StatisticCondition('VORHANDEN',6)));
+    $tbl6->addRow(new StatisticTableRow($gL10n->get('SYS_PHONE'),new StatisticCondition('VORHANDEN',7)));
+    $tbl6->addRow(new StatisticTableRow($gL10n->get('PLG_STATISTICS_POSSIBLE_INFORMATIONS'),new StatisticCondition('',0)));
+    $tbl6->addColumn(new StatisticTableColumn($gL10n->get('PLG_STATISTICS_NUMBER'),new StatisticCondition(null,null),new StatisticFunction('#',''),''));
+    $tbl6->addColumn(new StatisticTableColumn($gL10n->get('PLG_STATISTICS_PERCENT'),new StatisticCondition(null,null),new StatisticFunction('%',''),''));
     $statistic2->addTable($tbl6);
 
-    $tbl7 = new StatisticTable('Nach fehlenden Angaben', null,'Profilfeld');
-    $tbl7->addRow(new StatisticTableRow('Name',new StatisticCondition('FEHLT',1)));
-    $tbl7->addRow(new StatisticTableRow('Vorname',new StatisticCondition('FEHLT',2)));
-    $tbl7->addRow(new StatisticTableRow('Adresse',new StatisticCondition('FEHLT',3)));
-    $tbl7->addRow(new StatisticTableRow('PLZ',new StatisticCondition('FEHLT',4)));
-    $tbl7->addRow(new StatisticTableRow('Ort',new StatisticCondition('FEHLT',5)));
-    $tbl7->addRow(new StatisticTableRow('Land',new StatisticCondition('FEHLT',6)));
-    $tbl7->addRow(new StatisticTableRow('Telefonnummer',new StatisticCondition('FEHLT',7)));
-    $tbl7->addRow(new StatisticTableRow('Mögliche Angaben',new StatisticCondition('',0)));
-    $tbl7->addColumn(new StatisticTableColumn('Anzahl',new StatisticCondition(null,null),new StatisticFunction('#',''),''));
-    $tbl7->addColumn(new StatisticTableColumn('Prozent',new StatisticCondition(null,null),new StatisticFunction('%',''),''));
+    $tbl7 = new StatisticTable($gL10n->get('PLG_STATISTICS_AFTER_MISSING_INFORMATIONS'), null, $gL10n->get('MEM_PROFILE_FIELD'));
+    $tbl7->addRow(new StatisticTableRow($gL10n->get('SYS_SURNAME'),new StatisticCondition('FEHLT',1)));
+    $tbl7->addRow(new StatisticTableRow($gL10n->get('SYS_FIRST_NAME'),new StatisticCondition('FEHLT',2)));
+    $tbl7->addRow(new StatisticTableRow($gL10n->get('SYS_ADDRESS'),new StatisticCondition('FEHLT',3)));
+    $tbl7->addRow(new StatisticTableRow($gL10n->get('SYS_POSTCODE'),new StatisticCondition('FEHLT',4)));
+    $tbl7->addRow(new StatisticTableRow($gL10n->get('SYS_CITY'),new StatisticCondition('FEHLT',5)));
+    $tbl7->addRow(new StatisticTableRow($gL10n->get('SYS_COUNTRY'),new StatisticCondition('FEHLT',6)));
+    $tbl7->addRow(new StatisticTableRow($gL10n->get('SYS_PHONE'),new StatisticCondition('FEHLT',7)));
+    $tbl7->addRow(new StatisticTableRow($gL10n->get('PLG_STATISTICS_POSSIBLE_INFORMATIONS'),new StatisticCondition('',0)));
+    $tbl7->addColumn(new StatisticTableColumn($gL10n->get('PLG_STATISTICS_NUMBER'),new StatisticCondition(null,null),new StatisticFunction('#',''),''));
+    $tbl7->addColumn(new StatisticTableColumn($gL10n->get('PLG_STATISTICS_PERCENT'),new StatisticCondition(null,null),new StatisticFunction('%',''),''));
     $statistic2->addTable($tbl7);
 
     //Templates in DB speichern
@@ -271,9 +270,9 @@ function restoreOldDefinitionData(){
 
 //Abschluss der Installation
 function deleteOldTables(){
-    global $navbarPlugin;
+    global $navbarPlugin, $gL10n;
 
     executeSQLSktipt('db_statistic_delete.sql');
-    $navbarPlugin->addDescription('Die Tabellen des Plugins, welche nicht mehr benötigt werden, wurden aus der Admidio-Datenbank entfernt.');
+    $navbarPlugin->addDescription($gL10n->get('PLG_STATISTICS_UNINSTALL_TABLES_DELETED'));
 }
 ?>
