@@ -16,7 +16,6 @@ if(!defined('STATISTICS_PATH'))
     define('STATISTICS_PATH', __DIR__);
 }
 
-require_once(__DIR__.'/config.php');
 require_once($rootPath.'/adm_program/system/common.php');
 
 ?>

@@ -18,7 +18,6 @@
 
 require_once(__DIR__. '/includes.php');
 require_once(__DIR__. '/utils/db_constants.php');
-require(__DIR__. '/config.php');
 require_once(__DIR__. '/install/install_functions.php');
 
 define('LINK_TEXT_INSTALLATION','Installation / Deinstallation');
@@ -26,6 +25,16 @@ define('LINK_TEXT_OVERWIEW','Statistiken');
 define('LINK_TEXT_CONFIG', 'Statistikeditor');
 
 $showOverview = false;
+
+if(!isset($plgAllowShow))
+{
+    $plgAllowShow = array('Administrator');
+}
+
+if(!isset($plgAllowConfig))
+{
+    $plgAllowConfig = array('Administrator');
+}
 
 foreach ($plgAllowShow AS $i)
 {
