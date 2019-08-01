@@ -203,8 +203,8 @@ function addStatisticTemplates() {
     //Statistik über die Vollständigkeit der Profile
     $statistic2 = new Statistic(null,$currentOrgID, $gL10n->get('PLG_STATISTICS_PROFILE_COMPLETENESS'), $gL10n->get('PLG_STATISTICS_COMPLETENESS_OF_PROFILE') ,'', 2);
     $tbl6 = new StatisticTable($gL10n->get('PLG_STATISTICS_AFTER_COMPLETENESS'), null,$gL10n->get('MEM_PROFILE_FIELD'));
-    $tbl6->addRow(new StatisticTableRow($gL10n->get('SYS_SURNAME'),new StatisticCondition('VORHANDEN',1)));
-    $tbl6->addRow(new StatisticTableRow($gL10n->get('SYS_FIRST_NAME'),new StatisticCondition('VORHANDEN',2)));
+    $tbl6->addRow(new StatisticTableRow($gL10n->get('SYS_LASTNAME'),new StatisticCondition('VORHANDEN',1)));
+    $tbl6->addRow(new StatisticTableRow($gL10n->get('SYS_FIRSTNAME'),new StatisticCondition('VORHANDEN',2)));
     $tbl6->addRow(new StatisticTableRow($gL10n->get('SYS_ADDRESS'),new StatisticCondition('VORHANDEN',3)));
     $tbl6->addRow(new StatisticTableRow($gL10n->get('SYS_POSTCODE'),new StatisticCondition('VORHANDEN',4)));
     $tbl6->addRow(new StatisticTableRow($gL10n->get('SYS_CITY'),new StatisticCondition('VORHANDEN',5)));
@@ -216,8 +216,8 @@ function addStatisticTemplates() {
     $statistic2->addTable($tbl6);
 
     $tbl7 = new StatisticTable($gL10n->get('PLG_STATISTICS_AFTER_MISSING_INFORMATIONS'), null, $gL10n->get('MEM_PROFILE_FIELD'));
-    $tbl7->addRow(new StatisticTableRow($gL10n->get('SYS_SURNAME'),new StatisticCondition('FEHLT',1)));
-    $tbl7->addRow(new StatisticTableRow($gL10n->get('SYS_FIRST_NAME'),new StatisticCondition('FEHLT',2)));
+    $tbl7->addRow(new StatisticTableRow($gL10n->get('SYS_LASTNAME'),new StatisticCondition('FEHLT',1)));
+    $tbl7->addRow(new StatisticTableRow($gL10n->get('SYS_FIRSTNAME'),new StatisticCondition('FEHLT',2)));
     $tbl7->addRow(new StatisticTableRow($gL10n->get('SYS_ADDRESS'),new StatisticCondition('FEHLT',3)));
     $tbl7->addRow(new StatisticTableRow($gL10n->get('SYS_POSTCODE'),new StatisticCondition('FEHLT',4)));
     $tbl7->addRow(new StatisticTableRow($gL10n->get('SYS_CITY'),new StatisticCondition('FEHLT',5)));
