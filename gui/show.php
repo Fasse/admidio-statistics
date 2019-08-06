@@ -67,7 +67,7 @@ if($hasAccess == true)
     }
     else
     {
-        $gMessage->show('Keine Statistiken gefunden!');
+        $gMessage->show($gL10n->get('SYS_INVALID_PAGE_VIEW'));
     }
 
     $page->addJavascript('
@@ -96,8 +96,11 @@ if($hasAccess == true)
     $page->setHeadline(($statistic->getTitle() == '' ? '': $statistic->getTitle()));
 
     //Untertitel
+    $datetime = new \DateTime(DATE_NOW);
+    $currentDate = $datetime->format($gSettingsManager->getString('system_date'));
+    
     $page->addHtml('<h2 id="statisticSubtitle">'.  ($statistic->getSubtitle() == '' ? '': $statistic->getSubtitle()) .'</h2>');
-    $page->addHtml('<span id="date">Stand: ' . date('d.m.Y') .'</span></div>');
+    $page->addHtml('<span id="date">' . $gL10n->get('PLG_STATISTICS_AS_OF_YX', array($currentDate)) .'</span></div>');
 
     //In dieser Schleife werden alle Tabellen der Statistik berechnet und angezeigt
     $tables = $statistic->getTables();
@@ -120,7 +123,7 @@ if($hasAccess == true)
 
         $showTable = new HtmlTable('tableStatistic', null, true, true);
           }
-        $page->addHtml('Rolle ' . $staCalc->getRoleNameFromID($tableRole) . ', ' . $staCalc->getUserCountFromRoleId($tableRole) .' Eintr&auml;ge');
+        $page->addHtml($gL10n->get('SYS_ROLE') . ' ' . $staCalc->getRoleNameFromID($tableRole) . ', ' . $gL10n->get('PLG_STATISTICS_XY_ENTRIES', array($staCalc->getUserCountFromRoleId($tableRole))));
 
         $columnAlign  = array();
         $columnHeading = array();

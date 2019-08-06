@@ -306,46 +306,6 @@ function editStructure($statisticToEdit){
 	return $tmpStatistic;
 }
 
-// function switchTableOrder($statistic,$from,$to){
-// 	$fromTable = $statistic->getTable($from);
-// 	$toTable = $statistic->getTable($to);
-// 	$statistic->setTable($fromTable,$to);
-// 	$statistic->setTable($fromTable,$from);
-// }
-
-// function switchRowOrder($table, $from, $to){
-// 	$fromRow = $table->getRow($from);
-// 	$toRow = $table->getRow($to);
-// 	$table->setRow($fromRow,$to);
-// 	$table->setRow($toRow,$from);
-// 	return $table;
-// }
-
-// function switchColumnOrder($table,$from,$to){
-// 	$fromCol = $table->getColumn($from);
-// 	$toCol = $table->getColumn($to);
-// 	$table->setColumn($fromCol,$to);
-// 	$table->setColumn($toCol,$from);
-// }
-
-// function moveObjectInArray($arrayToChange,$fromNr,$toNr){
-// 	$inputArray = $arrayToChange;
-// 	$objectToMove = $inputArray[$fromNr];
-// 	$outputCounter = 0;
-
-// 	for ($inputCounter = 0; $inputCounter < count($inputArray); $inputCounter++){
-// 		if ($inputCounter == $fromNr){
-// 			$outputCounter--;
-// 		}elseif($outputCounter == $toNr){
-// 			$arrayToChange[$outputCounter]=$objectToMove;
-// 			$outputCounter++;
-// 			$arrayToChange[$outputCounter]=$inputArray[$inputCounter];
-// 		}else{
-// 			$arrayToChange[$outputCounter]=$inputArray[$inputCounter];
-// 		}
-// 		$outputCounter++;
-//     }
-// }
 function moveArrayElement(&$array,$elementNr, $upwards = false){
 	$dstIndex = $elementNr;
 	if ($upwards && $elementNr > 0){

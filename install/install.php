@@ -10,10 +10,9 @@
  * Parameters:
  *
  * install-state =  1 : (Default) Initialisierung des Installationsvorgangs
- *                  2 : Prüfung auf vorhandene Installationen
- *                  3 : Backup vorhandener Daten
+ *                  3 : ask for uninstall plugin
  *                  4 : Installationsvorgang
- *                  5 : Recovery vorhandener Daten
+ *                  5 : Uninstall plugin
  *                  6 : Abschluss der Installation
  *
  * backup        =  ja    :   es wurde ein Backup gewünscht, Recovery ausführen
@@ -46,37 +45,24 @@ if($gCurrentUser->isAdministrator()) {
     }
 
     // Create action form
+    $link = 'install.php';
 
-    $navbarPlugin = new HtmlForm('navbar_statistics_installation', null, $page, array('action' => 'install.php', 'type' => 'default', 'setFocus' => false));
-    $navbarPlugin->openGroupBox('');
-
-    // Aufrufen der Entsprechenden Installationsschrittes
-    if ($installState == 4 && !statCheckPreviousInstallations()){
-        //"Installation abgeschlossen!"
-        $navbarPlugin = new HtmlForm('navbar_statistics_installation', '../gui/editor.php', $page, array('type' => 'default', 'setFocus' => false));
-        $navbarPlugin->openGroupBox('');
-    }else{
-        $navbarPlugin = new HtmlForm('navbar_statistics_installation', 'install.php', $page, array('type' => 'default', 'setFocus' => false));
-        $navbarPlugin->openGroupBox('');
+    if($installState == 4) {
+        $link = '../gui/editor.php';                    
     }
+       
+    $navbarPlugin = new HtmlForm('navbar_statistics_installation', $link, $page, array('type' => 'default', 'setFocus' => false));
+    $navbarPlugin->openGroupBox('');
 
     if ($installState == 1){
         $page->addHtml(askInstallationStart($page));
-    }elseif ($installState == 2){
-        $navbarPlugin->addDescription('Es wird jetzt geprüft, ob bereits eine Version des Statistik-Plugins installiert ist:');
-        if (statCheckPreviousInstallations()) {
-            $navbarPlugin->addDescription('Es ist bereits eine Version des Plugin installiert. <br/> Bitte das Plugin zuerst deinstallieren.');
-            showActionButton('home');
-        } else {
-            $navbarPlugin->addDescription('Es wurde keine installierte Version gefunden.');
-            showActionButton('install');
-        }
     }elseif ($installState == 3){
         $navbarPlugin->addDescription('Es ist bereits eine Version des Statistik-Plugins installiert, bitte geben sie an, ob vorhandene Statistik-Definitionen beibehalten werden sollen.');
     }elseif ($installState == 4){
         if (statCheckPreviousInstallations()) {
-            $navbarPlugin->addDescription('Es ist bereits eine Version des Plugin installiert. Bitte diese zuerst deinstallieren.');
-            showActionButton('home');
+            // plugin has already been installed.
+            $gMessage->show($gL10n->get('PLG_STATISTICS_PLUGIN_ALREADY_INSTALLED'));
+            // EXIT
         } else {
             $navbarPlugin->addDescription('Das Plugin wurde installiert.');
             startInstallation();
@@ -84,7 +70,7 @@ if($gCurrentUser->isAdministrator()) {
         }
     }elseif ($installState == 5){
         if (statCheckPreviousInstallations()) {
-            $navbarPlugin->addDescription('Mit diesem Vorgang wird das Plugin entfernt und alle gespeicherten Statistik-Konfigurationen gelöscht!');
+            $navbarPlugin->addDescription($gL10n->get('PLG_STATISTICS_UNINSTALL_WARNING'));
             showActionButton('uninstall');
         } else {
             $navbarPlugin->addDescription('Es wurde keine installierte Version gefunden.');
@@ -113,9 +99,9 @@ $page->show();
 function askInstallationStart($page){
     global $navbarPlugin, $gL10n;
 	// Create install options
-	$selectionBox = array(2 => $gL10n->get('PLG_STATISTICS_INSTALL'), 5 => $gL10n->get('PLG_STATISTICS_UNINSTALL'));
+	$selectionBox = array(4 => $gL10n->get('PLG_STATISTICS_INSTALL'), 5 => $gL10n->get('PLG_STATISTICS_UNINSTALL'));
     $navbarPlugin->addDescription($gL10n->get('PLG_STATISTICS_WELCOME_HEADLINE'));
-    $navbarPlugin->addSelectBox('install-state', $gL10n->get('PLG_STATISTICS_ACTION'), $selectionBox);
+    $navbarPlugin->addSelectBox('install-state', $gL10n->get('PLG_STATISTICS_ACTION'), $selectionBox, array('property' => FIELD_REQUIRED));
     $navbarPlugin->addSubmitButton('btn_send', $gL10n->get('PLG_STATISTICS_PERFORM_ACTION'));
     $navbarPlugin->closeGroupBox();
     $page->addHtml($navbarPlugin->show(false));
@@ -129,31 +115,22 @@ function showActionButton ($type='home') {
         case 'home':
             $value = 1;
             $text = $gL10n->get('PLG_STATISTICS_PERFORM_ACTION');
-            $link = 'install.php';
-            break;
-        case 'install':
-            $value = 4;
-            $text = $gL10n->get('PLG_STATISTICS_INSTALL_PLUGIN');
-            $link = 'install.php';
             break;
         case 'askUninstall':
             $value = 5;
             $text = $gL10n->get('PLG_STATISTICS_CONTINUE_TO_UNINSTALL');
-            $link = 'install.php';
             break;
         case 'uninstall':
             $value = 6;
             $text = $gL10n->get('PLG_STATISTICS_UNINSTALL_PLUGIN');
-            $link = 'install.php';
             break;
         case 'config':
             $value = 1;
             $text = $gL10n->get('PLG_STATISTICS_CONTINUE_TO_STATISTICS_EDITOR');
-            $link = '../gui/editor.php';
             break;
     }
     $navbarPlugin->addInput('install-state', '', $value, array('class' => 'hide'));
-    $navbarPlugin->addSubmitButton('btn_send', $text, array('link' => $link));
+    $navbarPlugin->addSubmitButton('btn_send', $text);
     $navbarPlugin->closeGroupBox();
     $page->addHtml($navbarPlugin->show(false));
 

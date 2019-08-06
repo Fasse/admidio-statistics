@@ -49,6 +49,12 @@ else
     $hasAccess = true;
 }
 
+// Html-Kopf wird geschrieben
+$page = new HtmlPage($gL10n->get('PLG_STATISTICS_CONFIGURE_STATISTIC'));
+$page->enableModal();
+$page->setTitle($gL10n->get('PLG_STATISTICS_CONFIGURE_STATISTIC'));
+
+
 if ($pluginInstalled) {
     if($hasAccess == true) {
         global $gCurrentOrganization;
@@ -304,10 +310,6 @@ if ($pluginInstalled) {
 
         $stdFrameStyle = 'border:1px solid #7d7d7d; margin: 10px 0px;padding: 10px; overflow: auto;';
 
-        // Html-Kopf wird geschrieben
-        $page = new HtmlPage($gL10n->get('PLG_STATISTICS_CONFIGURE_STATISTIC'));
-        $page->enableModal();
-        $page->setTitle($gL10n->get('PLG_STATISTICS_CONFIGURE_STATISTIC'));
         $page->addHeader('
 			<link rel="stylesheet" type="text/css" href="../stylesheets/editor-stylesheet.css">
             <script src="../utils/editor-scripts.js" type="text/javascript"></script>');
