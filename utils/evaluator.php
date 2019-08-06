@@ -17,6 +17,7 @@ class Evaluator
 
     //Wandelt eine Statistikdefinition in eine Statistik mit berechneten Werten um.
     public function calculateStatistic($staDef) {
+        global $gL10n;
 
         // ----- Statistikdefinition kopieren -----
 
@@ -155,7 +156,7 @@ class Evaluator
                 }
             }
 
-            if ($addTotalRow) $newTable->addRow(new StatisticTableRow('Total',new StatisticCondition(null,null)));
+            if ($addTotalRow) $newTable->addRow(new StatisticTableRow($gL10n->get('PLG_STATISTICS_TOTAL'),new StatisticCondition(null,null)));
 
             $staFinal->addTable($newTable);
         }
@@ -395,12 +396,14 @@ class Evaluator
                 $userCondition = $condition->getUserCondition();
                 $profileFieldID = $condition->getProfileFieldID();
 
-                switch  ($userCondition)
+                switch  (strtoupper($userCondition))
                 {
                     case 'FEHLT':
+                    case 'MISSING':
                         $sql = 'SELECT DISTINCT(mem_usr_id) FROM ' .  TBL_MEMBERS. ' WHERE mem_end = \'9999-12-31\' AND mem_rol_id = '.$roleID . ' AND mem_usr_id NOT IN (SELECT DISTINCT(usd_usr_id) FROM ' . TBL_USER_DATA . ' WHERE usd_usf_id = ' . $profileFieldID .')';
                         break;
                     case 'VORHANDEN':
+                    case 'AVAILABLE':
                         //Bedingung am Schluss der Abfrage wird weggelassen. Eintrag in Tabelle User-Data muss jedoch vorhanden sein.
                         $sql = 'SELECT * FROM '. TBL_MEMBERS.' JOIN ' . TBL_USER_DATA . ' ON mem_usr_id = usd_usr_id WHERE mem_end = \'9999-12-31\' AND mem_rol_id = '.$roleID . ' AND usd_usf_id = ' . $profileFieldID;
                         break;
@@ -494,7 +497,7 @@ class Evaluator
 
         $SQLCondStr = '';
 
-        if(strtoupper($condition) !== 'FEHLT')
+        if(strtoupper($condition) !== 'FEHLT' || strtoupper($condition) !== 'MISSING')
         {
             //Vergleichszeichen ersetzen
             $condition = str_replace('>','}',$condition);

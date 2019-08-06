@@ -9,6 +9,7 @@
     <string name="PLG_STATISTICS_AGE_STATISTICS">Age statistics</string>
     <string name="PLG_STATISTICS_AGE_GROUPS">Age groups</string>
     <string name="PLG_STATISTICS_AS_OF_YX">As of #VAR1#</string>
+    <string name="PLG_STATISTICS_AVAILABLE">available</string>
     <string name="PLG_STATISTICS_BACK_TO_BEGIN">Back to begin</string>
     <string name="PLG_STATISTICS_BY_AGE_GROUPS">By age groups</string>
     <string name="PLG_STATISTICS_COLUMNS">Columns</string>
@@ -31,6 +32,7 @@
     <string name="PLG_STATISTICS_INSTALL">Install</string>
     <string name="PLG_STATISTICS_INSTALL_PLUGIN">Install plugin</string>
     <string name="PLG_STATISTICS_INSTALLATION_STATISTICS_PLUGIN">Installation statistics plugin</string>
+    <string name="PLG_STATISTICS_MISSING">missing</string>
     <string name="PLG_STATISTICS_MOVE_COLUMN_BACKWARDS">Move column backwards</string>
     <string name="PLG_STATISTICS_MOVE_COLUMN_FORWARD">Move column forward</string>
     <string name="PLG_STATISTICS_MOVE_ROW_DOWN">Move row down</string>
@@ -38,6 +40,7 @@
     <string name="PLG_STATISTICS_MOVE_TABLE_DOWN">Move table down</string>
     <string name="PLG_STATISTICS_MOVE_TABLE_UP">Move table up</string>
     <string name="PLG_STATISTICS_NO_INFORMATION">No information</string>
+    <string name="PLG_STATISTICS_NONE">none</string>
     <string name="PLG_STATISTICS_NUMBER">Number</string>
     <string name="PLG_STATISTICS_OPEN_MANUAL_GERMAN">Open the statistics plugin manual (German)</string>
     <string name="PLG_STATISTICS_PERCENT">Percent</string>

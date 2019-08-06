@@ -214,7 +214,7 @@ if ($pluginInstalled) {
             $actualProfileFieldsWithNo[$field->getValue('usf_id')] = $field->getValue('usf_name');
         } */
         $actualFunctions = array('#'=>'#','%'=>'%','min'=>'min','max'=>'max','avg'=>'avg','sum'=>'sum');
-        $actualFunctionsTotal = array(''=>'keine','min'=>'min','max'=>'max','avg'=>'avg','sum'=>'sum');
+        $actualFunctionsTotal = array(''=> $gL10n->get('PLG_STATISTICS_NONE'),'min'=>'min','max'=>'max','avg'=>'avg','sum'=>'sum');
 
 
         //IDs und Namen vorhandener Statistik-Konfigurationen aus der DB holen

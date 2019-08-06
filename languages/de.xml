@@ -9,6 +9,7 @@
     <string name="PLG_STATISTICS_AGE_GROUPS">Altersgruppen</string>
     <string name="PLG_STATISTICS_AGE_STATISTICS">Altersstatistik</string>
     <string name="PLG_STATISTICS_AS_OF_YX">Stand zum #VAR1#</string>
+    <string name="PLG_STATISTICS_AVAILABLE">vorhanden</string>
     <string name="PLG_STATISTICS_BACK_TO_BEGIN">Zurück zum Start</string>
     <string name="PLG_STATISTICS_BY_AGE_GROUPS">Nach Altersgruppen</string>
     <string name="PLG_STATISTICS_COLUMNS">Spalten</string>
@@ -31,6 +32,7 @@
     <string name="PLG_STATISTICS_INSTALL">Installieren</string>
     <string name="PLG_STATISTICS_INSTALL_PLUGIN">Plugin installieren</string>
     <string name="PLG_STATISTICS_INSTALLATION_STATISTICS_PLUGIN">Installation Statistik-Plugin</string>
+    <string name="PLG_STATISTICS_MISSING">fehlt</string>
     <string name="PLG_STATISTICS_MOVE_COLUMN_BACKWARDS">Spalte nach hinten verschieben</string>
     <string name="PLG_STATISTICS_MOVE_COLUMN_FORWARD">Spalte nach vorne verschieben</string>
     <string name="PLG_STATISTICS_MOVE_ROW_DOWN">Zeile nach unten verschieben</string>
@@ -38,6 +40,7 @@
     <string name="PLG_STATISTICS_MOVE_TABLE_DOWN">Tabelle nach unten verschieben</string>
     <string name="PLG_STATISTICS_MOVE_TABLE_UP">Tabelle nach oben verschieben</string>
     <string name="PLG_STATISTICS_NO_INFORMATION">Keine Angabe</string>
+    <string name="PLG_STATISTICS_NONE">keine</string>
     <string name="PLG_STATISTICS_NUMBER">Anzahl</string>
     <string name="PLG_STATISTICS_OPEN_HELP_FILE_GERMAN">Handbuch des Statistik-Plugins öffnen</string>
     <string name="PLG_STATISTICS_PERCENT">Prozent</string>
