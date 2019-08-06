@@ -532,7 +532,12 @@ class Evaluator
                     $dataType = 'string'; //eigentlich $dataType = 'int';
                     // replace all field values with their internal numbers
                     $arrListValues = $gProfileFields->getPropertyById($userFieldID, 'usf_value_list', 'text');
-                    $condition = str_replace(array_map('admStrToLower',$arrListValues), array_keys($arrListValues), admStrToLower($condition));
+                    // replace with preg_replace the whole word so that male will not be replaced in female
+                    foreach($arrListValues as &$value)
+                    {
+                        $value = '/\b'.$value.'\b/';
+                    }
+                    $condition = preg_replace(array_map('admStrToLower',$arrListValues), array_keys($arrListValues), admStrToLower($condition));
                     break;
                 default:
                     $dataType = 'string';
