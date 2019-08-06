@@ -13,6 +13,7 @@
     <string name="PLG_STATISTICS_CONFIGURE_STATISTIC">Statistik konfigurieren</string>
     <string name="PLG_STATISTICS_CONTINUE_TO_STATISTICS_EDITOR">Weiter zum Statistikeditor</string>
     <string name="PLG_STATISTICS_CONTINUE_TO_UNINSTALL">Weiter zur Deinstallation</string>
+    <string name="PLG_STATISTICS_EDITOR_CONFIG_LOAD_OR_CHANGE">Möchtest du eine gespeicherte Konfiguration laden und verändern oder eine neue Statistikkonfiguration erstellen?</string>
     <string name="PLG_STATISTICS_EVALUATE">Auswerten</string>
     <string name="PLG_STATISTICS_EXAMPLES_ADDED">Beispielstatistiken wurden hinzugefügt.</string>
     <string name="PLG_STATISTICS_FUNCTION">Funktion</string>

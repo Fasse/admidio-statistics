@@ -329,17 +329,17 @@ if ($pluginInstalled) {
         $nrOfTables = count($tables);
 
         $page->addHtml('
-         <div class="formHead">Statistik-Editor</div>
+         <div class="formHead">'.$gL10n->get('PLG_STATISTICS_STATISTICS_EDITOR').'</div>
         <form id="form_sta_config" name="form_sta_config" action="editor_process.php" method="post">
 
             <div class= "stdDiv" id="div_config_selection">
 
-                <p>Möchtest du eine gespeicherte Konfiguration laden und verändern oder eine neue Statistikkonfiguration erstellen?</p>'
+                <p>'.$gL10n->get('PLG_STATISTICS_EDITOR_CONFIG_LOAD_OR_CHANGE').'</p>'
                 .generateStatisticConfigSelectBox($allStatisticConfigurations,$getStatisticID,'statistic_conf_select','onchange="loadConf()"',false).'
                 <a href="javascript: doFormSubmit(\'save\')"><img
-                        src="'. THEME_PATH. '/icons/disk.png" title="Konfiguration speichern" alt="Konfiguration speichern"/></a>
+                        src="'. THEME_PATH. '/icons/disk.png" title="'.$gL10n->get('LST_SAVE_CONFIGURATION').'" alt="'.$gL10n->get('LST_SAVE_CONFIGURATION').'"/></a>
                 <a href="javascript: doFormSubmit(\'saveas\')"><img
-                        src="'. THEME_PATH. '/icons/disk_copy.png" title="Konfiguration speichern unter" alt="Konfiguration speichern unter"/></a>
+                        src="'. THEME_PATH. '/icons/application_double.png" title="Konfiguration speichern unter" alt="Konfiguration speichern unter"/></a>
                 <a href="javascript: loadConf(true)"><img
                         src="'. THEME_PATH. '/icons/add.png" title="neue Konfiguration erstellen" alt="neue Konfiguration erstellen"/></a>
                 <a href="javascript: loadConf()"><img
