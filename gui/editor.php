@@ -219,7 +219,7 @@ if ($pluginInstalled) {
 
         //IDs und Namen vorhandener Statistik-Konfigurationen aus der DB holen
         $allStatisticConfigIDs = $staDBHandler->getStatisticIDs($gCurrentOrganization->getValue('org_id',''));
-        $allStatisticConfigurations[1] = 'eine neue Statistik-Konfiguration erstellen';
+        $allStatisticConfigurations[1] = $gL10n->get('LST_CREATE_NEW_CONFIGURATION');
         foreach ($allStatisticConfigIDs as $statisticID){
             $allStatisticConfigurations[$statisticID] = $staDBHandler->getStatisticName($statisticID);
         }
@@ -336,32 +336,32 @@ if ($pluginInstalled) {
 
                 <p>'.$gL10n->get('PLG_STATISTICS_EDITOR_CONFIG_LOAD_OR_CHANGE').'</p>'
                 .generateStatisticConfigSelectBox($allStatisticConfigurations,$getStatisticID,'statistic_conf_select','onchange="loadConf()"',false).'
-                <a href="javascript: doFormSubmit(\'save\')"><img
+                <a class="admidio-icon-link" href="javascript: doFormSubmit(\'save\')"><img
                         src="'. THEME_PATH. '/icons/disk.png" title="'.$gL10n->get('LST_SAVE_CONFIGURATION').'" alt="'.$gL10n->get('LST_SAVE_CONFIGURATION').'"/></a>
-                <a href="javascript: doFormSubmit(\'saveas\')"><img
-                        src="'. THEME_PATH. '/icons/application_double.png" title="Konfiguration speichern unter" alt="Konfiguration speichern unter"/></a>
-                <a href="javascript: loadConf(true)"><img
-                        src="'. THEME_PATH. '/icons/add.png" title="neue Konfiguration erstellen" alt="neue Konfiguration erstellen"/></a>
-                <a href="javascript: loadConf()"><img
-                        src="'. THEME_PATH. '/icons/arrow_turn_left.png" title="alle Änderungen an der aktuellen Konfiguration rückgängig machen" alt="rückgängig"/></a>
-                <a href="javascript: deleteConfiguration()"><img
-                        src="'. THEME_PATH. '/icons/delete.png" title="Konfiguration löschen" alt="Konfiguration löschen"/></a>
-                <a href="../resources/Benutzerhandbuch.pdf"><img
-                        src="'. THEME_PATH. '/icons/help.png" alt="Help" title="Handbuch des Statistik-Plugins öffnen" /></a>
+                <a class="admidio-icon-link" href="javascript: doFormSubmit(\'saveas\')"><img
+                        src="'. THEME_PATH. '/icons/application_double.png" title="'.$gL10n->get('SYS_COPY_VAR', array($gL10n->get('LST_CONFIGURATION'))).'" alt="'.$gL10n->get('SYS_COPY_VAR', array($gL10n->get('LST_CONFIGURATION'))).'"/></a>
+                <a class="admidio-icon-link" href="javascript: loadConf(true)"><img
+                        src="'. THEME_PATH. '/icons/add.png" title="'.$gL10n->get('LST_CREATE_NEW_CONFIGURATION').'" alt="'.$gL10n->get('LST_CREATE_NEW_CONFIGURATION').'"/></a>
+                <a class="admidio-icon-link" href="javascript: loadConf()"><img
+                        src="'. THEME_PATH. '/icons/arrow_turn_left.png" title="'.$gL10n->get('PLG_STATISTICS_UNDO_ALL_CHANGES_OF_CONFIGURATION').'" alt="'.$gL10n->get('PLG_STATISTICS_UNDO_ALL_CHANGES_OF_CONFIGURATION').'"/></a>
+                <a class="admidio-icon-link" href="javascript: deleteConfiguration()"><img
+                        src="'. THEME_PATH. '/icons/delete.png" title="'.$gL10n->get('LST_DELETE_CONFIGURATION').'" alt="'.$gL10n->get('LST_DELETE_CONFIGURATION').'"/></a>
+                <a class="admidio-icon-link" href="../resources/Benutzerhandbuch.pdf"><img
+                        src="'. THEME_PATH. '/icons/help.png" alt="'.$gL10n->get('PLG_STATISTICS_OPEN_MANUAL_GERMAN').'" title="'.$gL10n->get('PLG_STATISTICS_OPEN_MANUAL_GERMAN').'" /></a>
 
-                <h3>Allgemeine Angaben zur Statistik</h3>
+                <h3>'.$gL10n->get('PLG_STATISTICS_GENERAL_INFORMATIONS').'</h3>
                 <div class ="InputLabelBox form-group">
-                    <span class="textLabel control-label">Titel der Statistik</span>
+                    <span class="textLabel control-label">'.$gL10n->get('PLG_STATISTICS_STATISTICS_TITLE').'</span>
                     <input class ="textInput form-control" type="text" name="statistic_title" id="statistic_title" value="'.$statistic->getTitle().'">
                 </div>
                 <div class ="InputLabelBox form-group">
-                    <span class="textLabel control-label">Untertitel der Statistik</span>
+                    <span class="textLabel control-label">'.$gL10n->get('PLG_STATISTICS_STATISTICS_SUBTITLE').'</span>
                     <input class ="textInput form-control" type="text" name="statistic_subtitle" id="statistic_subtitle" value="'.$statistic->getSubtitle().'">
                 </div>
                 <div class ="InputLabelBox form-group">
-                    <span class="textLabel control-label">Standardrolle der Statistik</span>
+                    <span class="textLabel control-label">'.$gL10n->get('PLG_STATISTICS_STATISTICS_STANDARD_ROLE').'</span>
                     <a class="admidio-icon-link" data-toggle="modal" data-target="#admidio_modal" href="help.php?help_id=533">
-                        <img class="iconHelpLink" src="'. THEME_PATH. '/icons/help.png" alt="Help" title="Hilfe zur Standardrolle anzeigen" />
+                        <img class="iconHelpLink" src="'. THEME_PATH. '/icons/help.png" alt="Help" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'" />
                     </a>'
                     .FormElements::generateRoleSelectBox($statistic->getStandardRoleID(),'statistic_std_role').'
                     <input class ="textInput" type="hidden" name="nr_of_tables" id="nr_of_tables" value="'.$nrOfTables.'">
@@ -380,15 +380,15 @@ if ($pluginInstalled) {
             $nrOfRows =$effectiveNrOfRows+3;
             $page->addHtml('
             <div class= "stdDiv" id="div_table'.$tc.'_config">
-                <h3>'.($tc+1).'. Tabelle</h3>
+                <h3>'.$gL10n->get('PLG_STATISTICS_XY_TABLE', array(($tc+1).'.')).'</h3>
                 <div class ="InputLabelBox form-group">
-                    <span class="textLabel control-label">Titel der Tabelle</span>
+                    <span class="textLabel control-label">'.$gL10n->get('PLG_STATISTICS_TABLE_TITLE').'</span>
                     <input class ="textInput form-control" type="text" name="table'.$tc.'_title" id="table'.$tc.'_title" value="'.$tables[$tc]->getTitle().'">
                 </div>
                 <div class ="InputLabelBox form-group">
-                    <span class="textLabel control-label">Rolle der Tabelle</span>
+                    <span class="textLabel control-label">'.$gL10n->get('PLG_STATISTICS_TABLE_ROLE').'</span>
                     <a class="admidio-icon-link" data-toggle="modal" data-target="#admidio_modal" href="help.php?help_id=542">
-                        <img class="iconHelpLink" src="'. THEME_PATH. '/icons/help.png" alt="Help" title="Hilfe zur Rolle der Tabelle anzeigen" />
+                        <img class="iconHelpLink" src="'. THEME_PATH. '/icons/help.png" alt="Help" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'" />
                     </a>'
                     .FormElements::generateRoleSelectBox($tables[$tc]->getRoleID(),'table'.$tc.'_role" class="roleInput').'
                 </div>
@@ -423,22 +423,22 @@ if ($pluginInstalled) {
                         if ($frmRow > 0 && $frmRow < 7){
                             $page->addHtml('
                             <a class="admidio-icon-link" data-toggle="modal" data-target="#admidio_modal" href="help.php?help_id=55'.$frmRow.'">
-                                <img class="iconHelpLink helpRight" src="'. THEME_PATH. '/icons/help.png" alt="Help" title="Hilfe zu diesem Thema anzeigen" />
+                                <img class="iconHelpLink helpRight" src="'. THEME_PATH. '/icons/help.png" alt="Help" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'" />
                             </a>');
                         }
 
                     }else{
                     	$colIdf = $cc-1;
                         if ($frmRow == 0){
-                            $page->addHtml(($cc).'. Spalte');
+                            $page->addHtml($gL10n->get('PLG_STATISTICS_XY_COLUMN', array(($cc).'.')));
                         }elseif ($frmRow == 1){
                             $page->addHtml('<input name="table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow].'" id="table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow].'" type="text" value="'.$columns[$colIdf]->getLabel().'">');
                         }elseif ($frmRow == 2){
-                        	generateProfileFieldSelectBox('Alle',true,false,false,$columns[$colIdf]->getCondition()->getProfileFieldID(),'table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow],'onchange=" disableConditionInput(this)"');
+                        	generateProfileFieldSelectBox($gL10n->get('SYS_ALL'),true,false,false,$columns[$colIdf]->getCondition()->getProfileFieldID(),'table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow],'onchange=" disableConditionInput(this)"');
                         }elseif ($frmRow == 3){
                             $page->addHtml('<input name="table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow].'" id="table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow].'" type="text" value="'.$columns[$colIdf]->getCondition()->getUserCondition().'">');
                         }elseif ($frmRow == 4){
-                        	generateProfileFieldSelectBox('Auswahl',true,false,false,$columns[$colIdf]->getFunction()->getArgument(),'table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow],'onchange="disableInvalidFunctions(this)"');
+                        	generateProfileFieldSelectBox($gL10n->get('PLG_STATISTICS_SELECTION'),true,false,false,$columns[$colIdf]->getFunction()->getArgument(),'table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow],'onchange="disableInvalidFunctions(this)"');
                         }elseif ($frmRow == 5){
                             $page->addHtml(FormElements::generateDynamicSelectBox($formColumnInputSelectValues[$formColumnInputNames[$frmRow]],$columns[$colIdf]->getFunction()->getName(),'table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow],false));
                         }elseif ($frmRow == 6){
@@ -446,17 +446,17 @@ if ($pluginInstalled) {
                         }elseif ($frmRow == 7){
 
                         	if ($cc > 1){
-                        		$page->addHtml('<a href="javascript: editStructure(\'mvcol\',\''.$tc.'\',\''.$colIdf.'\',\'\',\'true\')" title="Spalte nach vorne verschieben"><img class="iconLink" src="'. THEME_PATH. '/icons/back.png" alt="Spalte nach vorne verschieben"/></a>');
+                        		$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvcol\',\''.$tc.'\',\''.$colIdf.'\',\'\',\'true\')"><img src="'. THEME_PATH. '/icons/back.png" title="'.$gL10n->get('PLG_STATISTICS_MOVE_COLUMN_BACKWARDS').'" alt="'.$gL10n->get('PLG_STATISTICS_MOVE_COLUMN_BACKWARDS').'"/></a>');
                         	}
                         	if ($cc < $effectiveNrOfColumns){
-                        		$page->addHtml('<a href="javascript: editStructure(\'mvcol\',\''.$tc.'\',\''.$colIdf.'\')" title="Spalte nach hinten verschieben"><img class="iconLink" src="'. THEME_PATH. '/icons/forward.png" alt="Spalte nach hinten verschieben"/></a>');
+                        		$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvcol\',\''.$tc.'\',\''.$colIdf.'\')"><img src="'. THEME_PATH. '/icons/forward.png" title="'.$gL10n->get('PLG_STATISTICS_MOVE_COLUMN_FORWARD').'" alt="'.$gL10n->get('PLG_STATISTICS_MOVE_COLUMN_FORWARD').'"/></a>');
                         	}
-                        	$page->addHtml('<a href="javascript: editStructure(\'duplcol\',\''.$tc.'\',\''.$colIdf.'\')" title="Spalte duplizieren"><img class="iconLink" src="'. THEME_PATH. '/icons/application_double.png" alt="Spalte duplizieren"/></a>');
+                        	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'duplcol\',\''.$tc.'\',\''.$colIdf.'\')"><img src="'. THEME_PATH. '/icons/application_double.png" title="'.$gL10n->get('PLG_STATISTICS_DUPLICATE_COLUMN').'" alt="'.$gL10n->get('PLG_STATISTICS_DUPLICATE_COLUMN').'"/></a>');
                         	if ($effectiveNrOfColumns > 1){
-                        		$page->addHtml('<a href="javascript: editStructure(\'delcol\',\''.$tc.'\',\''.$colIdf.'\')" title="Spalte löschen"><img class="iconLink" src="'. THEME_PATH. '/icons/delete.png" alt="Spalte löschen"/></a>');
+                        		$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'delcol\',\''.$tc.'\',\''.$colIdf.'\')"><img src="'. THEME_PATH. '/icons/delete.png" title="'.$gL10n->get('PLG_STATISTICS_DELETE_COLUMN').'" alt="'.$gL10n->get('PLG_STATISTICS_DELETE_COLUMN').'"/></a>');
                         	}
                             if ($cc == $effectiveNrOfColumns){
-                            	$page->addHtml('<a href="javascript: editStructure(\'addcol\',\''.$tc.'\')" title="Spalte hinzufügen"><img class="iconLink, helpRight" src="'. THEME_PATH. '/icons/add.png" alt="Spalte hinzufügen"/></a>');
+                            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'addcol\',\''.$tc.'\')"><img class="helpRight" src="'. THEME_PATH. '/icons/add.png" title="'.$gL10n->get('PLG_STATISTICS_ADD_COLUMN').'" alt="'.$gL10n->get('PLG_STATISTICS_ADD_COLUMN').'"/></a>');
                             }
                         }else{
                             $page->addHtml('<input class="form-control" name="table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow].'" id="table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow].'" type="text">');
@@ -498,28 +498,28 @@ if ($pluginInstalled) {
                         if ($frmCol > 0 && $frmCol < 4){
                             $page->addHtml('
                             <a class="admidio-icon-link" data-toggle="modal" data-target="#admidio_modal" href="help.php?help_id=56'.($frmCol+1).'">
-                                <img class="iconHelpLink" src="'. THEME_PATH. '/icons/help.png" alt="Help" title="Hilfe zu diesem Thema anzeigen" />
+                                <img class="iconHelpLink" src="'. THEME_PATH. '/icons/help.png" alt="Help" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'" />
                             </a>');
                         }
                     }elseif($rc == 1){
                         if ($frmCol == 0){
-                            $page->addHtml('Kopfzeile');
+                            $page->addHtml($gL10n->get('PLG_STATISTICS_HEADER'));
                         }elseif ($frmCol == 1){
                             $page->addHtml('<input class="form-control" name="table'.$tc.'_first_column_label" id="table'.$tc.'_first_column_label" type="text" value="'.$tables[$tc]->getFirstColumnLabel().'">');
                         }
                     }elseif ($rc == $nrOfRows-1){
                     }else{
                         if ($frmCol == 0){
-                            $page->addHtml(($rc-1).'. Zeile');
-                            $page->addHtml('<a href="javascript: editStructure(\'duplrow\',\''.$tc.'\',\'\',\''.$rowIdf.'\')" title="Zeile duplizieren"><img class="iconLink, helpRight" src="'. THEME_PATH. '/icons/application_double.png" alt="Zeile duplizieren"/></a>');
+                            $page->addHtml($gL10n->get('PLG_STATISTICS_XY_ROW', array(($rc-1).'.')));
+                            $page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'duplrow\',\''.$tc.'\',\'\',\''.$rowIdf.'\')"><img class="helpRight" src="'. THEME_PATH. '/icons/application_double.png" title="'.$gL10n->get('PLG_STATISTICS_DUPLICATE_ROW').'" alt="'.$gL10n->get('PLG_STATISTICS_DUPLICATE_ROW').'"/></a>');
                             if ($rc < $nrOfRows-2){
-                            	$page->addHtml('<a href="javascript: editStructure(\'mvrow\',\''.$tc.'\',\'\',\''.$rowIdf.'\')" title="Zeile nach unten verschieben"><img class="iconLink, helpRight" src="'. THEME_PATH. '/icons/arrow_down.png" alt="Zeile nach unten"/></a>');
+                            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvrow\',\''.$tc.'\',\'\',\''.$rowIdf.'\')"><img class="helpRight" src="'. THEME_PATH. '/icons/arrow_down.png" title="'.$gL10n->get('PLG_STATISTICS_MOVE_ROW_DOWN').'" alt="'.$gL10n->get('PLG_STATISTICS_MOVE_ROW_DOWN').'"/></a>');
                             }
                             if ($rc > 2){
-                            	$page->addHtml('<a href="javascript: editStructure(\'mvrow\',\''.$tc.'\',\'\',\''.$rowIdf.'\',\'true\')" title="Zeile nach oben verschieben"><img class="iconLink, helpRight" src="'. THEME_PATH. '/icons/arrow_up.png" alt="Zeile nach oben"/></a>');
+                            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvrow\',\''.$tc.'\',\'\',\''.$rowIdf.'\',\'true\')"><img class="helpRight" src="'. THEME_PATH. '/icons/arrow_up.png" title="'.$gL10n->get('PLG_STATISTICS_MOVE_ROW_UP').'" alt="'.$gL10n->get('PLG_STATISTICS_MOVE_ROW_UP').'"/></a>');
                             }
                             if ($rc == $nrOfRows-2){
-                            	$page->addHtml('<a href="javascript: editStructure(\'addrow\',\''.$tc.'\')" title="Zeile hinzufügen"><img class="iconLink, helpRight" src="'. THEME_PATH. '/icons/add.png" alt="Zeile hinzufügen" /></a>');
+                            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'addrow\',\''.$tc.'\')"><img class="helpRight" src="'. THEME_PATH. '/icons/add.png" title="'.$gL10n->get('PLG_STATISTICS_ADD_ROW').'" alt="'.$gL10n->get('PLG_STATISTICS_ADD_ROW').'" /></a>');
                             }
 
                         }elseif($frmCol == 1){
@@ -530,7 +530,7 @@ if ($pluginInstalled) {
                             $page->addHtml('<input class="form-control" name="table'.$tc.'_row'.$rowIdf.'_'.$formRowInputNames[$frmCol].'" id="table'.$tc.'_row'.$rowIdf.'_'.$formRowInputNames[$frmCol].'" type="text" value="'.$rows[$rowIdf]->getCondition()->getUserCondition().'">');
                         }elseif($frmCol == 4){
                         	if ($effectiveNrOfRows > 1){
-                        		$page->addHtml('<a href="javascript: editStructure(\'delrow\',\''.$tc.'\',\'\',\''.$rowIdf.'\')" title="Zeile löschen"><img class="iconLink" src="'. THEME_PATH. '/icons/delete.png" alt="Zeile löschen"/></a>');
+                        		$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'delrow\',\''.$tc.'\',\'\',\''.$rowIdf.'\')"><img src="'. THEME_PATH. '/icons/delete.png" title="'.$gL10n->get('PLG_STATISTICS_DELETE_ROW').'" alt="'.$gL10n->get('PLG_STATISTICS_DELETE_ROW').'"/></a>');
                         	}
                         }
                     }
@@ -550,24 +550,24 @@ if ($pluginInstalled) {
 //             echo    '&nbsp;<a href="javascript: editStructure(\'addrow\')"></a></span>';
             $page->addHtml('</div>');
             if ($tc == $nrOfTables-1){
-            	$page->addHtml('<a href="javascript: editStructure(\'addtable\')" title="Tabelle hinzufügen"><img class="iconLink" src="'. THEME_PATH. '/icons/add.png" alt="Tabelle hinzufügen"/></a>');
+            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'addtable\')"><img src="'. THEME_PATH. '/icons/add.png" title="'.$gL10n->get('PLG_STATISTICS_ADD_TABLE').'" alt="'.$gL10n->get('PLG_STATISTICS_ADD_TABLE').'"/></a>');
             }
             if ($tc > 0){
-            	$page->addHtml('<a href="javascript: editStructure(\'mvtable\',\''.$tc.'\',\'\',\'\',\'true\')" title="Tabelle nach oben verschieben"><img class="iconLink" src="'. THEME_PATH. '/icons/arrow_up.png" alt="Tabelle nach oben verschieben"/></a>');
+            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvtable\',\''.$tc.'\',\'\',\'\',\'true\')"><img src="'. THEME_PATH. '/icons/arrow_up.png" title="'.$gL10n->get('PLG_STATISTICS_MOVE_TABLE_UP').'" alt="'.$gL10n->get('PLG_STATISTICS_MOVE_TABLE_UP').'"/></a>');
             }
             if ($tc < $nrOfTables-1){
-            	$page->addHtml('<a href="javascript: editStructure(\'mvtable\',\''.$tc.'\')" title="Tabelle nach unten verschieben"><img class="iconLink" src="'. THEME_PATH. '/icons/arrow_down.png" alt="Tabelle nach unten verschieben"/></a>');
+            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvtable\',\''.$tc.'\')"><img src="'. THEME_PATH. '/icons/arrow_down.png" title="'.$gL10n->get('PLG_STATISTICS_MOVE_TABLE_DOWN').'" alt="'.$gL10n->get('PLG_STATISTICS_MOVE_TABLE_DOWN').'"/></a>');
             }
-            $page->addHtml('<a href="javascript: editStructure(\'dupltable\',\''.$tc.'\')" title="Tabelle duplizieren"><img class="iconLink" src="'. THEME_PATH. '/icons/application_double.png" alt="Tabelle duplizieren"/></a>');
+            $page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'dupltable\',\''.$tc.'\')"><img src="'. THEME_PATH. '/icons/application_double.png" title="'.$gL10n->get('PLG_STATISTICS_DUPLICATE_TABLE').'" alt="'.$gL10n->get('PLG_STATISTICS_DUPLICATE_TABLE').'"/></a>');
             if ($nrOfTables >1){
-            	$page->addHtml('<a href="javascript: editStructure(\'deltable\',\''.$tc.'\')" title="Tabelle löschen"><img class="iconLink, helpRight" src="'. THEME_PATH. '/icons/delete.png" alt="Tabelle löschen"/></a>');
+            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'deltable\',\''.$tc.'\')"><img class="helpRight" src="'. THEME_PATH. '/icons/delete.png" title="'.$gL10n->get('PLG_STATISTICS_DELETE_TABLE').'" alt="'.$gL10n->get('PLG_STATISTICS_DELETE_TABLE').'"/></a>');
             }
 
             $page->addHtml('</div>');
         }
 //         echo    '<a rel="colorboxHelp" href="help.php?help_id=428"><img class="iconHelpLink" src="'. THEME_PATH. '/icons/help.png" alt="Help" title="Hilfe zum Hinzufügen von Tabellen anzeigen" /></a>';
         $page->addHtml('<br /><input class="btn btn-default btn-primary" type="button" name="show_statistic" value="Statistik anzeigen" onclick="javascript: doFormSubmit(\'show\')" />');
-        $page->addHtml('<a class="admidio-icon-link" data-toggle="modal" data-target="#admidio_modal" href="help.php?help_id=427"><img class="iconHelpLink" src="'. THEME_PATH. '/icons/help.png" alt="Help" title="Hilfe zur Statistik-Vorschau anzeigen" /></a>');
+        $page->addHtml('<a class="admidio-icon-link" data-toggle="modal" data-target="#admidio_modal" href="help.php?help_id=427"><img class="iconHelpLink" src="'. THEME_PATH. '/icons/help.png" alt="Help" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'" /></a>');
         $page->addHtml('</form>');
     } else  {
 
@@ -580,8 +580,8 @@ if ($pluginInstalled) {
     }
 } else {
 
-    $page->addHtml('<p>Das Plugin ist nicht installiert, bitte zuerst installieren.</p>');
-    $text = 'Zur Installation';
+    $page->addHtml('<p>'.$gL10n->get('PLG_STATISTICS_PLUGIN_NOT_FOUND_PLEASE_INSTALL').'</p>');
+    $text = $gL10n->get('PLG_STATISTICS_INSTALL');
     $link = '../install/install.php';
     $page->addHtml('<p><form action="'. $link . '" method="post"  >
                             <input class="btn btn-default btn-primary" type="submit" name="action" value="' . $text . '" />
