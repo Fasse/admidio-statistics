@@ -10,10 +10,9 @@
  * Parameters:
  *
  * install-state =  1 : (Default) Initialisierung des Installationsvorgangs
- *                  3 : ask for uninstall plugin
- *                  4 : Installationsvorgang
- *                  5 : Uninstall plugin
- *                  6 : Abschluss der Installation
+ *                  4 : Install plugin
+ *                  5 : ask for uninstall plugin
+ *                  6 : Uninstall plugin
  *
  * backup        =  ja    :   es wurde ein Backup gewünscht, Recovery ausführen
  *                  sonst :   es wurde kein Backup gewünscht, Recovery überspringen
@@ -56,15 +55,13 @@ if($gCurrentUser->isAdministrator()) {
 
     if ($installState == 1){
         $page->addHtml(askInstallationStart($page));
-    }elseif ($installState == 3){
-        $navbarPlugin->addDescription('Es ist bereits eine Version des Statistik-Plugins installiert, bitte geben sie an, ob vorhandene Statistik-Definitionen beibehalten werden sollen.');
     }elseif ($installState == 4){
         if (statCheckPreviousInstallations()) {
             // plugin has already been installed.
             $gMessage->show($gL10n->get('PLG_STATISTICS_PLUGIN_ALREADY_INSTALLED'));
             // EXIT
         } else {
-            $navbarPlugin->addDescription('Das Plugin wurde installiert.');
+            $navbarPlugin->addDescription($gL10n->get('PLG_STATISTICS_PLUGIN_INSTALLED'));
             startInstallation();
             showActionButton('config');
         }
@@ -73,15 +70,15 @@ if($gCurrentUser->isAdministrator()) {
             $navbarPlugin->addDescription($gL10n->get('PLG_STATISTICS_UNINSTALL_WARNING'));
             showActionButton('uninstall');
         } else {
-            $navbarPlugin->addDescription('Es wurde keine installierte Version gefunden.');
+            $navbarPlugin->addDescription($gL10n->get('PLG_STATISTICS_PLUGIN_NOT_FOUND'));
             showActionButton('home');
         }
     }elseif ($installState == 6){
-        $navbarPlugin->addDescription('Deinstallation erfolgreich.');
+        $navbarPlugin->addDescription($gL10n->get('PLG_STATISTICS_PLUGIN_UNINSTALLED'));
         deleteOldTables();
         showActionButton('home');
     }else{
-        $navbarPlugin->addDescription('Ungültiger Installations-Status');
+        $navbarPlugin->addDescription($gL10n->get('SYS_INVALID_PAGE_VIEW'));
     }
 } else {
     if ($gValidLogin) {

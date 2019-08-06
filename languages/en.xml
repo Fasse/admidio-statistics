@@ -24,6 +24,9 @@
     <string name="PLG_STATISTICS_PERCENT">Percent</string>
     <string name="PLG_STATISTICS_PERFORM_ACTION">Perform action</string>
     <string name="PLG_STATISTICS_PLUGIN_ALREADY_INSTALLED">The plugin has already been installed.</string>
+    <string name="PLG_STATISTICS_PLUGIN_INSTALLED">The plugin was installed.</string>
+    <string name="PLG_STATISTICS_PLUGIN_NOT_FOUND">No installed version of the plugin was found.</string>
+    <string name="PLG_STATISTICS_PLUGIN_UNINSTALLED">The plugin was uninstalled.</string>
     <string name="PLG_STATISTICS_POSSIBLE_INFORMATIONS">Possible informations</string>
     <string name="PLG_STATISTICS_PROFILE_COMPLETENESS">Profile completeness</string>
     <string name="PLG_STATISTICS_ROWS">Rows</string>
