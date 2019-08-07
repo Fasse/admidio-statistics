@@ -2,10 +2,9 @@
 /******************************************************************************
  * Hilfeseite & Benutzerhandbuch für das Statistik-Plugin
  *
- * Copyright    : (c) 2004 - 2015 The Admidio Team
- * Homepage     : http://www.admidio.org
- *
- * License      : GNU Public License 2 http://www.gnu.org/licenses/gpl-2.0.htm
+ * @copyright 2004-2018 The Admidio Team
+ * @see https://www.admidio.org/
+ * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License v2.0 only
  *
  * Parameters:
  *
