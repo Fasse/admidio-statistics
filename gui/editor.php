@@ -50,7 +50,6 @@ else
 
 // Html-Kopf wird geschrieben
 $page = new HtmlPage($gL10n->get('PLG_STATISTICS_CONFIGURE_STATISTIC'));
-$page->enableModal();
 $page->setTitle($gL10n->get('PLG_STATISTICS_CONFIGURE_STATISTIC'));
 
 
@@ -122,8 +121,8 @@ if ($pluginInstalled) {
 	        	$user_fields[$posEndOfMasterData+1]['cat_id']   = $user_fields[1]['cat_id'];
 	        	$user_fields[$posEndOfMasterData+1]['cat_name'] = $user_fields[1]['cat_name'];
 	        	$user_fields[$posEndOfMasterData+1]['usf_id']   = 'usr_photo';
-	        	$user_fields[$posEndOfMasterData+1]['usf_name'] = $gL10n->get('PHO_PHOTO');
-	        	$user_fields[$posEndOfMasterData+1]['usf_name_intern'] = $gL10n->get('PHO_PHOTO');
+	        	$user_fields[$posEndOfMasterData+1]['usf_name'] = $gL10n->get('SYS_PHOTO');
+	        	$user_fields[$posEndOfMasterData+1]['usf_name_intern'] = $gL10n->get('SYS_PHOTO');
         	}
 
 	        if ($roleInformation){
