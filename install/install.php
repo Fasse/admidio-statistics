@@ -24,8 +24,7 @@ require_once(STATISTICS_PATH.'/statistic_objects/statistic.php');
 require_once(STATISTICS_PATH.'/utils/db_access.php');
 
 $page = new HtmlPage($gL10n->get('PLG_STATISTICS_INSTALLATION_STATISTICS_PLUGIN'));
-$statisticsInstallationMenu = $page->getMenu();
-$statisticsInstallationMenu->addItem('menu_item_back', $gNavigation->getPreviousUrl(), $gL10n->get('SYS_BACK'), 'back.png');
+$page->setUrlPreviousPage($gNavigation->getPreviousUrl());
 
 
 if($gCurrentUser->isAdministrator()) {
@@ -46,9 +45,9 @@ if($gCurrentUser->isAdministrator()) {
     $link = 'install.php';
 
     if($installState == 4) {
-        $link = '../gui/editor.php';                    
+        $link = '../gui/editor.php';
     }
-       
+
     $navbarPlugin = new HtmlForm('navbar_statistics_installation', $link, $page, array('type' => 'default', 'setFocus' => false));
     $navbarPlugin->openGroupBox('');
 

@@ -83,11 +83,10 @@ if($hasAccess == true)
     }
     else
     {
-        $statisticsShow = $page->getMenu();
-        $statisticsShow->addItem('menu_item_back', $gNavigation->getPreviousUrl(), $gL10n->get('SYS_BACK'), 'back.png');
+        $page->setUrlPreviousPage($gNavigation->getPreviousUrl());
 
         // link to print preview
-        $statisticsShow->addItem('menu_item_print_view', '#', $gL10n->get('LST_PRINT_PREVIEW'), 'print.png');
+        $page->addPageFunctionsMenuItem('menu_item_print_view', $gL10n->get('LST_PRINT_PREVIEW'), 'javascript:void();', 'fa-print');
     }
 
     $page->addHtml('<div>');
@@ -97,7 +96,7 @@ if($hasAccess == true)
     //Untertitel
     $datetime = new \DateTime(DATE_NOW);
     $currentDate = $datetime->format($gSettingsManager->getString('system_date'));
-    
+
     $page->addHtml('<h2 id="statisticSubtitle">'.  ($statistic->getSubtitle() == '' ? '': $statistic->getSubtitle()) .'</h2>');
     $page->addHtml('<span id="date">' . $gL10n->get('PLG_STATISTICS_AS_OF_YX', array($currentDate)) .'</span></div>');
 

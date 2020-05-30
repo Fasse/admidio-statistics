@@ -50,7 +50,8 @@ else
 
 // Html-Kopf wird geschrieben
 $page = new HtmlPage($gL10n->get('PLG_STATISTICS_CONFIGURE_STATISTIC'));
-$page->setTitle($gL10n->get('PLG_STATISTICS_CONFIGURE_STATISTIC'));
+$page->setUrlPreviousPage($gNavigation->getPreviousUrl());
+//$page->setTitle($gL10n->get('PLG_STATISTICS_CONFIGURE_STATISTIC'));
 
 
 if ($pluginInstalled) {
@@ -311,8 +312,6 @@ if ($pluginInstalled) {
         $page->addHeader('
 			<link rel="stylesheet" type="text/css" href="../stylesheets/editor-stylesheet.css">
             <script src="../utils/editor-scripts.js" type="text/javascript"></script>');
-        $statisticsEditor = $page->getMenu();
-        $statisticsEditor->addItem('menu_item_back', $gNavigation->getPreviousUrl(), $gL10n->get('SYS_BACK'), 'back.png');
 
         $doOnLoad = 'checkAllSelectBoxes(); adaptStdStatisticRoleSelectBox();';
         if ($getScrollPos != 0){

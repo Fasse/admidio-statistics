@@ -21,11 +21,9 @@ global $gNavigation;
 $gNavigation->addUrl(CURRENT_URL);
 
 // Html-Kopf wird geschrieben
-$page = new HtmlPage();
-$page->setTitle('Statistik');
-
-$statisticsOverview = $page->getMenu();
-$statisticsOverview->addItem('menu_item_back', $gNavigation->getPreviousUrl(), $gL10n->get('SYS_BACK'), 'back.png');
+$page = new HtmlPage($gL10n->get('PLG_STATISTICS_STATISTICS'));
+$page->setUrlPreviousPage($gNavigation->getPreviousUrl());
+//$page->setTitle($gL10n->get('PLG_STATISTICS_STATISTICS'));
 
 //DB-Hilfsklasse instanzieren
 $staDBHandler = new DBAccess();
