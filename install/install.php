@@ -96,7 +96,7 @@ function askInstallationStart($page){
 	// Create install options
 	$selectionBox = array(4 => $gL10n->get('PLG_STATISTICS_INSTALL'), 5 => $gL10n->get('PLG_STATISTICS_UNINSTALL'));
     $navbarPlugin->addDescription($gL10n->get('PLG_STATISTICS_WELCOME_HEADLINE'));
-    $navbarPlugin->addSelectBox('install-state', $gL10n->get('PLG_STATISTICS_ACTION'), $selectionBox, array('property' => FIELD_REQUIRED));
+    $navbarPlugin->addSelectBox('install-state', $gL10n->get('PLG_STATISTICS_ACTION'), $selectionBox, array('property' => HtmlForm::FIELD_REQUIRED));
     $navbarPlugin->addSubmitButton('btn_send', $gL10n->get('PLG_STATISTICS_PERFORM_ACTION'));
     $navbarPlugin->closeGroupBox();
     $page->addHtml($navbarPlugin->show(false));
@@ -124,7 +124,7 @@ function showActionButton ($type='home') {
             $text = $gL10n->get('PLG_STATISTICS_CONTINUE_TO_STATISTICS_EDITOR');
             break;
     }
-    $navbarPlugin->addInput('install-state', '', $value, array('class' => 'hide'));
+    $navbarPlugin->addInput('install-state', '', $value, array('class' => 'invisible'));
     $navbarPlugin->addSubmitButton('btn_send', $text);
     $navbarPlugin->closeGroupBox();
     $page->addHtml($navbarPlugin->show(false));
@@ -138,13 +138,14 @@ function saveOldDefinitionData(){
 
 //Installation des Plugins
 function startInstallation(){
-    global $navbarPlugin, $gL10n;
+    global $navbarPlugin, $gL10n, $gMenu;
 
     executeSQLSktipt('db_statistic_install.sql');
     $navbarPlugin->addDescription($gL10n->get('PLG_STATISTICS_TABLES_CREATED'));
     addStatisticTemplates();
     statAddMenu();
     $navbarPlugin->addDescription($gL10n->get('PLG_STATISTICS_EXAMPLES_ADDED'));
+    $gMenu->initialize();
 }
 
 function addStatisticTemplates() {
@@ -242,9 +243,10 @@ function restoreOldDefinitionData(){
 
 //Abschluss der Installation
 function deleteOldTables(){
-    global $navbarPlugin, $gL10n;
+    global $navbarPlugin, $gL10n, $gMenu;
 
     executeSQLSktipt('db_statistic_delete.sql');
     $navbarPlugin->addDescription($gL10n->get('PLG_STATISTICS_UNINSTALL_TABLES_DELETED'));
+    $gMenu->initialize();
 }
 ?>

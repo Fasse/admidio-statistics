@@ -12,10 +12,8 @@
 
 
 require_once('../includes.php');
-require_once(SERVER_PATH.'/adm_program/system/login_valid.php');
+require_once(ADMIDIO_PATH.'/adm_program/system/login_valid.php');
 require_once(STATISTICS_PATH.'/utils/db_access.php');
-global $gNavigation;
-
 
 // Url fuer die Zuruecknavigation merken
 $gNavigation->addUrl(CURRENT_URL);

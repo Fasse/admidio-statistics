@@ -357,7 +357,7 @@ if ($pluginInstalled) {
                 </div>
                 <div class ="InputLabelBox form-group">
                     <span class="textLabel control-label">'.$gL10n->get('PLG_STATISTICS_STATISTICS_STANDARD_ROLE').'</span>
-                    <a class="admidio-icon-link" data-toggle="modal" data-target="#admidio_modal" href="help.php?help_id=533">
+                    <a class="admidio-icon-link" data-toggle="modal" data-target="#admidio-modal" href="help.php?help_id=533">
                         <img class="iconHelpLink" src="'. THEME_PATH. '/icons/help.png" alt="Help" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'" />
                     </a>'
                     .FormElements::generateRoleSelectBox($statistic->getStandardRoleID(),'statistic_std_role').'
@@ -384,7 +384,7 @@ if ($pluginInstalled) {
                 </div>
                 <div class ="InputLabelBox form-group">
                     <span class="textLabel control-label">'.$gL10n->get('PLG_STATISTICS_TABLE_ROLE').'</span>
-                    <a class="admidio-icon-link" data-toggle="modal" data-target="#admidio_modal" href="help.php?help_id=542">
+                    <a class="admidio-icon-link" data-toggle="modal" data-target="#admidio-modal" href="help.php?help_id=542">
                         <img class="iconHelpLink" src="'. THEME_PATH. '/icons/help.png" alt="Help" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'" />
                     </a>'
                     .FormElements::generateRoleSelectBox($tables[$tc]->getRoleID(),'table'.$tc.'_role" class="roleInput').'
@@ -419,7 +419,7 @@ if ($pluginInstalled) {
 
                         if ($frmRow > 0 && $frmRow < 7){
                             $page->addHtml('
-                            <a class="admidio-icon-link" data-toggle="modal" data-target="#admidio_modal" href="help.php?help_id=55'.$frmRow.'">
+                            <a class="admidio-icon-link" data-toggle="modal" data-target="#admidio-modal" href="help.php?help_id=55'.$frmRow.'">
                                 <img class="iconHelpLink helpRight" src="'. THEME_PATH. '/icons/help.png" alt="Help" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'" />
                             </a>');
                         }
@@ -494,7 +494,7 @@ if ($pluginInstalled) {
                         $page->addHtml($formRowLabels[$frmCol]);
                         if ($frmCol > 0 && $frmCol < 4){
                             $page->addHtml('
-                            <a class="admidio-icon-link" data-toggle="modal" data-target="#admidio_modal" href="help.php?help_id=56'.($frmCol+1).'">
+                            <a class="admidio-icon-link" data-toggle="modal" data-target="#admidio-modal" href="help.php?help_id=56'.($frmCol+1).'">
                                 <img class="iconHelpLink" src="'. THEME_PATH. '/icons/help.png" alt="Help" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'" />
                             </a>');
                         }
@@ -563,8 +563,8 @@ if ($pluginInstalled) {
             $page->addHtml('</div>');
         }
 //         echo    '<a rel="colorboxHelp" href="help.php?help_id=428"><img class="iconHelpLink" src="'. THEME_PATH. '/icons/help.png" alt="Help" title="Hilfe zum Hinzufügen von Tabellen anzeigen" /></a>';
-        $page->addHtml('<br /><input class="btn btn-default btn-primary" type="button" name="show_statistic" value="Statistik anzeigen" onclick="javascript: doFormSubmit(\'show\')" />');
-        $page->addHtml('<a class="admidio-icon-link" data-toggle="modal" data-target="#admidio_modal" href="help.php?help_id=427"><img class="iconHelpLink" src="'. THEME_PATH. '/icons/help.png" alt="Help" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'" /></a>');
+        $page->addHtml('<br /><input class="btn btn-primary admidio-margin-bottom" type="button" name="show_statistic" value="Statistik anzeigen" onclick="javascript: doFormSubmit(\'show\')" />');
+        $page->addHtml('<a class="admidio-icon-link admidio-margin-bottom" data-toggle="modal" data-target="#admidio-modal" href="help.php?help_id=427"><img class="iconHelpLink" src="'. THEME_PATH. '/icons/help.png" alt="Help" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'" /></a>');
         $page->addHtml('</form>');
     } else  {
 
@@ -581,7 +581,7 @@ if ($pluginInstalled) {
     $text = $gL10n->get('PLG_STATISTICS_INSTALL');
     $link = '../install/install.php';
     $page->addHtml('<p><form action="'. $link . '" method="post"  >
-                            <input class="btn btn-default btn-primary" type="submit" name="action" value="' . $text . '" />
+                            <input class="btn btn-primary" type="submit" name="action" value="' . $text . '" />
                         </form>
                     </p>');
 }
