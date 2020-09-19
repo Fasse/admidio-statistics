@@ -572,7 +572,7 @@ if ($pluginInstalled) {
             $gMessage->show($gL10n->get('SYS_NO_RIGHTS'));
             // => EXIT
         } else {
-            require_once(SERVER_PATH.'/adm_program/system/login_valid.php');
+            require_once(ADMIDIO_PATH.'/adm_program/system/login_valid.php');
         }
     }
 } else {
