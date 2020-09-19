@@ -357,7 +357,7 @@ if ($pluginInstalled) {
                 <div class ="InputLabelBox form-group">
                     <span class="textLabel control-label">'.$gL10n->get('PLG_STATISTICS_STATISTICS_STANDARD_ROLE').'</span>
                     <a class="admidio-icon-link openPopup" href="javascript:void(0);" data-href="help.php?help_id=533">
-                        <i class="fas fa-info-circle admidio-info-icon"></i>
+                        <i class="fas fa-info-circle admidio-info-icon" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'"></i>
                     </a>'
                     .FormElements::generateRoleSelectBox($statistic->getStandardRoleID(),'statistic_std_role').'
                     <input class ="textInput" type="hidden" name="nr_of_tables" id="nr_of_tables" value="'.$nrOfTables.'">
@@ -384,7 +384,7 @@ if ($pluginInstalled) {
                 <div class ="InputLabelBox form-group">
                     <span class="textLabel control-label">'.$gL10n->get('PLG_STATISTICS_TABLE_ROLE').'</span>
                     <a class="admidio-icon-link openPopup" href="javascript:void(0);" data-href="help.php?help_id=542">
-                        <i class="fas fa-info-circle admidio-info-icon"></i>
+                        <i class="fas fa-info-circle admidio-info-icon" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'"></i>
                     </a>'
                     .FormElements::generateRoleSelectBox($tables[$tc]->getRoleID(),'table'.$tc.'_role" class="roleInput').'
                 </div>
@@ -419,7 +419,7 @@ if ($pluginInstalled) {
                         if ($frmRow > 0 && $frmRow < 7){
                             $page->addHtml('
                             <a class="admidio-icon-link openPopup" href="javascript:void(0);" data-href="help.php?help_id=55'.$frmRow.'">
-                                <i class="fas fa-info-circle admidio-info-icon"></i>
+                                <i class="fas fa-info-circle admidio-info-icon" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'"></i>
                             </a>');
                         }
 
@@ -494,7 +494,7 @@ if ($pluginInstalled) {
                         if ($frmCol > 0 && $frmCol < 4){
                             $page->addHtml('
                             <a class="admidio-icon-link openPopup" href="javascript:void(0);" data-href="help.php?help_id=56'.($frmCol+1).'">
-                                <i class="fas fa-info-circle admidio-info-icon"></i>
+                                <i class="fas fa-info-circle admidio-info-icon" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'"></i>
                             </a>');
                         }
                     }elseif($rc == 1){
@@ -562,7 +562,7 @@ if ($pluginInstalled) {
         }
 
         $page->addHtml('<br /><input class="btn btn-primary admidio-margin-bottom" type="button" name="show_statistic" value="Statistik anzeigen" onclick="javascript: doFormSubmit(\'show\')" />');
-        $page->addHtml('<a class="admidio-icon-link align-top openPopup" href="javascript:void(0);" data-href="help.php?help_id=427"><i class="fas fa-info-circle admidio-info-icon"></i></a>');
+        $page->addHtml('<a class="admidio-icon-link align-top openPopup" href="javascript:void(0);" data-href="help.php?help_id=427"><i class="fas fa-info-circle admidio-info-icon" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'"></i></a>');
         $page->addHtml('</form>');
     } else  {
 
