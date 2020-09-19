@@ -506,38 +506,29 @@ function replaceTable($sourceText){
 }
 
 function displayHelpText($helpID){
-    
-    global $gL10n;
-    global $helpTitles;
-    global $helpTexts;
-    
+
+    global $gL10n, $helpTitles, $helpTexts;
+
     $helpWindow = header('Content-type: text/html; charset=utf-8');
-    
-    $helpWindow .= '<div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title">'.$gL10n->get('SYS_NOTE').'</h4>
-                        </div>
-                        <div class="modal-body">';
-    //echo $helpID;
-    if (array_key_exists($helpID,$helpTitles)){
-                
-        $outputText = replaceImageLink($helpTexts[$helpID]);
-        $outputText2 = replaceTable($outputText);
-        
-        $helpWindow .= '<p>'.$outputText2.'</p>';
-        $helpWindow .= '</div></div>';
-        
-        /*  echo "<div style='min-width: 300px; max-width: 600px; text-align: left;'>";
-        echo "<strong>".$helpTitles[$helpID]."</strong>";
-        //$outputText = $helpTexts[$helpID];
-        $outputText = replaceImageLink($helpTexts[$helpID]);
-        $outputText2 = replaceTable($outputText);
-        echo "<p>".$outputText2."</p>";
-        echo "</div>";  */
-    }else{
-        $helpWindow .= 'Kapitel '.$helpID.' wurde nicht gefunden.';
-    }
-    echo $helpWindow;
+
+    $helpWindow .= '
+        <div class="modal-header">
+            <h3 class="modal-title">'.$gL10n->get('SYS_NOTE').'</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">';
+            if (array_key_exists($helpID,$helpTitles)){
+
+                $outputText = replaceImageLink($helpTexts[$helpID]);
+                $outputText2 = replaceTable($outputText);
+
+                $helpWindow .= '<p>'.$outputText2.'</p>';
+            }else{
+                $helpWindow .= 'Kapitel '.$helpID.' wurde nicht gefunden.';
+            }
+
+        $helpWindow .= '</div>';
+        echo $helpWindow;
 }
 
 function displayWholeManual(){
