@@ -47,8 +47,7 @@ else
 if($hasAccess == true)
 {
     // Html-Kopf wird geschrieben
-    $page = new HtmlPage('Statistik');
-    $page->setTitle('Statistik');
+    $page = new HtmlPage('admidio-plugin-statistics', $gL10n->get('PLG_STATISTICS_STATISTIC'));
 
     if ($getStaId > 0)
     {

@@ -55,6 +55,7 @@
     <string name="PLG_STATISTICS_ROWS">Zeilen</string>
     <string name="PLG_STATISTICS_SELECTION">Auswahl</string>
     <string name="PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC">Hilfe zu diesem Thema anzeigen</string>
+    <string name="PLG_STATISTICS_STATISTIC">Statistik</string>
     <string name="PLG_STATISTICS_STATISTICS">Statistiken</string>
     <string name="PLG_STATISTICS_STATISTICS_DESC">Darstellung verschiedener Statistiken. Die Statistiken können Auswertungen auf bestimmte Felder oder Rollenmitglieder enthalten. Die Statistiken können über den zugehörigen Editor angelegt oder bearbeitet werden.</string>
     <string name="PLG_STATISTICS_STATISTICS_EDITOR">Statistikeditor</string>

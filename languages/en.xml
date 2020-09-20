@@ -55,6 +55,7 @@
     <string name="PLG_STATISTICS_ROWS">Rows</string>
     <string name="PLG_STATISTICS_SELECTION">Selection</string>
     <string name="PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC">Show help on this topic (German)</string>
+    <string name="PLG_STATISTICS_STATISTIC">Statistic</string>
     <string name="PLG_STATISTICS_STATISTICS">Statistics</string>
     <string name="PLG_STATISTICS_STATISTICS_DESC">Presentation of various statistics. The statistics may include evaluations on specific fields or role members. The statistics can be created or edited via the associated editor.</string>
     <string name="PLG_STATISTICS_STATISTICS_EDITOR">Statistic editor</string>

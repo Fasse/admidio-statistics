@@ -19,7 +19,7 @@ require_once(STATISTICS_PATH.'/utils/db_access.php');
 $gNavigation->addUrl(CURRENT_URL);
 
 // Html-Kopf wird geschrieben
-$page = new HtmlPage($gL10n->get('PLG_STATISTICS_STATISTICS'));
+$page = new HtmlPage('admidio-plugin-statistics-overview', $gL10n->get('PLG_STATISTICS_STATISTICS'));
 $page->setUrlPreviousPage($gNavigation->getPreviousUrl());
 //$page->setTitle($gL10n->get('PLG_STATISTICS_STATISTICS'));
 
