@@ -333,17 +333,12 @@ if ($pluginInstalled) {
 
                 <p>'.$gL10n->get('PLG_STATISTICS_EDITOR_CONFIG_LOAD_OR_CHANGE').'</p>'
                 .generateStatisticConfigSelectBox($allStatisticConfigurations,$getStatisticID,'statistic_conf_select','onchange="loadConf()"',false).'
-                <a class="admidio-icon-link" href="javascript: doFormSubmit(\'save\')"><img
-                        src="'. THEME_PATH. '/icons/disk.png" title="'.$gL10n->get('LST_SAVE_CONFIGURATION').'" alt="'.$gL10n->get('LST_SAVE_CONFIGURATION').'"/></a>
-                <a class="admidio-icon-link" href="javascript: doFormSubmit(\'saveas\')"><img
-                        src="'. THEME_PATH. '/icons/application_double.png" title="'.$gL10n->get('SYS_COPY_VAR', array($gL10n->get('LST_CONFIGURATION'))).'" alt="'.$gL10n->get('SYS_COPY_VAR', array($gL10n->get('LST_CONFIGURATION'))).'"/></a>
-                <a class="admidio-icon-link" href="javascript: loadConf(true)"><img
-                        src="'. THEME_PATH. '/icons/add.png" title="'.$gL10n->get('LST_CREATE_NEW_CONFIGURATION').'" alt="'.$gL10n->get('LST_CREATE_NEW_CONFIGURATION').'"/></a>
-                <a class="admidio-icon-link" href="javascript: loadConf()"><img
-                        src="'. THEME_PATH. '/icons/arrow_turn_left.png" title="'.$gL10n->get('PLG_STATISTICS_UNDO_ALL_CHANGES_OF_CONFIGURATION').'" alt="'.$gL10n->get('PLG_STATISTICS_UNDO_ALL_CHANGES_OF_CONFIGURATION').'"/></a>
-                <a class="admidio-icon-link" href="javascript: deleteConfiguration()"><img
-                        src="'. THEME_PATH. '/icons/delete.png" title="'.$gL10n->get('LST_DELETE_CONFIGURATION').'" alt="'.$gL10n->get('LST_DELETE_CONFIGURATION').'"/></a>
-                <a class="admidio-icon-link" href="../resources/Benutzerhandbuch.pdf"><i class="fas fa-info-circle admidio-info-icon" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_OPEN_MANUAL_GERMAN').'"></i></a>
+                <a class="admidio-icon-link" href="javascript: doFormSubmit(\'save\')"><i class="fas fa-save" data-toggle="tooltip" title="'.$gL10n->get('LST_SAVE_CONFIGURATION').'"></i></a>
+                <a class="admidio-icon-link" href="javascript: doFormSubmit(\'saveas\')"><i class="fas fa-clone" data-toggle="tooltip" title="'.$gL10n->get('SYS_COPY_VAR', array($gL10n->get('LST_CONFIGURATION'))).'"></i></a>
+                <a class="admidio-icon-link" href="javascript: loadConf(true)"><i class="fas fa-plus-circle" data-toggle="tooltip" title="'.$gL10n->get('LST_CREATE_NEW_CONFIGURATION').'"></i></a>
+                <a class="admidio-icon-link" href="javascript: loadConf()"><i class="fas fa-undo" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_UNDO_ALL_CHANGES_OF_CONFIGURATION').'"></i></a>
+                <a class="admidio-icon-link" href="javascript: deleteConfiguration()"><i class="fas fa-trash-alt" data-toggle="tooltip" title="'.$gL10n->get('LST_DELETE_CONFIGURATION').'"></i></a>
+                <a class="admidio-icon-link" href="../resources/Benutzerhandbuch.pdf" target="_blank"><i class="fas fa-info-circle admidio-info-icon" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_OPEN_MANUAL_GERMAN').'"></i></a>
 
                 <h3>'.$gL10n->get('PLG_STATISTICS_GENERAL_INFORMATIONS').'</h3>
                 <div class ="InputLabelBox form-group">
@@ -442,17 +437,17 @@ if ($pluginInstalled) {
                         }elseif ($frmRow == 7){
 
                         	if ($cc > 1){
-                        		$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvcol\',\''.$tc.'\',\''.$colIdf.'\',\'\',\'true\')"><img src="'. THEME_PATH. '/icons/back.png" title="'.$gL10n->get('PLG_STATISTICS_MOVE_COLUMN_BACKWARDS').'" alt="'.$gL10n->get('PLG_STATISTICS_MOVE_COLUMN_BACKWARDS').'"/></a>');
+                        		$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvcol\',\''.$tc.'\',\''.$colIdf.'\',\'\',\'true\')"><i class="fas fa-chevron-circle-left" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_MOVE_COLUMN_BACKWARDS').'"></i></a>');
                         	}
                         	if ($cc < $effectiveNrOfColumns){
-                        		$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvcol\',\''.$tc.'\',\''.$colIdf.'\')"><img src="'. THEME_PATH. '/icons/forward.png" title="'.$gL10n->get('PLG_STATISTICS_MOVE_COLUMN_FORWARD').'" alt="'.$gL10n->get('PLG_STATISTICS_MOVE_COLUMN_FORWARD').'"/></a>');
+                        		$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvcol\',\''.$tc.'\',\''.$colIdf.'\')"><i class="fas fa-chevron-circle-right" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_MOVE_COLUMN_FORWARD').'"></i></a>');
                         	}
-                        	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'duplcol\',\''.$tc.'\',\''.$colIdf.'\')"><img src="'. THEME_PATH. '/icons/application_double.png" title="'.$gL10n->get('PLG_STATISTICS_DUPLICATE_COLUMN').'" alt="'.$gL10n->get('PLG_STATISTICS_DUPLICATE_COLUMN').'"/></a>');
+                        	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'duplcol\',\''.$tc.'\',\''.$colIdf.'\')"><i class="fas fa-clone" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_DUPLICATE_COLUMN').'"></i></a>');
                         	if ($effectiveNrOfColumns > 1){
-                        		$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'delcol\',\''.$tc.'\',\''.$colIdf.'\')"><img src="'. THEME_PATH. '/icons/delete.png" title="'.$gL10n->get('PLG_STATISTICS_DELETE_COLUMN').'" alt="'.$gL10n->get('PLG_STATISTICS_DELETE_COLUMN').'"/></a>');
+                        		$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'delcol\',\''.$tc.'\',\''.$colIdf.'\')"><i class="fas fa-trash-alt" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_DELETE_COLUMN').'"></i></a>');
                         	}
                             if ($cc == $effectiveNrOfColumns){
-                            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'addcol\',\''.$tc.'\')"><img class="helpRight" src="'. THEME_PATH. '/icons/add.png" title="'.$gL10n->get('PLG_STATISTICS_ADD_COLUMN').'" alt="'.$gL10n->get('PLG_STATISTICS_ADD_COLUMN').'"/></a>');
+                            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'addcol\',\''.$tc.'\')"><i class="fas fa-plus-circle" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_ADD_COLUMN').'"></i></a>');
                             }
                         }else{
                             $page->addHtml('<input class="form-control" name="table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow].'" id="table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow].'" type="text">');
@@ -507,15 +502,15 @@ if ($pluginInstalled) {
                     }else{
                         if ($frmCol == 0){
                             $page->addHtml($gL10n->get('PLG_STATISTICS_XY_ROW', array(($rc-1).'.')));
-                            $page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'duplrow\',\''.$tc.'\',\'\',\''.$rowIdf.'\')"><img class="helpRight" src="'. THEME_PATH. '/icons/application_double.png" title="'.$gL10n->get('PLG_STATISTICS_DUPLICATE_ROW').'" alt="'.$gL10n->get('PLG_STATISTICS_DUPLICATE_ROW').'"/></a>');
+                            $page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'duplrow\',\''.$tc.'\',\'\',\''.$rowIdf.'\')"><i class="fas fa-clone" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_DUPLICATE_ROW').'"></i></a>');
                             if ($rc < $nrOfRows-2){
-                            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvrow\',\''.$tc.'\',\'\',\''.$rowIdf.'\')"><img class="helpRight" src="'. THEME_PATH. '/icons/arrow_down.png" title="'.$gL10n->get('PLG_STATISTICS_MOVE_ROW_DOWN').'" alt="'.$gL10n->get('PLG_STATISTICS_MOVE_ROW_DOWN').'"/></a>');
+                            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvrow\',\''.$tc.'\',\'\',\''.$rowIdf.'\')"><i class="fas fa-chevron-circle-down" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_MOVE_ROW_DOWN').'"></i></a>');
                             }
                             if ($rc > 2){
-                            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvrow\',\''.$tc.'\',\'\',\''.$rowIdf.'\',\'true\')"><img class="helpRight" src="'. THEME_PATH. '/icons/arrow_up.png" title="'.$gL10n->get('PLG_STATISTICS_MOVE_ROW_UP').'" alt="'.$gL10n->get('PLG_STATISTICS_MOVE_ROW_UP').'"/></a>');
+                            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvrow\',\''.$tc.'\',\'\',\''.$rowIdf.'\',\'true\')"><i class="fas fa-chevron-circle-up" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_MOVE_ROW_UP').'"></i></a>');
                             }
                             if ($rc == $nrOfRows-2){
-                            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'addrow\',\''.$tc.'\')"><img class="helpRight" src="'. THEME_PATH. '/icons/add.png" title="'.$gL10n->get('PLG_STATISTICS_ADD_ROW').'" alt="'.$gL10n->get('PLG_STATISTICS_ADD_ROW').'" /></a>');
+                            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'addrow\',\''.$tc.'\')"><i class="fas fa-plus-circle" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_ADD_ROW').'"></i></a>');
                             }
 
                         }elseif($frmCol == 1){
@@ -526,7 +521,7 @@ if ($pluginInstalled) {
                             $page->addHtml('<input class="form-control" name="table'.$tc.'_row'.$rowIdf.'_'.$formRowInputNames[$frmCol].'" id="table'.$tc.'_row'.$rowIdf.'_'.$formRowInputNames[$frmCol].'" type="text" value="'.$rows[$rowIdf]->getCondition()->getUserCondition().'">');
                         }elseif($frmCol == 4){
                         	if ($effectiveNrOfRows > 1){
-                        		$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'delrow\',\''.$tc.'\',\'\',\''.$rowIdf.'\')"><img src="'. THEME_PATH. '/icons/delete.png" title="'.$gL10n->get('PLG_STATISTICS_DELETE_ROW').'" alt="'.$gL10n->get('PLG_STATISTICS_DELETE_ROW').'"/></a>');
+                        		$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'delrow\',\''.$tc.'\',\'\',\''.$rowIdf.'\')"><i class="fas fa-trash-alt" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_DELETE_ROW').'"></i></a>');
                         	}
                         }
                     }
@@ -545,17 +540,17 @@ if ($pluginInstalled) {
             $page->addHtml('</div>');
 
             if ($tc == $nrOfTables-1){
-            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'addtable\')"><img src="'. THEME_PATH. '/icons/add.png" title="'.$gL10n->get('PLG_STATISTICS_ADD_TABLE').'" alt="'.$gL10n->get('PLG_STATISTICS_ADD_TABLE').'"/></a>');
+            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'addtable\')"><i class="fas fa-plus-circle" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_ADD_TABLE').'"></i></a>');
             }
             if ($tc > 0){
-            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvtable\',\''.$tc.'\',\'\',\'\',\'true\')"><img src="'. THEME_PATH. '/icons/arrow_up.png" title="'.$gL10n->get('PLG_STATISTICS_MOVE_TABLE_UP').'" alt="'.$gL10n->get('PLG_STATISTICS_MOVE_TABLE_UP').'"/></a>');
+            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvtable\',\''.$tc.'\',\'\',\'\',\'true\')"><i class="fas fa-chevron-circle-up" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_MOVE_TABLE_UP').'"></i></a>');
             }
             if ($tc < $nrOfTables-1){
-            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvtable\',\''.$tc.'\')"><img src="'. THEME_PATH. '/icons/arrow_down.png" title="'.$gL10n->get('PLG_STATISTICS_MOVE_TABLE_DOWN').'" alt="'.$gL10n->get('PLG_STATISTICS_MOVE_TABLE_DOWN').'"/></a>');
+            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvtable\',\''.$tc.'\')"><i class="fas fa-chevron-circle-down" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_MOVE_TABLE_DOWN').'"></i></a>');
             }
-            $page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'dupltable\',\''.$tc.'\')"><img src="'. THEME_PATH. '/icons/application_double.png" title="'.$gL10n->get('PLG_STATISTICS_DUPLICATE_TABLE').'" alt="'.$gL10n->get('PLG_STATISTICS_DUPLICATE_TABLE').'"/></a>');
+            $page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'dupltable\',\''.$tc.'\')"><i class="fas fa-clone" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_DUPLICATE_TABLE').'"></i></a>');
             if ($nrOfTables >1){
-            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'deltable\',\''.$tc.'\')"><img class="helpRight" src="'. THEME_PATH. '/icons/delete.png" title="'.$gL10n->get('PLG_STATISTICS_DELETE_TABLE').'" alt="'.$gL10n->get('PLG_STATISTICS_DELETE_TABLE').'"/></a>');
+            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'deltable\',\''.$tc.'\')"><i class="fas fa-trash-alt" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_DELETE_TABLE').'"></i></a>');
             }
 
             $page->addHtml('</div>');

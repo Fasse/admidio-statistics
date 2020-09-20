@@ -1,10 +1,5 @@
 @CHARSET "ISO-8859-1";
 
-/* #form_sta_config {
-	border:     1px solid #7d7d7d;
-	padding-left: 10px;
-	padding-right: 10px;
-} */
 
 .stdDiv {
 	border: 1px solid #7d7d7d;
@@ -52,14 +47,7 @@
 
 }
 
-
-/*Regeln für die Tabelle mit den Spaltendefinitionen*/
-
-/* .col_conf_tbl {
-	background-color: #adff2f;
-	border:2px solid #7d7d7d;
-	border-collapse: collapse;
-} */
+/* Regeln für die Tabelle mit den Spaltendefinitionen */
 
 .iconTextLink {
 	font-size: 10pt;
@@ -67,7 +55,6 @@
 
 .col_conf_tbl_col_first_first {
 	min-width: 125px;
-	color: #449ba6;
 	font-size: 110%;
 }
 
@@ -147,17 +134,8 @@
 	width: 118px;
 }
 
-/*Regeln für die Tabelle mit den Zeilendefinitionen*/
+/* Regeln für die Tabelle mit den Zeilendefinitionen */
 
-/* .row_conf_tbl {
-	background-color: #40e0d0;
-	border:1px solid #7d7d7d;
-	border-collapse: collapse;
-} */
-
-/*.row_conf_tbl_row{
-	font-style: italic;
-}*/
 .row_conf_tbl_col_last {
 	background-color: inherit;
 }
@@ -168,7 +146,6 @@
 
 .row_conf_tbl_col_first_first {
 	min-width: 125px;
-	color: #449ba6;
 	font-size: 110%;
 }
 
@@ -206,6 +183,11 @@
 
 .row_conf_tbl_row_first {
 
+}
+
+.row_conf_tbl_row .fas{
+    margin-left: 5px;
+    margin-right: 0px !important;
 }
 
 .row_conf_tbl_row_last {
