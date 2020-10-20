@@ -69,18 +69,18 @@ class FormElements
             $fieldId = 'rol_id';
         }
 
-        // SQL-Statement entsprechend dem Modus zusammensetzen
+        // create sql statement depending on the users rights
         $condition = '';
         $active_roles = 1;
         if($showMode == 1 && $gCurrentUser->manageRoles() == false)
         {
-            // keine Rollen mit Rollenzuordnungsrecht anzeigen
+            // don't show roles that have the right to assign other roles
             $condition .= ' AND rol_assign_roles = 0 ';
         }
         elseif($showMode == 1 && $gCurrentUser->isWebmaster() == false)
         {
-            // Webmasterrolle nicht anzeigen
-            $condition .= ' AND rol_webmaster = 0 ';
+            // don't show the administrator role
+            $condition .= ' AND rol_administrator = 0 ';
         }
         elseif($showMode == 2)
         {
