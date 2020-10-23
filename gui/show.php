@@ -76,8 +76,6 @@ if($hasAccess == true)
 
     if ($getMode == 'print')
     {
-        $page->hideThemeHtml();
-        $page->hideMenu();
         $page->setPrintMode();
     }
     else
