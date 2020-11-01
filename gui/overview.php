@@ -20,8 +20,6 @@ $gNavigation->addUrl(CURRENT_URL);
 
 // Html-Kopf wird geschrieben
 $page = new HtmlPage('admidio-plugin-statistics-overview', $gL10n->get('PLG_STATISTICS_STATISTICS'));
-$page->setUrlPreviousPage($gNavigation->getPreviousUrl());
-//$page->setTitle($gL10n->get('PLG_STATISTICS_STATISTICS'));
 
 //DB-Hilfsklasse instanzieren
 $staDBHandler = new DBAccess();

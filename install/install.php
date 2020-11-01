@@ -24,7 +24,6 @@ require_once(STATISTICS_PATH.'/statistic_objects/statistic.php');
 require_once(STATISTICS_PATH.'/utils/db_access.php');
 
 $page = new HtmlPage('admidio-plugin-statistics-install', $gL10n->get('PLG_STATISTICS_INSTALLATION_STATISTICS_PLUGIN'));
-$page->setUrlPreviousPage($gNavigation->getPreviousUrl());
 
 
 if($gCurrentUser->isAdministrator()) {
