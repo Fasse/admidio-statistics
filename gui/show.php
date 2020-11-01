@@ -82,8 +82,6 @@ if($hasAccess == true)
     }
     else
     {
-        $page->setUrlPreviousPage($gNavigation->getPreviousUrl());
-
         // link to print preview
         $page->addPageFunctionsMenuItem('menu_item_print_view', $gL10n->get('LST_PRINT_PREVIEW'), 'javascript:void();', 'fa-print');
     }

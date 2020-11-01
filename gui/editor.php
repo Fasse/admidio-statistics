@@ -50,9 +50,6 @@ else
 
 // Html-Kopf wird geschrieben
 $page = new HtmlPage('admidio-plugin-statistics-editor', $gL10n->get('PLG_STATISTICS_CONFIGURE_STATISTIC'));
-$page->setUrlPreviousPage($gNavigation->getPreviousUrl());
-//$page->setTitle($gL10n->get('PLG_STATISTICS_CONFIGURE_STATISTIC'));
-
 
 if ($pluginInstalled) {
     if($hasAccess == true) {
