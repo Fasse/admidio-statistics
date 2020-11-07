@@ -126,19 +126,19 @@ if ($pluginInstalled) {
 	        if ($roleInformation){
 	        	//$user_fields[$i] = new Object();
 	        	$user_fields[$i]['cat_id']   = -1;
-	        	$user_fields[$i]['cat_name'] = $gL10n->get('LST_ROLE_INFORMATION');
+	        	$user_fields[$i]['cat_name'] = $gL10n->get('SYS_ROLE_INFORMATION');
 	        	$user_fields[$i]['usf_id']   = 'mem_begin';
-	        	$user_fields[$i]['usf_name'] = $gL10n->get('LST_MEMBERSHIP_START');
-	        	$user_fields[$i]['usf_name_intern'] = $gL10n->get('LST_MEMBERSHIP_START');
+	        	$user_fields[$i]['usf_name'] = $gL10n->get('SYS_MEMBERSHIP_START');
+	        	$user_fields[$i]['usf_name_intern'] = $gL10n->get('SYS_MEMBERSHIP_START');
 
 	        	$i++;
 
 	        	//$user_fields[$i] = new Object();
 	        	$user_fields[$i]['cat_id']   = -1;
-	        	$user_fields[$i]['cat_name'] = $gL10n->get('LST_ROLE_INFORMATION');
+	        	$user_fields[$i]['cat_name'] = $gL10n->get('SYS_ROLE_INFORMATION');
 	        	$user_fields[$i]['usf_id']   = 'mem_end';
-	        	$user_fields[$i]['usf_name'] = $gL10n->get('LST_MEMBERSHIP_END');
-	        	$user_fields[$i]['usf_name_intern'] = $gL10n->get('LST_MEMBERSHIP_END');
+	        	$user_fields[$i]['usf_name'] = $gL10n->get('SYS_MEMBERSHIP_END');
+	        	$user_fields[$i]['usf_name_intern'] = $gL10n->get('SYS_MEMBERSHIP_END');
         	}
 
         	//generateHtml
@@ -215,7 +215,7 @@ if ($pluginInstalled) {
 
         //IDs und Namen vorhandener Statistik-Konfigurationen aus der DB holen
         $allStatisticConfigIDs = $staDBHandler->getStatisticIDs($gCurrentOrganization->getValue('org_id',''));
-        $allStatisticConfigurations[1] = $gL10n->get('LST_CREATE_NEW_CONFIGURATION');
+        $allStatisticConfigurations[1] = $gL10n->get('SYS_CREATE_NEW_CONFIGURATION');
         foreach ($allStatisticConfigIDs as $statisticID){
             $allStatisticConfigurations[$statisticID] = $staDBHandler->getStatisticName($statisticID);
         }
@@ -330,11 +330,11 @@ if ($pluginInstalled) {
 
                 <p>'.$gL10n->get('PLG_STATISTICS_EDITOR_CONFIG_LOAD_OR_CHANGE').'</p>'
                 .generateStatisticConfigSelectBox($allStatisticConfigurations,$getStatisticID,'statistic_conf_select','onchange="loadConf()"',false).'
-                <a class="admidio-icon-link" href="javascript: doFormSubmit(\'save\')"><i class="fas fa-save" data-toggle="tooltip" title="'.$gL10n->get('LST_SAVE_CONFIGURATION').'"></i></a>
-                <a class="admidio-icon-link" href="javascript: doFormSubmit(\'saveas\')"><i class="fas fa-clone" data-toggle="tooltip" title="'.$gL10n->get('SYS_COPY_VAR', array($gL10n->get('LST_CONFIGURATION'))).'"></i></a>
-                <a class="admidio-icon-link" href="javascript: loadConf(true)"><i class="fas fa-plus-circle" data-toggle="tooltip" title="'.$gL10n->get('LST_CREATE_NEW_CONFIGURATION').'"></i></a>
+                <a class="admidio-icon-link" href="javascript: doFormSubmit(\'save\')"><i class="fas fa-save" data-toggle="tooltip" title="'.$gL10n->get('SYS_SAVE_CONFIGURATION').'"></i></a>
+                <a class="admidio-icon-link" href="javascript: doFormSubmit(\'saveas\')"><i class="fas fa-clone" data-toggle="tooltip" title="'.$gL10n->get('SYS_COPY_VAR', array($gL10n->get('SYS_CONFIGURATION'))).'"></i></a>
+                <a class="admidio-icon-link" href="javascript: loadConf(true)"><i class="fas fa-plus-circle" data-toggle="tooltip" title="'.$gL10n->get('SYS_CREATE_NEW_CONFIGURATION').'"></i></a>
                 <a class="admidio-icon-link" href="javascript: loadConf()"><i class="fas fa-undo" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_UNDO_ALL_CHANGES_OF_CONFIGURATION').'"></i></a>
-                <a class="admidio-icon-link" href="javascript: deleteConfiguration()"><i class="fas fa-trash-alt" data-toggle="tooltip" title="'.$gL10n->get('LST_DELETE_CONFIGURATION').'"></i></a>
+                <a class="admidio-icon-link" href="javascript: deleteConfiguration()"><i class="fas fa-trash-alt" data-toggle="tooltip" title="'.$gL10n->get('SYS_DELETE_CONFIGURATION').'"></i></a>
                 <a class="admidio-icon-link" href="../resources/Benutzerhandbuch.pdf" target="_blank"><i class="fas fa-info-circle admidio-info-icon" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_OPEN_MANUAL_GERMAN').'"></i></a>
 
                 <h3>'.$gL10n->get('PLG_STATISTICS_GENERAL_INFORMATIONS').'</h3>

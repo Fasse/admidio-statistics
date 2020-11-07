@@ -81,7 +81,7 @@ if($hasAccess == true)
     else
     {
         // link to print preview
-        $page->addPageFunctionsMenuItem('menu_item_print_view', $gL10n->get('LST_PRINT_PREVIEW'), 'javascript:void();', 'fa-print');
+        $page->addPageFunctionsMenuItem('menu_item_print_view', $gL10n->get('SYS_PRINT_PREVIEW'), 'javascript:void();', 'fa-print');
     }
 
     $page->addHtml('<div>');
