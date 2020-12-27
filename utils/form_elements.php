@@ -123,9 +123,9 @@ class FormElements
                 if($gCurrentUser->hasRightViewRole($row['rol_id']))
                 {
                     // if text is a translation-id then translate it
-                    if(strpos($row['cat_name'], '_') == 3)
+                    if (Language::isTranslationStringId($row['cat_name']))
                     {
-                        $row['cat_name'] = $gL10n->get(admStrToUpper($row['cat_name']));
+                        $row['cat_name'] = $gL10n->get($row['cat_name']);
                     }
 
                     // if new category then show label with category name
