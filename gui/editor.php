@@ -74,8 +74,8 @@ if ($pluginInstalled) {
         	foreach($gProfileFields->getProfileFields() as $field){
         		// at the end of category basic data save positions for loginname and username
         		// they will be added after profile fields loop
-        		if($basicData == true && $oldCategoryNameIntern == 'MASTER_DATA'
-        				&& $field->getValue('cat_name_intern') != 'MASTER_DATA')
+        		if($basicData == true && $oldCategoryNameIntern == 'BASIC_DATA'
+        				&& $field->getValue('cat_name_intern') != 'BASIC_DATA')
         		{
         			$posEndOfMasterData = $i;
         			$i = $i + 2;
