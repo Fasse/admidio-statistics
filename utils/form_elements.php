@@ -2,7 +2,7 @@
 /******************************************************************************
  * Factory class that creates elements for html forms
  *
- * @copyright 2004-2020 The Admidio Team
+ * @copyright 2004-2021 The Admidio Team
  * @see https://www.admidio.org/
  * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License v2.0 only
  *
@@ -75,12 +75,12 @@ class FormElements
         if($showMode == 1 && $gCurrentUser->manageRoles() == false)
         {
             // don't show roles that have the right to assign other roles
-            $condition .= ' AND rol_assign_roles = 0 ';
+            $condition .= ' AND rol_assign_roles = \'0\' ';
         }
-        elseif($showMode == 1 && $gCurrentUser->isWebmaster() == false)
+        elseif($showMode == 1 && $gCurrentUser->isAdministrator() == false)
         {
             // don't show the administrator role
-            $condition .= ' AND rol_administrator = 0 ';
+            $condition .= ' AND rol_administrator = \'0\' ';
         }
         elseif($showMode == 2)
         {
@@ -88,7 +88,7 @@ class FormElements
         }
 
         $sql = 'SELECT * FROM '. TBL_ROLES. ', '. TBL_CATEGORIES. '
-                 WHERE rol_valid   = '.$active_roles.'
+                 WHERE rol_valid   = \''.$active_roles.'\'
                    AND cat_name_intern <> \'EVENTS\'
                    AND rol_cat_id  = cat_id
                    AND (  cat_org_id  = '. $gCurrentOrganization->getValue('org_id'). '

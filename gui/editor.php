@@ -2,7 +2,7 @@
 /******************************************************************************
  * Konfigurationsseite zum Erstellen eigener Statistiken
  *
- * @copyright 2004-2020 The Admidio Team
+ * @copyright 2004-2021 The Admidio Team
  * @see https://www.admidio.org/
  * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License v2.0 only
  *
@@ -58,7 +58,7 @@ if ($pluginInstalled) {
         //Erzeugen von Skriptvariablen
         $getStatisticID        = 1;
 
-        function generateProfileFieldSelectBox($zeroValue = false, $grouping = true, $masterData = true,
+        function generateProfileFieldSelectBox($zeroValue = false, $grouping = true, $basicData = true,
         		$roleInformation = true, $defaultEntry = -1, $fieldId = 'admSelectBox', $optAttributes = ''){
         	global $gProfileFields;
         	global $gL10n;
@@ -72,9 +72,9 @@ if ($pluginInstalled) {
         	$posEndOfMasterData = 0;
 
         	foreach($gProfileFields->getProfileFields() as $field){
-        		// at the end of category master data save positions for loginname and username
+        		// at the end of category basic data save positions for loginname and username
         		// they will be added after profile fields loop
-        		if($masterData == true && $oldCategoryNameIntern == 'MASTER_DATA'
+        		if($basicData == true && $oldCategoryNameIntern == 'MASTER_DATA'
         				&& $field->getValue('cat_name_intern') != 'MASTER_DATA')
         		{
         			$posEndOfMasterData = $i;
@@ -97,9 +97,9 @@ if ($pluginInstalled) {
         		}
         	}
 
-        	// Add loginname and photo at the end of category master data
+        	// Add loginname and photo at the end of category basic data
         	// add new category with start and end date of role membership
-        	if ($masterData == true){
+        	if ($basicData == true){
 
 	        	if($posEndOfMasterData == 0)
 	        	{

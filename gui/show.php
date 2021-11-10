@@ -1,8 +1,8 @@
 <?php
 /******************************************************************************
- * Template für Skript zur Auslesung und Darstellung von Statistiken
+ * Template fï¿½r Skript zur Auslesung und Darstellung von Statistiken
  *
- * @copyright 2004-2020 The Admidio Team
+ * @copyright 2004-2021 The Admidio Team
  * @see https://www.admidio.org/
  * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License v2.0 only
  *
@@ -16,7 +16,6 @@ require_once('../includes.php');
 require_once(STATISTICS_PATH.'/statistic_objects/statistic.php');
 require_once(STATISTICS_PATH.'/utils/db_access.php');
 require_once(STATISTICS_PATH.'/utils/evaluator.php');
-global $gNavigation;
 
 // Check Parameter
 $getStaId = admFuncVariableIsValid($_GET, 'sta_id','numeric');

@@ -2,7 +2,7 @@
 /******************************************************************************
  * Installationsskript für das Statistik-Plugin
  *
- * @copyright 2004-2020 The Admidio Team
+ * @copyright 2004-2021 The Admidio Team
  * @see https://www.admidio.org/
  * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License v2.0 only
  *
@@ -174,7 +174,7 @@ function addStatisticTemplates() {
 
     //Statistik über die Vollständigkeit der Profile
     $statistic2 = new Statistic(null,$currentOrgID, $gL10n->get('PLG_STATISTICS_PROFILE_COMPLETENESS'), $gL10n->get('PLG_STATISTICS_COMPLETENESS_OF_PROFILE') ,'', 2);
-    $tbl6 = new StatisticTable($gL10n->get('PLG_STATISTICS_AFTER_COMPLETENESS'), null,$gL10n->get('MEM_PROFILE_FIELD'));
+    $tbl6 = new StatisticTable($gL10n->get('PLG_STATISTICS_AFTER_COMPLETENESS'), null,$gL10n->get('SYS_PROFILE_FIELD'));
     $tbl6->addRow(new StatisticTableRow($gL10n->get('SYS_LASTNAME'),new StatisticCondition($gL10n->get('PLG_STATISTICS_AVAILABLE'),1)));
     $tbl6->addRow(new StatisticTableRow($gL10n->get('SYS_FIRSTNAME'),new StatisticCondition($gL10n->get('PLG_STATISTICS_AVAILABLE'),2)));
     $tbl6->addRow(new StatisticTableRow($gL10n->get('SYS_ADDRESS'),new StatisticCondition($gL10n->get('PLG_STATISTICS_AVAILABLE'),3)));
@@ -187,7 +187,7 @@ function addStatisticTemplates() {
     $tbl6->addColumn(new StatisticTableColumn($gL10n->get('PLG_STATISTICS_PERCENT'),new StatisticCondition(null,null),new StatisticFunction('%',''),''));
     $statistic2->addTable($tbl6);
 
-    $tbl7 = new StatisticTable($gL10n->get('PLG_STATISTICS_AFTER_MISSING_INFORMATIONS'), null, $gL10n->get('MEM_PROFILE_FIELD'));
+    $tbl7 = new StatisticTable($gL10n->get('PLG_STATISTICS_AFTER_MISSING_INFORMATIONS'), null, $gL10n->get('SYS_PROFILE_FIELD'));
     $tbl7->addRow(new StatisticTableRow($gL10n->get('SYS_LASTNAME'),new StatisticCondition($gL10n->get('PLG_STATISTICS_MISSING'),1)));
     $tbl7->addRow(new StatisticTableRow($gL10n->get('SYS_FIRSTNAME'),new StatisticCondition($gL10n->get('PLG_STATISTICS_MISSING'),2)));
     $tbl7->addRow(new StatisticTableRow($gL10n->get('SYS_ADDRESS'),new StatisticCondition($gL10n->get('PLG_STATISTICS_MISSING'),3)));
