@@ -135,7 +135,7 @@ class Evaluator
                     $functionTotal = $columns[$c]->getFunctionTotal();
                     switch($functionTotal) {
                         case 'sum':
-                            $totalString = '(£) ' . $totalValue;
+                            $totalString = '(Σ) ' . $totalValue;
                             break;
                         case 'avg':
                             $totalString =  '(Ø) ' . sprintf("%01.1f",$totalValue / count($rows));
