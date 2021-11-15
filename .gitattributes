@@ -1,0 +1,9 @@
+# Default
+* text=auto
+
+# Images
+*.png binary
+*.jpg binary
+
+# exclude some folders in zip
+/.* export-ignore
