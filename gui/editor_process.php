@@ -62,7 +62,7 @@ else
     $hasAccess = true;
 }
 
-if($hasAccess == true) {
+if($hasAccess) {
 	//Auslesen der Übergabe Parameter
 	$getMode      = admFuncVariableIsValid($_GET, 'mode', 'string', array('validValues' => array('load','save','delete','show','editstructure')));
 	$getScrollPos = admFuncVariableIsValid($_GET, 'scroll_pos', 'numeric', array('defaultValue' => 0));
@@ -128,9 +128,10 @@ if($hasAccess == true) {
 	}
 }
 
-function createStatisticFromPostInputs($staID = '',$staName = ''){
+function createStatisticFromPostInputs($staID = '',$staName = '')
+{
 	global $gCurrentOrganization;
-	$staOrgId = $gCurrentOrganization->getValue('org_id','');
+	$staOrgId = $gCurrentOrganization->getValue('org_id');
 
 	//Auslesen der Eingaben für die allgemeinen Statistik-Informationen
 	$postStatisticTitle              = admFuncVariableIsValid($_POST, 'statistic_title', 'string');
@@ -190,10 +191,9 @@ function showStatistic($StaID){
 function editStructure($statisticToEdit){
 
 	$tmpStatistic = $statisticToEdit;
-	$getEditStructure      = admFuncVariableIsValid($_GET, 'editaction', 'string', array('validValues' => array('addrow','addcol','addtable','delrow','delcol','deltable','duplrow','duplcol','dupltable','mvrow','mvcol','mvtable')));
-	if ($getEditStructure != 'addtable'){
-		$getTableNr     = admFuncVariableIsValid($_GET, 'edittblnr', 'numeric', array('defaultValue' => 0));
-	}
+	$getEditStructure = admFuncVariableIsValid($_GET, 'editaction', 'string', array('validValues' => array('addrow','addcol','addtable','delrow','delcol','deltable','duplrow','duplcol','dupltable','mvrow','mvcol','mvtable')));
+	$getTableNr       = admFuncVariableIsValid($_GET, 'edittblnr', 'numeric', array('defaultValue' => 0));
+
 	switch ($getEditStructure){
 		case 'addrow':
 			$tmpTables = $tmpStatistic->getTables();
@@ -322,7 +322,7 @@ function moveArrayElement(&$array,$elementNr, $upwards = false){
 function createEmptyStatistic(){
 	global $gCurrentOrganization;
 
-	$tmpStatistic = new Statistic(1,$gCurrentOrganization->getValue('org_id',''),'','','',2);
+	$tmpStatistic = new Statistic(1,$gCurrentOrganization->getValue('org_id'),'','','',2);
 	for ($tc = 0;$tc <1;$tc++){
 		$tmpStatistic->addTable(createEmptyTable());
 	}
@@ -346,15 +346,13 @@ function createEmptyTable(){
 
 function createEmptyRow(){
 	$tmpCondition = new StatisticCondition('',0);
-	$tmpRow  = new StatisticTableRow('',$tmpCondition);
-	return $tmpRow;
+    return new StatisticTableRow('',$tmpCondition);
 }
 
 function createEmptyColumn(){
 	$tmpCondition = new StatisticCondition('',0);
 	$tmpFunction = new StatisticFunction('',0);
-	$tmpColumn  = new StatisticTableColumn('',$tmpCondition,$tmpFunction,'');
-	return $tmpColumn;
+    return new StatisticTableColumn('',$tmpCondition,$tmpFunction,'');
 }
 
 function createScrollPos(){
@@ -377,4 +375,3 @@ function returnToGUI($StaID = null){
 	header($LocationUpdateString);
 }
 
-?>

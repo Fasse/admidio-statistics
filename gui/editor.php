@@ -52,7 +52,7 @@ else
 $page = new HtmlPage('admidio-plugin-statistics-editor', $gL10n->get('PLG_STATISTICS_CONFIGURE_STATISTIC'));
 
 if ($pluginInstalled) {
-    if($hasAccess == true) {
+    if($hasAccess) {
         global $gCurrentOrganization;
 
         //Erzeugen von Skriptvariablen
@@ -74,7 +74,7 @@ if ($pluginInstalled) {
         	foreach($gProfileFields->getProfileFields() as $field){
         		// at the end of category basic data save positions for loginname and username
         		// they will be added after profile fields loop
-        		if($basicData == true && $oldCategoryNameIntern == 'BASIC_DATA'
+        		if($basicData && $oldCategoryNameIntern == 'BASIC_DATA'
         				&& $field->getValue('cat_name_intern') != 'BASIC_DATA')
         		{
         			$posEndOfMasterData = $i;
@@ -99,7 +99,7 @@ if ($pluginInstalled) {
 
         	// Add loginname and photo at the end of category basic data
         	// add new category with start and end date of role membership
-        	if ($basicData == true){
+        	if ($basicData){
 
 	        	if($posEndOfMasterData == 0)
 	        	{
@@ -142,13 +142,11 @@ if ($pluginInstalled) {
         	}
 
         	//generateHtml
-        	$fieldNumberIntern  = 0;
         	$category = '';
-        	$fieldNumberShow  = $fieldNumberIntern + 1;
 
         	$selectBoxHtml = '<select class="form-control" size="1" id="'.$fieldId.'" name="'.$fieldId.'" '.$optAttributes.'>';
 
-        	if ($zeroValue != false){
+        	if ($zeroValue){
         		$zeroSelected = '';
         		if($defaultEntry == 0){
         			$zeroSelected = ' selected="selected" ';
@@ -158,7 +156,7 @@ if ($pluginInstalled) {
 
         	for ($counter = 1; $counter <= count($user_fields); $counter++)
         	{
-        		if($grouping == true && $category != $user_fields[$counter]['cat_name'] )
+        		if($grouping && $category != $user_fields[$counter]['cat_name'] )
         		{
         			if($category != '')
         			{
@@ -190,7 +188,7 @@ if ($pluginInstalled) {
         		} */
         		$selectBoxHtml .= '<option value="' . $user_fields[$counter]['usf_id'] . '"' . $selected . '>' . $user_fields[$counter]['usf_name'] . '</option>';
         	}
-        	if ($grouping == true){
+        	if ($grouping){
         		$selectBoxHtml .= '</optgroup>';
         	}
         	$selectBoxHtml .= '</select>';
@@ -214,7 +212,7 @@ if ($pluginInstalled) {
 
 
         //IDs und Namen vorhandener Statistik-Konfigurationen aus der DB holen
-        $allStatisticConfigIDs = $staDBHandler->getStatisticIDs($gCurrentOrganization->getValue('org_id',''));
+        $allStatisticConfigIDs = $staDBHandler->getStatisticIDs($gCurrentOrganization->getValue('org_id'));
         $allStatisticConfigurations[1] = $gL10n->get('SYS_CREATE_NEW_CONFIGURATION');
         foreach ($allStatisticConfigIDs as $statisticID){
             $allStatisticConfigurations[$statisticID] = $staDBHandler->getStatisticName($statisticID);
@@ -279,7 +277,7 @@ if ($pluginInstalled) {
             global $gL10n;
 
             $selectBoxHtml = '<select class="form-control" size="1" id="'.$fieldId.'" name="'.$fieldId.'" '.$optAttributes.'>';
-            if($createFirstEntry == true)
+            if($createFirstEntry)
             {
                 $selectBoxHtml .= '<option value=" "';
                 if(strlen($defaultEntry) == 0){
@@ -329,7 +327,7 @@ if ($pluginInstalled) {
             <div class= "stdDiv" id="div_config_selection">
 
                 <p>'.$gL10n->get('PLG_STATISTICS_EDITOR_CONFIG_LOAD_OR_CHANGE').'</p>'
-                .generateStatisticConfigSelectBox($allStatisticConfigurations,$getStatisticID,'statistic_conf_select','onchange="loadConf()"',false).'
+                .generateStatisticConfigSelectBox($allStatisticConfigurations,$getStatisticID,'statistic_conf_select','onchange="loadConf()"').'
                 <a class="admidio-icon-link" href="javascript: doFormSubmit(\'save\')"><i class="fas fa-save" data-toggle="tooltip" title="'.$gL10n->get('SYS_SAVE_CONFIGURATION').'"></i></a>
                 <a class="admidio-icon-link" href="javascript: doFormSubmit(\'saveas\')"><i class="fas fa-clone" data-toggle="tooltip" title="'.$gL10n->get('SYS_COPY_VAR', array($gL10n->get('SYS_CONFIGURATION'))).'"></i></a>
                 <a class="admidio-icon-link" href="javascript: loadConf(true)"><i class="fas fa-plus-circle" data-toggle="tooltip" title="'.$gL10n->get('SYS_CREATE_NEW_CONFIGURATION').'"></i></a>
@@ -402,9 +400,7 @@ if ($pluginInstalled) {
                     $classSuffix = generateClassSuffix($cc,$nrOfColumns);
                     $page->addHtml('<td class="col_conf_tbl_col_'.$formColumnInputNames[$frmRow].$classSuffix.'">');
                     if ($cc == 0){
-                        if ($frmRow == 7){
-
-                        }else{
+                        if ($frmRow != 7){
                             $page->addHtml($formColumnLabels[$frmRow]);
                         }
 
@@ -428,9 +424,9 @@ if ($pluginInstalled) {
                         }elseif ($frmRow == 4){
                         	generateProfileFieldSelectBox($gL10n->get('PLG_STATISTICS_SELECTION'),true,false,false,$columns[$colIdf]->getFunction()->getArgument(),'table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow],'onchange="disableInvalidFunctions(this)"');
                         }elseif ($frmRow == 5){
-                            $page->addHtml(FormElements::generateDynamicSelectBox($formColumnInputSelectValues[$formColumnInputNames[$frmRow]],$columns[$colIdf]->getFunction()->getName(),'table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow],false));
+                            $page->addHtml(FormElements::generateDynamicSelectBox($formColumnInputSelectValues[$formColumnInputNames[$frmRow]],$columns[$colIdf]->getFunction()->getName(),'table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow]));
                         }elseif ($frmRow == 6){
-                            $page->addHtml(FormElements::generateDynamicSelectBox($formColumnInputSelectValues[$formColumnInputNames[$frmRow]],$columns[$colIdf]->getFunctionTotal(),'table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow],false));
+                            $page->addHtml(FormElements::generateDynamicSelectBox($formColumnInputSelectValues[$formColumnInputNames[$frmRow]],$columns[$colIdf]->getFunctionTotal(),'table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow]));
                         }elseif ($frmRow == 7){
 
                         	if ($cc > 1){
@@ -496,6 +492,7 @@ if ($pluginInstalled) {
                             $page->addHtml('<input class="form-control" name="table'.$tc.'_first_column_label" id="table'.$tc.'_first_column_label" type="text" value="'.$tables[$tc]->getFirstColumnLabel().'">');
                         }
                     }elseif ($rc == $nrOfRows-1){
+                        $tst = 1;
                     }else{
                         if ($frmCol == 0){
                             $page->addHtml($gL10n->get('PLG_STATISTICS_XY_ROW', array(($rc-1).'.')));
@@ -553,7 +550,7 @@ if ($pluginInstalled) {
             $page->addHtml('</div>');
         }
 
-        $page->addHtml('<br /><input class="btn btn-primary admidio-margin-bottom" type="button" name="show_statistic" value="Statistik anzeigen" onclick="javascript: doFormSubmit(\'show\')" />');
+        $page->addHtml('<br /><input class="btn btn-primary admidio-margin-bottom" type="button" name="show_statistic" value="Statistik anzeigen" onclick="doFormSubmit(\'show\')" />');
         $page->addHtml('<a class="admidio-icon-link align-top openPopup" href="javascript:void(0);" data-href="help.php?help_id=427"><i class="fas fa-info-circle admidio-info-icon" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'"></i></a>');
         $page->addHtml('</form>');
     } else  {
@@ -578,4 +575,3 @@ if ($pluginInstalled) {
 $page->show();
 // Url fuer die Zuruecknavigation merken, ohne Scrollposition zu entfernen!
 $gNavigation->addUrl(CURRENT_URL);
-?>
