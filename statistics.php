@@ -1,8 +1,8 @@
 <?php
 /******************************************************************************
- * Statistiken V 3.1.3 (kompatibel mit Admidio 4.0)
+ * Statistiken V 3.2.1 (kompatibel mit Admidio 4.1)
  *
- * Beta Version
+ * Beta-Version
  *
  * Dieses Plugin ermöglicht das Erstellen von Statistiken aus den Profildaten
  * der angemeldeten Benutzer. Konfigurierte Statistiken können gespeichert,
@@ -19,10 +19,6 @@ require_once(__DIR__. '/includes.php');
 require_once(__DIR__. '/utils/db_constants.php');
 require_once(__DIR__. '/install/install_functions.php');
 
-define('LINK_TEXT_INSTALLATION','Installation / Deinstallation');
-define('LINK_TEXT_OVERWIEW','Statistiken');
-define('LINK_TEXT_CONFIG', 'Statistikeditor');
-
 $showOverview = false;
 
 if(!isset($plgAllowShow))
@@ -38,7 +34,7 @@ if(!isset($plgAllowConfig))
 foreach ($plgAllowShow AS $i)
 {
     if($i == 'Benutzer'
-        && $gValidLogin == true)
+        && $gValidLogin)
     {
         $showOverview = true;
     }
@@ -48,9 +44,12 @@ foreach ($plgAllowShow AS $i)
         $showOverview = true;
     }
     elseif($i == 'Listenberechtigte'
-        && $gCurrentUser->viewAllLists())
+        && $gCurrentUser->checkRolesRight('rol_all_lists_view'))
     {
-        $hasAccess = true;
+        $showOverview = true;
+    }
+    elseif($i === 'Administrator' && $gCurrentUser->isAdministrator()) {
+        $showOverview = true;
     }
     elseif(hasRole($i))
     {
@@ -63,7 +62,7 @@ $showConfig = false;
 foreach ($plgAllowConfig AS $i)
 {
     if($i == 'Benutzer'
-        && $gValidLogin == true)
+        && $gValidLogin)
     {
         $showPlugin = true;
     }
@@ -73,9 +72,12 @@ foreach ($plgAllowConfig AS $i)
         $showConfig = true;
     }
     elseif($i == 'Listenberechtigte'
-        && $gCurrentUser->viewAllLists())
+        && $gCurrentUser->checkRolesRight('rol_all_lists_view'))
     {
-        $hasAccess = true;
+        $showConfig = true;
+    }
+    elseif($i === 'Administrator' && $gCurrentUser->isAdministrator()) {
+        $showConfig = true;
     }
     elseif(hasRole($i))
     {
@@ -104,6 +106,7 @@ if ($showOverview || $showConfig || $showInstall) {
         {
             echo 'Please install plugin statistics first!';
         }
-    }
+    } else {
+         echo 'Plugin is successfully installed. Please go to the menu of Admidio and select the new added entries of the statistic plugin!';
+     }
 }
-?>
