@@ -76,7 +76,7 @@ if($hasAccess == true) {
 	switch ($getMode){
 		case 'load':
 			$getLoadID     = admFuncVariableIsValid($_GET, 'sta_id', 'numeric', array('defaultValue' => 0));
-			if ($getLoadID == ''){
+			if ($getLoadID == 0){
 				$loadStatistic=createEmptyStatistic();
 				$getLoadID = 1;
 			}else{
