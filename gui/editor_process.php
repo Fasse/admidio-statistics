@@ -91,8 +91,8 @@ if($hasAccess) {
 			$getSaveID     = admFuncVariableIsValid($_GET, 'sta_id', 'numeric', array('defaultValue' => 0));
 			$getNewID = false;
 
-			if ($getSaveID == ''){
-				$getSaveName  = admFuncVariableIsValid($_GET, 'name', 'string');
+			if ($getSaveID == 0){
+				$getSaveName  = admFuncVariableIsValid($_POST, 'statistic_title', 'string');
 				$getNewID = true;
 				$saveStatistic = createStatisticFromPostInputs('',$getSaveName);
 			}else{

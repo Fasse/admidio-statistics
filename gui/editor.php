@@ -270,7 +270,7 @@ if ($pluginInstalled) {
         }
 
         // Url fuer die Zuruecknavigation merken
-        $gNavigation->addUrl(removeScrollPosFromURL(CURRENT_URL));
+        $gNavigation->addUrl(CURRENT_URL, $gL10n->get('PLG_STATISTICS_STATISTICS_EDITOR'));
 
         function generateStatisticConfigSelectBox($entryArray, $defaultEntry = '', $fieldId = 'admSelectBox', $optAttributes = '', $createFirstEntry = false)
         {
@@ -573,5 +573,3 @@ if ($pluginInstalled) {
                     </p>');
 }
 $page->show();
-// Url fuer die Zuruecknavigation merken, ohne Scrollposition zu entfernen!
-$gNavigation->addUrl(CURRENT_URL);

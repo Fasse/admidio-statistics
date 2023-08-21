@@ -16,7 +16,7 @@ require_once(ADMIDIO_PATH.'/adm_program/system/login_valid.php');
 require_once(STATISTICS_PATH.'/utils/db_access.php');
 
 // Url fuer die Zuruecknavigation merken
-$gNavigation->addUrl(CURRENT_URL);
+$gNavigation->addStartUrl(CURRENT_URL, $gL10n->get('PLG_STATISTICS_STATISTICS'), 'fa-list');
 
 // Html-Kopf wird geschrieben
 $page = new HtmlPage('admidio-plugin-statistics-overview', $gL10n->get('PLG_STATISTICS_STATISTICS'));
@@ -48,7 +48,7 @@ else
 
 if ($pluginInstalled) {
     if($hasAccess == true) {
-        $page->setHeadline('Statistik-Übersicht');
+        $page->setHeadline($gL10n->get('PLG_STATISTICS_STATISTICS'));
 
         $class_table = 'tableStatistic';
 

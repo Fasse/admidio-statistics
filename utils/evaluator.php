@@ -562,7 +562,7 @@ class Evaluator
 
 
     private function getProfileFieldNameFromID ($userFieldID) {
-        if (isset($userFieldID)) {
+        if (isset($userFieldID) && is_int($userFieldID)) {
             global $gDb;
             $sql = 'SELECT * FROM '. TBL_USER_FIELDS.' WHERE usf_id = ' . $userFieldID;
             $recordset = $gDb->query($sql);

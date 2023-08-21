@@ -1,10 +1,10 @@
 /*******************************************************************************
  * JavaScript-Functions for the editor.
- * 
+ *
  * @copyright 2004-2021 The Admidio Team
  * @see https://www.admidio.org/
  * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License v2.0 only
- * 
+ *
  ******************************************************************************/
 
 function loadConf(newConf) {
@@ -143,7 +143,7 @@ function editStructure(action, tableNr, colNr, rowNr, mvUp) {
 }
 
 function editRowOrder(){
-	
+
 }
 
 function doFormSubmit(mode) {
@@ -161,6 +161,8 @@ function doFormSubmit(mode) {
 	var submitParameters = "?mode=" + mode;
 
 	if (sta_id == 1 && mode == "save") {
+        doSubmit = true;
+        /*
 		name = prompt("Bitte gib einen Namen für die neue Konfiguration an:",
 				default_prompttext);
 		if (name == undefined || name == null) {
@@ -170,7 +172,7 @@ function doFormSubmit(mode) {
 		} else {
 			submitParameters += "&name=" + name;
 			doSubmit = true;
-		}
+		}*/
 	} else {
 		submitParameters += "&sta_id=" + sta_id;
 		doSubmit = true;

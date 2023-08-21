@@ -168,15 +168,19 @@ class DBAccess {
     }
 
     private function switchUnsaveableConditionChars($condition, $on){
-        if ($on) {
-            $search = array("}","{");
-            $replace = array(">","<");
-        } else {
-            $search = array(">","<");
-            $replace = array("}","{");
-        }
+        $conditionSanitized = '';
+        if ((string) $condition !== '') {
+            if ($on) {
+                $search = array("}", "{");
+                $replace = array(">", "<");
+            } else {
+                $search = array(">", "<");
+                $replace = array("}", "{");
+            }
 
-        return str_replace($search,$replace,$condition);
+            $conditionSanitized = str_replace($search, $replace, $condition);
+        }
+        return $conditionSanitized;
     }
 
 	//Löscht eine Statistik aus der DB anhand deren ID.
