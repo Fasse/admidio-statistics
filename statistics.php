@@ -15,98 +15,74 @@
  *
  *****************************************************************************/
 
-require_once(__DIR__. '/includes.php');
-require_once(__DIR__. '/utils/db_constants.php');
-require_once(__DIR__. '/install/install_functions.php');
+require_once(__DIR__ . '/includes.php');
+require_once(__DIR__ . '/utils/db_constants.php');
+require_once(__DIR__ . '/install/install_functions.php');
 
 $showOverview = false;
 
-if(!isset($plgAllowShow))
-{
+if (!isset($plgAllowShow)) {
     $plgAllowShow = array('Administrator');
 }
 
-if(!isset($plgAllowConfig))
-{
+if (!isset($plgAllowConfig)) {
     $plgAllowConfig = array('Administrator');
 }
 
-foreach ($plgAllowShow AS $i)
-{
-    if($i == 'Benutzer'
-        && $gValidLogin)
-    {
+foreach ($plgAllowShow as $i) {
+    if ($i == 'Benutzer'
+        && $gValidLogin) {
         $showOverview = true;
-    }
-    elseif($i == 'Rollenverwalter'
-        && $gCurrentUser->assignRoles())
-    {
+    } elseif ($i == 'Rollenverwalter'
+        && $gCurrentUser->assignRoles()) {
         $showOverview = true;
-    }
-    elseif($i == 'Listenberechtigte'
-        && $gCurrentUser->checkRolesRight('rol_all_lists_view'))
-    {
+    } elseif ($i == 'Listenberechtigte'
+        && $gCurrentUser->checkRolesRight('rol_all_lists_view')) {
         $showOverview = true;
-    }
-    elseif($i === 'Administrator' && $gCurrentUser->isAdministrator()) {
+    } elseif ($i === 'Administrator' && $gCurrentUser->isAdministrator()) {
         $showOverview = true;
-    }
-    elseif(hasRole($i))
-    {
+    } elseif (hasRole($i)) {
         $showOverview = true;
     }
 }
 
 $showConfig = false;
 
-foreach ($plgAllowConfig AS $i)
-{
-    if($i == 'Benutzer'
-        && $gValidLogin)
-    {
+foreach ($plgAllowConfig as $i) {
+    if ($i == 'Benutzer'
+        && $gValidLogin) {
         $showPlugin = true;
-    }
-    elseif($i == 'Rollenverwalter'
-        && $gCurrentUser->assignRoles())
-    {
+    } elseif ($i == 'Rollenverwalter'
+        && $gCurrentUser->assignRoles()) {
         $showConfig = true;
-    }
-    elseif($i == 'Listenberechtigte'
-        && $gCurrentUser->checkRolesRight('rol_all_lists_view'))
-    {
+    } elseif ($i == 'Listenberechtigte'
+        && $gCurrentUser->checkRolesRight('rol_all_lists_view')) {
         $showConfig = true;
-    }
-    elseif($i === 'Administrator' && $gCurrentUser->isAdministrator()) {
+    } elseif ($i === 'Administrator' && $gCurrentUser->isAdministrator()) {
         $showConfig = true;
-    }
-    elseif(hasRole($i))
-    {
+    } elseif (hasRole($i)) {
         $showConfig = true;
     }
 }
 
 $showInstall = false;
-if($gCurrentUser->isAdministrator())
-{
+if ($gCurrentUser->isAdministrator()) {
     $showInstall = true;
 }
 
 if ($showOverview || $showConfig || $showInstall) {
-     $sql = 'SELECT men_id FROM ' . TBL_MENU . '
+    $sql = 'SELECT men_id FROM ' . TBL_MENU . '
               WHERE men_name_intern IN (\'statistics\', \'statistics_editor\')';
-     $statement = $gDb->query($sql);
+    $statement = $gDb->query($sql);
 
-     if($statement->rowCount() === 0)
-     {
-        if(statCheckPreviousInstallations())
-        {
+    if ($statement->rowCount() === 0) {
+        if (statCheckPreviousInstallations()) {
             statAddMenu();
-        }
-        else
-        {
-            echo 'Please install plugin statistics first!';
+        } else {
+            header('Location: ./install/install.php');
+            exit();
         }
     } else {
-         echo 'Plugin is successfully installed. Please go to the menu of Admidio and select the new added entries of the statistic plugin!';
-     }
+        echo 'Plugin is successfully installed. Please go to the menu of Admidio and select the new added entries of the statistic plugin!';
+    }
 }

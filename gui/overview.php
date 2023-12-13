@@ -12,8 +12,8 @@
 
 
 require_once('../includes.php');
-require_once(ADMIDIO_PATH.'/adm_program/system/login_valid.php');
-require_once(STATISTICS_PATH.'/utils/db_access.php');
+require_once(ADMIDIO_PATH . '/adm_program/system/login_valid.php');
+require_once(STATISTICS_PATH . '/utils/db_access.php');
 
 // Url fuer die Zuruecknavigation merken
 $gNavigation->addStartUrl(CURRENT_URL, $gL10n->get('PLG_STATISTICS_STATISTICS'), 'fa-list');
@@ -37,45 +37,40 @@ $displayMenu = new RolesRights($gDb, 'menu_view', $row['men_id']);
 $rolesDisplayRight = $displayMenu->getRolesIds();
 
 // check for right to show the menu
-if (count($rolesDisplayRight) > 0 && !$displayMenu->hasRight($gCurrentUser->getRoleMemberships()))
-{
+if (count($rolesDisplayRight) > 0 && !$displayMenu->hasRight($gCurrentUser->getRoleMemberships())) {
     $hasAccess = false;
-}
-else
-{
+} else {
     $hasAccess = true;
 }
 
 if ($pluginInstalled) {
-    if($hasAccess == true) {
+    if ($hasAccess == true) {
         $page->setHeadline($gL10n->get('PLG_STATISTICS_STATISTICS'));
 
         $class_table = 'tableStatistic';
 
         $staDB = new DBAccess();
         global $gCurrentOrganization;
-        $staIDs = $staDB->getStatisticIDs($gCurrentOrganization->getValue('org_id',''));
+        $staIDs = $staDB->getStatisticIDs($gCurrentOrganization->getValue('org_id', ''));
 
-        if (count($staIDs) == 0){
+        if (count($staIDs) == 0) {
             $page->addHtml('Es konnten keine Statistik-Definitionen gefunden werden');
         } else {
             $page->addHtml('<p>Es wurden <b>' . count($staIDs) . '</b> Statistik-Definitionen gefunden:</p>');
             $page->addHtml('<p>W&auml;hlen Sie eine Statistik aus, welche angezeigt werden soll:</p>');
 
             //Create table object
-            $tableOverview = new HtmlTable($class_table, null, true, true);
+            $tableOverview = new HtmlTable($class_table, $page, true, true);
             // create array with all column heading values
             $columnHeading = array('Name der Statistik');
             $tableOverview->setColumnAlignByArray(array('left'));
             $tableOverview->addRowHeadingByArray($columnHeading);
             // create array with all statistic list
             $columnValues = array();
-            foreach($staIDs as $id)
-            {
-                $columnValues[] = '<a href="./show.php?sta_id='. $id . '">' .$staDB->getStatisticName($id) . '</a>';
+            foreach ($staIDs as $id) {
+                $columnValues[] = '<a href="./show.php?sta_id=' . $id . '">' . $staDB->getStatisticName($id) . '</a>';
             }
-            for ($result = 0; $result < count($columnValues); ++$result)
-            {
+            for ($result = 0; $result < count($columnValues); ++$result) {
                 $tableOverview->addRow($columnValues[$result]);
             }
             $htmlTableOverview = $tableOverview->show(false);
@@ -87,13 +82,13 @@ if ($pluginInstalled) {
         // => EXIT
     }
 } else {
-        $page->addHtml('<p>Das Plugin ist nicht installiert, bitte zuerst installieren.</p>');
-        $text = 'Zur Installation';
-        $link = '../install/install.php';
+    $page->addHtml('<p>Das Plugin ist nicht installiert, bitte zuerst installieren.</p>');
+    $text = 'Zur Installation';
+    $link = '../install/install.php';
 
-        $navbarPlugin = new HtmlForm('navbar_statistics_installation', $link, $page, array('type' => 'default', 'setFocus' => false));
-        $navbarPlugin->addSubmitButton('btn_send', $text);
-        $page->addHtml($navbarPlugin->show(false));
+    $navbarPlugin = new HtmlForm('navbar_statistics_installation', $link, $page, array('type' => 'default', 'setFocus' => false));
+    $navbarPlugin->addSubmitButton('btn_send', $text);
+    $page->addHtml($navbarPlugin->show(false));
 
 }
 $page->show();
