@@ -38,8 +38,7 @@ class DBAccess {
         global $gDb;
 
         $result = $gDb->query("SHOW TABLES LIKE '" . TBL_STATISTICS . '\'');
-        $table = $result->rowCount();
-        if ($table == 1) {
+	if ($result !== false && $result->rowCount() == 1)
            return true;
        } else {
            return false;
