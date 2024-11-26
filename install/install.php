@@ -18,6 +18,7 @@
  *
  *****************************************************************************/
 //Import benötigter Skripts
+
 require_once('../includes.php');
 require_once('install_functions.php');
 require_once(STATISTICS_PATH . '/statistic_objects/statistic.php');
@@ -97,7 +98,7 @@ function askInstallationStart($page)
     $selectionBox = array(4 => $gL10n->get('PLG_STATISTICS_INSTALL'), 5 => $gL10n->get('PLG_STATISTICS_UNINSTALL'));
     $navbarPlugin->addDescription($gL10n->get('PLG_STATISTICS_WELCOME_HEADLINE'));
     $navbarPlugin->addSelectBox('install-state', $gL10n->get('PLG_STATISTICS_ACTION'), $selectionBox, array('property' => HtmlForm::FIELD_REQUIRED));
-    $navbarPlugin->addSubmitButton('btn_send', $gL10n->get('PLG_STATISTICS_PERFORM_ACTION'));
+    $navbarPlugin->addSubmitButton('adm_button_send', $gL10n->get('PLG_STATISTICS_PERFORM_ACTION'));
     $navbarPlugin->closeGroupBox();
     $page->addHtml($navbarPlugin->show(false));
 }
@@ -126,7 +127,7 @@ function showActionButton($type = 'home')
             break;
     }
     $navbarPlugin->addInput('install-state', '', $value, array('class' => 'invisible'));
-    $navbarPlugin->addSubmitButton('btn_send', $text);
+    $navbarPlugin->addSubmitButton('adm_button_send', $text);
     $navbarPlugin->closeGroupBox();
     $page->addHtml($navbarPlugin->show(false));
 
@@ -158,7 +159,7 @@ function addStatisticTemplates()
 
 
     //Leere Statistik, die für die temporäre Bearbeitung einer Statistik reserviert ist
-    $statistic0 = new Statistic(null, $currentOrgID, 'TEMPORARY STATISTIC', null, null, null);
+    $statistic0 = new Statistic(null, $currentOrgID, 'TEMPORARY STATISTIC', null, null, 0);
 
     //Altersstatistik
     $statistic1 = new Statistic(null, $currentOrgID, $gL10n->get('PLG_STATISTICS_AGE_STATISTICS'), $gL10n->get('PLG_STATISTICS_AGE_STATISTICS'), $gL10n->get('PLG_STATISTICS_YEAR') . ' ' . date('Y'), 2);

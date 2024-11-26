@@ -14,7 +14,7 @@ use Ramsey\Uuid\Uuid;
 function statCheckPreviousInstallations() {
     global $gDb;
 
-    $sql = 'SELECT * FROM ' . TBL_STATISTICS;
+    $sql = 'SELECT 1 FROM ' . TBL_STATISTICS;
     $pdoStatement = $gDb->query($sql,false);
 
     if ($pdoStatement !== false && $pdoStatement->rowCount() > 0) {
@@ -30,8 +30,8 @@ function statAddMenu() {
 
     $sql = 'INSERT INTO '.TBL_MENU.'
                    (men_com_id, men_men_id_parent, men_uuid, men_node, men_order, men_standard, men_name_intern, men_url, men_icon, men_name, men_description)
-            VALUES (NULL, 3, \'' . Uuid::uuid4() . '\', 0, 100, false, \'statistics\', \''.FOLDER_PLUGINS.'/'.$pluginFolder.'/gui/overview.php\', \'fa-list\', \'PLG_STATISTICS_STATISTICS\', \'PLG_STATISTICS_STATISTICS_DESC\')
-                 , (NULL, 3, \'' . Uuid::uuid4() . '\', 0, 101, false, \'statistics_editor\', \''.FOLDER_PLUGINS.'/'.$pluginFolder.'/gui/editor.php\', \'fa-cog\', \'PLG_STATISTICS_STATISTICS_EDITOR\', \'PLG_STATISTICS_STATISTICS_EDITOR_DESC\')';
+            VALUES (NULL, 3, \'' . Uuid::uuid4() . '\', false, 100, false, \'statistics\', \''.FOLDER_PLUGINS.'/'.$pluginFolder.'/gui/overview.php\', \'bi-list\', \'PLG_STATISTICS_STATISTICS\', \'PLG_STATISTICS_STATISTICS_DESC\')
+                 , (NULL, 3, \'' . Uuid::uuid4() . '\', false, 101, false, \'statistics_editor\', \''.FOLDER_PLUGINS.'/'.$pluginFolder.'/gui/editor.php\', \'bi-gear-fill\', \'PLG_STATISTICS_STATISTICS_EDITOR\', \'PLG_STATISTICS_STATISTICS_EDITOR_DESC\')';
     $gDb->query($sql);
 
 }

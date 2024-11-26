@@ -1,5 +1,6 @@
 <?php
-/******************************************************************************
+/**
+ * ****************************************************************************
  * Hilsklasse zum Verwalten der Statistiken in der DB
  *
  * @copyright 2004-2021 The Admidio Team
@@ -23,25 +24,21 @@ class DBAccess {
     public function __construct() {
         global $gDb;
 
-        if ($this->pluginIsInstalled()) {
-            $this->tableStatistics = new TableAccess($gDb, TBL_STATISTICS, 'sta');
-            $this->tableTables = new TableAccess($gDb, TBL_TABLES, 'stt');
-            $this->tableColumns = new TableAccess($gDb, TBL_COLUMNS, 'stc');
-            $this->tableRows = new TableAccess($gDb, TBL_ROWS, 'str');
-            $this->pluginInstalled = true;
-        } else {
-            $this->pluginInstalled = false;
-        }
+        $this->tableStatistics = new TableAccess($gDb, TBL_STATISTICS, 'sta');
+        $this->tableTables = new TableAccess($gDb, TBL_TABLES, 'stt');
+        $this->tableColumns = new TableAccess($gDb, TBL_COLUMNS, 'stc');
+        $this->tableRows = new TableAccess($gDb, TBL_ROWS, 'str');
+        $this->pluginInstalled = true;
     }
 
     private function pluginIsInstalled(){
         global $gDb;
 
-        $result = $gDb->query("SHOW TABLES LIKE '" . TBL_STATISTICS . '\'');
-	if ($result !== false && $result->rowCount() == 1)
-           return true;
-       } else {
-           return false;
+        $result = $gDb->query('SELECT 1 FROM ' . TBL_STATISTICS);
+	    if ($result !== false && $result->rowCount() > 0) {
+            return true;
+        } else {
+            return false;
        }
     }
 
