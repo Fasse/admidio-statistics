@@ -304,9 +304,8 @@ if ($pluginInstalled) {
 
         $stdFrameStyle = 'border:1px solid #7d7d7d; margin: 10px 0px;padding: 10px; overflow: auto;';
 
-        $page->addHeader('
-			<link rel="stylesheet" type="text/css" href="../stylesheets/editor-stylesheet.css">
-            <script src="../utils/editor-scripts.js" type="text/javascript"></script>');
+        $page->addCssFile('../stylesheets/editor-stylesheet.css');
+        $page->addJavascriptFile('../utils/editor-scripts.js');
 
         $doOnLoad = 'checkAllSelectBoxes(); adaptStdStatisticRoleSelectBox();';
         if ($getScrollPos != 0){
@@ -328,12 +327,12 @@ if ($pluginInstalled) {
 
                 <p>'.$gL10n->get('PLG_STATISTICS_EDITOR_CONFIG_LOAD_OR_CHANGE').'</p>'
                 .generateStatisticConfigSelectBox($allStatisticConfigurations,$getStatisticID,'statistic_conf_select','onchange="loadConf()"').'
-                <a class="admidio-icon-link" href="javascript: doFormSubmit(\'save\')"><i class="fas fa-save" data-toggle="tooltip" title="'.$gL10n->get('SYS_SAVE_CONFIGURATION').'"></i></a>
-                <a class="admidio-icon-link" href="javascript: doFormSubmit(\'saveas\')"><i class="fas fa-clone" data-toggle="tooltip" title="'.$gL10n->get('SYS_COPY_VAR', array($gL10n->get('SYS_CONFIGURATION'))).'"></i></a>
-                <a class="admidio-icon-link" href="javascript: loadConf(true)"><i class="fas fa-plus-circle" data-toggle="tooltip" title="'.$gL10n->get('SYS_CREATE_NEW_CONFIGURATION').'"></i></a>
-                <a class="admidio-icon-link" href="javascript: loadConf()"><i class="fas fa-undo" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_UNDO_ALL_CHANGES_OF_CONFIGURATION').'"></i></a>
-                <a class="admidio-icon-link" href="javascript: deleteConfiguration()"><i class="fas fa-trash-alt" data-toggle="tooltip" title="'.$gL10n->get('SYS_DELETE_CONFIGURATION').'"></i></a>
-                <a class="admidio-icon-link" href="../resources/Benutzerhandbuch.pdf" target="_blank"><i class="fas fa-info-circle admidio-info-icon" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_OPEN_MANUAL_GERMAN').'"></i></a>
+                <a class="admidio-icon-link" href="javascript: doFormSubmit(\'save\')"><i class="bi bi-check-circle" data-bs-toggle="tooltip" title="'.$gL10n->get('SYS_SAVE_CONFIGURATION').'"></i></a>
+                <a class="admidio-icon-link" href="javascript: doFormSubmit(\'saveas\')"><i class="bi bi-copy" data-bs-toggle="tooltip" title="'.$gL10n->get('SYS_COPY_VAR', array($gL10n->get('SYS_CONFIGURATION'))).'"></i></a>
+                <a class="admidio-icon-link" href="javascript: loadConf(true)"><i class="bi bi-plus-circle-fill" data-bs-toggle="tooltip" title="'.$gL10n->get('SYS_CREATE_NEW_CONFIGURATION').'"></i></a>
+                <a class="admidio-icon-link" href="javascript: loadConf()"><i class="bi bi-arrow-counterclockwise" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_UNDO_ALL_CHANGES_OF_CONFIGURATION').'"></i></a>
+                <a class="admidio-icon-link" href="javascript: deleteConfiguration()"><i class="bi bi-trash" data-bs-toggle="tooltip" title="'.$gL10n->get('SYS_DELETE_CONFIGURATION').'"></i></a>
+                <a class="admidio-icon-link" href="../resources/Benutzerhandbuch.pdf" target="_blank"><i class="bi bi-info-circle-fill admidio-info-icon" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_OPEN_MANUAL_GERMAN').'"></i></a>
 
                 <h3>'.$gL10n->get('PLG_STATISTICS_GENERAL_INFORMATIONS').'</h3>
                 <div class ="InputLabelBox form-group">
@@ -347,7 +346,7 @@ if ($pluginInstalled) {
                 <div class ="InputLabelBox form-group">
                     <span class="textLabel control-label">'.$gL10n->get('PLG_STATISTICS_STATISTICS_STANDARD_ROLE').'</span>
                     <a class="admidio-icon-link openPopup" href="javascript:void(0);" data-href="help.php?help_id=533">
-                        <i class="fas fa-info-circle admidio-info-icon" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'"></i>
+                        <i class="bi bi-info-circle-fill admidio-info-icon" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'"></i>
                     </a>'
                     .FormElements::generateRoleSelectBox($statistic->getStandardRoleID(),'statistic_std_role').'
                     <input class ="textInput" type="hidden" name="nr_of_tables" id="nr_of_tables" value="'.$nrOfTables.'">
@@ -374,7 +373,7 @@ if ($pluginInstalled) {
                 <div class ="InputLabelBox form-group">
                     <span class="textLabel control-label">'.$gL10n->get('PLG_STATISTICS_TABLE_ROLE').'</span>
                     <a class="admidio-icon-link openPopup" href="javascript:void(0);" data-href="help.php?help_id=542">
-                        <i class="fas fa-info-circle admidio-info-icon" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'"></i>
+                        <i class="bi bi-info-circle-fill admidio-info-icon" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'"></i>
                     </a>'
                     .FormElements::generateRoleSelectBox($tables[$tc]->getRoleID(),'table'.$tc.'_role" class="roleInput').'
                 </div>
@@ -407,7 +406,7 @@ if ($pluginInstalled) {
                         if ($frmRow > 0 && $frmRow < 7){
                             $page->addHtml('
                             <a class="admidio-icon-link openPopup" href="javascript:void(0);" data-href="help.php?help_id=55'.$frmRow.'">
-                                <i class="fas fa-info-circle admidio-info-icon" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'"></i>
+                                <i class="bi bi-info-circle-fill admidio-info-icon" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'"></i>
                             </a>');
                         }
 
@@ -430,17 +429,17 @@ if ($pluginInstalled) {
                         }elseif ($frmRow == 7){
 
                         	if ($cc > 1){
-                        		$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvcol\',\''.$tc.'\',\''.$colIdf.'\',\'\',\'true\')"><i class="fas fa-chevron-circle-left" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_MOVE_COLUMN_BACKWARDS').'"></i></a>');
+                        		$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvcol\',\''.$tc.'\',\''.$colIdf.'\',\'\',\'true\')"><i class="bi bi-arrow-left-circle" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_MOVE_COLUMN_BACKWARDS').'"></i></a>');
                         	}
                         	if ($cc < $effectiveNrOfColumns){
-                        		$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvcol\',\''.$tc.'\',\''.$colIdf.'\')"><i class="fas fa-chevron-circle-right" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_MOVE_COLUMN_FORWARD').'"></i></a>');
+                        		$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvcol\',\''.$tc.'\',\''.$colIdf.'\')"><i class="bi bi-arrow-right-circle" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_MOVE_COLUMN_FORWARD').'"></i></a>');
                         	}
-                        	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'duplcol\',\''.$tc.'\',\''.$colIdf.'\')"><i class="fas fa-clone" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_DUPLICATE_COLUMN').'"></i></a>');
+                        	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'duplcol\',\''.$tc.'\',\''.$colIdf.'\')"><i class="bi bi-copy" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_DUPLICATE_COLUMN').'"></i></a>');
                         	if ($effectiveNrOfColumns > 1){
-                        		$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'delcol\',\''.$tc.'\',\''.$colIdf.'\')"><i class="fas fa-trash-alt" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_DELETE_COLUMN').'"></i></a>');
+                        		$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'delcol\',\''.$tc.'\',\''.$colIdf.'\')"><i class="bi bi-trash" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_DELETE_COLUMN').'"></i></a>');
                         	}
                             if ($cc == $effectiveNrOfColumns){
-                            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'addcol\',\''.$tc.'\')"><i class="fas fa-plus-circle" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_ADD_COLUMN').'"></i></a>');
+                            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'addcol\',\''.$tc.'\')"><i class="bi bi-plus-circle-fill" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_ADD_COLUMN').'"></i></a>');
                             }
                         }else{
                             $page->addHtml('<input class="form-control" name="table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow].'" id="table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow].'" type="text">');
@@ -482,7 +481,7 @@ if ($pluginInstalled) {
                         if ($frmCol > 0 && $frmCol < 4){
                             $page->addHtml('
                             <a class="admidio-icon-link openPopup" href="javascript:void(0);" data-href="help.php?help_id=56'.($frmCol+1).'">
-                                <i class="fas fa-info-circle admidio-info-icon" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'"></i>
+                                <i class="bi bi-info-circle-fill admidio-info-icon" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'"></i>
                             </a>');
                         }
                     }elseif($rc == 1){
@@ -496,15 +495,15 @@ if ($pluginInstalled) {
                     }else{
                         if ($frmCol == 0){
                             $page->addHtml($gL10n->get('PLG_STATISTICS_XY_ROW', array(($rc-1).'.')));
-                            $page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'duplrow\',\''.$tc.'\',\'\',\''.$rowIdf.'\')"><i class="fas fa-clone" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_DUPLICATE_ROW').'"></i></a>');
+                            $page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'duplrow\',\''.$tc.'\',\'\',\''.$rowIdf.'\')"><i class="bi bi-copy" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_DUPLICATE_ROW').'"></i></a>');
                             if ($rc < $nrOfRows-2){
-                            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvrow\',\''.$tc.'\',\'\',\''.$rowIdf.'\')"><i class="fas fa-chevron-circle-down" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_MOVE_ROW_DOWN').'"></i></a>');
+                            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvrow\',\''.$tc.'\',\'\',\''.$rowIdf.'\')"><i class="bi bi-arrow-down-circle-fill" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_MOVE_ROW_DOWN').'"></i></a>');
                             }
                             if ($rc > 2){
-                            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvrow\',\''.$tc.'\',\'\',\''.$rowIdf.'\',\'true\')"><i class="fas fa-chevron-circle-up" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_MOVE_ROW_UP').'"></i></a>');
+                            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvrow\',\''.$tc.'\',\'\',\''.$rowIdf.'\',\'true\')"><i class="bi bi-arrow-up-circle-fill" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_MOVE_ROW_UP').'"></i></a>');
                             }
                             if ($rc == $nrOfRows-2){
-                            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'addrow\',\''.$tc.'\')"><i class="fas fa-plus-circle" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_ADD_ROW').'"></i></a>');
+                            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'addrow\',\''.$tc.'\')"><i class="bi bi-plus-circle-fill" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_ADD_ROW').'"></i></a>');
                             }
 
                         }elseif($frmCol == 1){
@@ -515,7 +514,7 @@ if ($pluginInstalled) {
                             $page->addHtml('<input class="form-control" name="table'.$tc.'_row'.$rowIdf.'_'.$formRowInputNames[$frmCol].'" id="table'.$tc.'_row'.$rowIdf.'_'.$formRowInputNames[$frmCol].'" type="text" value="'.$rows[$rowIdf]->getCondition()->getUserCondition().'">');
                         }elseif($frmCol == 4){
                         	if ($effectiveNrOfRows > 1){
-                        		$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'delrow\',\''.$tc.'\',\'\',\''.$rowIdf.'\')"><i class="fas fa-trash-alt" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_DELETE_ROW').'"></i></a>');
+                        		$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'delrow\',\''.$tc.'\',\'\',\''.$rowIdf.'\')"><i class="bi bi-trash" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_DELETE_ROW').'"></i></a>');
                         	}
                         }
                     }
@@ -534,24 +533,24 @@ if ($pluginInstalled) {
             $page->addHtml('</div>');
 
             if ($tc == $nrOfTables-1){
-            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'addtable\')"><i class="fas fa-plus-circle" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_ADD_TABLE').'"></i></a>');
+            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'addtable\')"><i class="bi bi-plus-circle-fill" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_ADD_TABLE').'"></i></a>');
             }
             if ($tc > 0){
-            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvtable\',\''.$tc.'\',\'\',\'\',\'true\')"><i class="fas fa-chevron-circle-up" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_MOVE_TABLE_UP').'"></i></a>');
+            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvtable\',\''.$tc.'\',\'\',\'\',\'true\')"><i class="bi bi-arrow-up-circle-fill" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_MOVE_TABLE_UP').'"></i></a>');
             }
             if ($tc < $nrOfTables-1){
-            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvtable\',\''.$tc.'\')"><i class="fas fa-chevron-circle-down" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_MOVE_TABLE_DOWN').'"></i></a>');
+            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'mvtable\',\''.$tc.'\')"><i class="bi bi-arrow-down-circle-fill" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_MOVE_TABLE_DOWN').'"></i></a>');
             }
-            $page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'dupltable\',\''.$tc.'\')"><i class="fas fa-clone" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_DUPLICATE_TABLE').'"></i></a>');
+            $page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'dupltable\',\''.$tc.'\')"><i class="bi bi-copy" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_DUPLICATE_TABLE').'"></i></a>');
             if ($nrOfTables >1){
-            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'deltable\',\''.$tc.'\')"><i class="fas fa-trash-alt" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_DELETE_TABLE').'"></i></a>');
+            	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'deltable\',\''.$tc.'\')"><i class="bi bi-trash" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_DELETE_TABLE').'"></i></a>');
             }
 
             $page->addHtml('</div>');
         }
 
         $page->addHtml('<br /><input class="btn btn-primary admidio-margin-bottom" type="button" name="show_statistic" value="Statistik anzeigen" onclick="doFormSubmit(\'show\')" />');
-        $page->addHtml('<a class="admidio-icon-link align-top openPopup" href="javascript:void(0);" data-href="help.php?help_id=427"><i class="fas fa-info-circle admidio-info-icon" data-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'"></i></a>');
+        $page->addHtml('<a class="admidio-icon-link align-top openPopup" href="javascript:void(0);" data-href="help.php?help_id=427"><i class="bi bi-info-circle-fill admidio-info-icon" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'"></i></a>');
         $page->addHtml('</form>');
     } else  {
 

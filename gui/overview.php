@@ -10,13 +10,12 @@
  *
  *****************************************************************************/
 
-
 require_once('../includes.php');
 require_once(ADMIDIO_PATH . '/adm_program/system/login_valid.php');
 require_once(STATISTICS_PATH . '/utils/db_access.php');
 
 // Url fuer die Zuruecknavigation merken
-$gNavigation->addStartUrl(CURRENT_URL, $gL10n->get('PLG_STATISTICS_STATISTICS'), 'fa-list');
+$gNavigation->addStartUrl(CURRENT_URL, $gL10n->get('PLG_STATISTICS_STATISTICS'), 'bi-list');
 
 // Html-Kopf wird geschrieben
 $page = new HtmlPage('admidio-plugin-statistics-overview', $gL10n->get('PLG_STATISTICS_STATISTICS'));
@@ -87,7 +86,7 @@ if ($pluginInstalled) {
     $link = '../install/install.php';
 
     $navbarPlugin = new HtmlForm('navbar_statistics_installation', $link, $page, array('type' => 'default', 'setFocus' => false));
-    $navbarPlugin->addSubmitButton('btn_send', $text);
+    $navbarPlugin->addSubmitButton('adm_button_send', $text);
     $page->addHtml($navbarPlugin->show(false));
 
 }

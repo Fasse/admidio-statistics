@@ -238,11 +238,11 @@ $shortTexts = array(
 
 
 $helpImages = array(
-    'add'                    =>'<i class="fas fa-plus-circle"></i>',
-    'save'                   =>'<i class="fas fa-save"></i>',
-    'saveas'                 =>'<i class="fas fa-clone"></i>',
-    'undo'                   =>'<i class="fas fa-undo"></i>',
-    'delete'                 =>'<i class="fas fa-trash-alt"></i>',
+    'add'                    =>'<i class="bi bi-plus-circle-fill"></i>',
+    'save'                   =>'<i class="bi bi-check-circle"></i>',
+    'saveas'                 =>'<i class="bi bi-copy"></i>',
+    'undo'                   =>'<i class="bi bi-arrow-counterclockwise"></i>',
+    'delete'                 =>'<i class="bi bi-trash"></i>',
     'button_show'            =>'<img src="../resources/images/button_show.png" alt="button_show"/>',
     'button_back'            =>'<img src="../resources/images/button_back.png" alt="button_back"/>',
     'button_add_table'       =>'<img src="../resources/images/button_add_table.png" alt="button_add_table"/>',
@@ -514,7 +514,7 @@ function displayHelpText($helpID){
     $helpWindow .= '
         <div class="modal-header">
             <h3 class="modal-title">'.$gL10n->get('SYS_NOTE').'</h3>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">';
             if (array_key_exists($helpID,$helpTitles)){

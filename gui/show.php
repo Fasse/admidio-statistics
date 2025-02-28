@@ -40,8 +40,8 @@ if ($hasAccess == true) {
             $statisticDefinition = $staDB->getStatistic($getStaId);
             $staCalc = new Evaluator();
             $statistic = $staCalc->calculateStatistic($statisticDefinition);
-        } catch (AdmException $e) {
-            $e->showHtml();
+        } catch (throwable $e) {
+            echo $e->getMessage();
         }
     } else {
         $gMessage->show($gL10n->get('SYS_INVALID_PAGE_VIEW'));
@@ -61,7 +61,7 @@ if ($hasAccess == true) {
         $page->setPrintMode();
     } else {
         // link to print preview
-        $page->addPageFunctionsMenuItem('menu_item_print_view', $gL10n->get('SYS_PRINT_PREVIEW'), 'javascript:void();', 'fa-print');
+        $page->addPageFunctionsMenuItem('menu_item_print_view', $gL10n->get('SYS_PRINT_PREVIEW'), 'javascript:void();', 'bi-printer-fill');
     }
 
     $page->addHtml('<div>');
