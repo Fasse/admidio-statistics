@@ -11,6 +11,8 @@
  *
  *****************************************************************************/
 
+use Admidio\Infrastructure\Entity\Entity;
+
 require_once('db_constants.php');
 
 
@@ -24,10 +26,10 @@ class DBAccess {
     public function __construct() {
         global $gDb;
 
-        $this->tableStatistics = new TableAccess($gDb, TBL_STATISTICS, 'sta');
-        $this->tableTables = new TableAccess($gDb, TBL_TABLES, 'stt');
-        $this->tableColumns = new TableAccess($gDb, TBL_COLUMNS, 'stc');
-        $this->tableRows = new TableAccess($gDb, TBL_ROWS, 'str');
+        $this->tableStatistics = new Entity($gDb, TBL_STATISTICS, 'sta');
+        $this->tableTables = new Entity($gDb, TBL_TABLES, 'stt');
+        $this->tableColumns = new Entity($gDb, TBL_COLUMNS, 'stc');
+        $this->tableRows = new Entity($gDb, TBL_ROWS, 'str');
         $this->pluginInstalled = true;
     }
 

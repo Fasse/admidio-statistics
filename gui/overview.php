@@ -10,6 +10,8 @@
  *
  *****************************************************************************/
 
+use Admidio\Roles\Entity\RolesRights;
+
 require_once('../includes.php');
 require_once(ADMIDIO_PATH . '/adm_program/system/login_valid.php');
 require_once(STATISTICS_PATH . '/utils/db_access.php');

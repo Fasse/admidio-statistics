@@ -9,6 +9,9 @@
  ****************************************************************************
  */
 
+use Admidio\Infrastructure\Utils\StringUtils;
+use Admidio\Roles\ValueObject\ConditionParser;
+
 require_once(STATISTICS_PATH.'/statistic_objects/statistic.php');
 
 class Evaluator
@@ -522,7 +525,7 @@ class Evaluator
                     $dataType = 'checkbox';
                     $arrCheckboxValues = array($gL10n->get('SYS_YES'), $gL10n->get('SYS_NO'), 'true', 'false');
                     $arrCheckboxKeys   = array(1, 0, 1, 0);
-                    $condition = str_replace(array_map('StringUtils::strToLower',$arrCheckboxValues), $arrCheckboxKeys, StringUtils::strToLower($condition));
+                    $condition = str_replace(array_map('Admidio\Infrastructure\Utils\StringUtils::strToLower',$arrCheckboxValues), $arrCheckboxKeys, StringUtils::strToLower($condition));
                     break;
                 case 'NUMERIC':
                     $dataType = 'int';
@@ -533,7 +536,7 @@ class Evaluator
                     // replace all field values with their internal numbers
                     $arrListValues = $gProfileFields->getPropertyById($userFieldID, 'usf_value_list', 'text');
                     // replace with preg_replace the whole word so that male will not be replaced in female
-                    $condition = array_search(StringUtils::strToLower($condition), array_map('StringUtils::strToLower', $arrListValues), true);
+                    $condition = array_search(StringUtils::strToLower($condition), array_map('Admidio\Infrastructure\Utils\StringUtils::strToLower', $arrListValues), true);
                     break;
                 default:
                     $dataType = 'string';

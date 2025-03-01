@@ -1,4 +1,7 @@
 <?php
+
+use Admidio\Infrastructure\Language;
+
 /******************************************************************************
  * Factory class that creates elements for html forms
  *
