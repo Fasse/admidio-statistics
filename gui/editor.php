@@ -306,8 +306,8 @@ if ($pluginInstalled) {
 
         $stdFrameStyle = 'border:1px solid #7d7d7d; margin: 10px 0px;padding: 10px; overflow: auto;';
 
-        $page->addCssFile('../stylesheets/editor-stylesheet.css');
-        $page->addJavascriptFile('../utils/editor-scripts.js');
+        $page->addCssFile(ADMIDIO_URL . FOLDER_PLUGINS . '/statistics/stylesheets/editor-stylesheet.css');
+        $page->addJavascriptFile(ADMIDIO_URL . FOLDER_PLUGINS . '/statistics/utils/editor-scripts.js');
 
         $doOnLoad = 'checkAllSelectBoxes(); adaptStdStatisticRoleSelectBox();';
         if ($getScrollPos != 0){
