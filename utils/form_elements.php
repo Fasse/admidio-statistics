@@ -75,7 +75,7 @@ class FormElements
         // create sql statement depending on the users rights
         $condition = '';
         $active_roles = 1;
-        if($showMode == 1 && $gCurrentUser->manageRoles() == false)
+        if($showMode == 1 && $gCurrentUser->isAdministratorRoles() == false)
         {
             // don't show roles that have the right to assign other roles
             $condition .= ' AND rol_assign_roles = \'0\' ';

@@ -84,7 +84,7 @@ if ($pluginInstalled) {
         		}
 
         		// add profile field to user field array
-        		if($field->getValue('usf_hidden') == 0 || $gCurrentUser->editUsers())
+        		if($field->getValue('usf_hidden') == 0 || $gCurrentUser->isAdministratorUsers())
         		{
 
         			//$user_fields[$i] = new Object();
