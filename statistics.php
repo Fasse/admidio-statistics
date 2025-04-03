@@ -34,7 +34,7 @@ foreach ($plgAllowShow as $i) {
         && $gValidLogin) {
         $showOverview = true;
     } elseif ($i == 'Rollenverwalter'
-        && $gCurrentUser->assignRoles()) {
+        && $gCurrentUser->isAdministratorRoles()) {
         $showOverview = true;
     } elseif ($i == 'Listenberechtigte'
         && $gCurrentUser->checkRolesRight('rol_all_lists_view')) {
@@ -53,7 +53,7 @@ foreach ($plgAllowConfig as $i) {
         && $gValidLogin) {
         $showPlugin = true;
     } elseif ($i == 'Rollenverwalter'
-        && $gCurrentUser->assignRoles()) {
+        && $gCurrentUser->isAdministratorRoles()) {
         $showConfig = true;
     } elseif ($i == 'Listenberechtigte'
         && $gCurrentUser->checkRolesRight('rol_all_lists_view')) {
