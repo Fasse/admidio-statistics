@@ -11,18 +11,17 @@
  *****************************************************************************/
 
 use Admidio\Roles\Entity\RolesRights;
+use Admidio\UI\Presenter\PagePresenter;
 
 require_once('../includes.php');
-require_once(ADMIDIO_PATH . '/adm_program/system/login_valid.php');
+require_once(ADMIDIO_PATH . FOLDER_SYSTEM . '/login_valid.php');
 require_once(STATISTICS_PATH . '/utils/db_access.php');
 
 // Url fuer die Zuruecknavigation merken
 $gNavigation->addStartUrl(CURRENT_URL, $gL10n->get('PLG_STATISTICS_STATISTICS'), 'bi-list');
 
-// Html-Kopf wird geschrieben
-$page = new HtmlPage('admidio-plugin-statistics-overview', $gL10n->get('PLG_STATISTICS_STATISTICS'));
+$page = PagePresenter::withHtmlIDAndHeadline('adm_plugin_statistics_overview', $gL10n->get('PLG_STATISTICS_STATISTICS'));
 
-//DB-Hilfsklasse instanzieren
 $staDBHandler = new DBAccess();
 
 //Überprüfen, ob das Plugin installiert ist

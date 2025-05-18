@@ -9,6 +9,7 @@
  *****************************************************************************/
 
 use Admidio\Roles\Entity\RolesRights;
+use Admidio\UI\Presenter\PagePresenter;
 
 require_once('../includes.php');
 require_once(STATISTICS_PATH . '/statistic_objects/statistic.php');
@@ -52,7 +53,8 @@ if ($hasAccess == true) {
     $headline = ($statistic->getTitle() == '' ? '' : $statistic->getTitle());
     $gNavigation->addUrl(CURRENT_URL, $headline);
 
-    $page = new HtmlPage('admidio-plugin-statistics', $headline);
+    $page = PagePresenter::withHtmlIDAndHeadline('adm_plugin_statistics', $headline);
+
     $page->addJavascript('
         $("#menu_item_print_view").click(function () {
             window.open("' . ADMIDIO_URL . FOLDER_PLUGINS . '/statistics/gui/show.php?" +
@@ -148,7 +150,7 @@ if ($hasAccess == true) {
         $gMessage->show($gL10n->get('SYS_NO_RIGHTS'));
         // => EXIT
     } else {
-        require_once(ADMIDIO_PATH . '/adm_program/system/login_valid.php');
+        require_once(ADMIDIO_PATH . FOLDER_SYSTEM . '/login_valid.php');
     }
 }
 ?>

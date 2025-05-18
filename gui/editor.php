@@ -322,11 +322,10 @@ if ($pluginInstalled) {
         $nrOfTables = count($tables);
 
         $page->addHtml('
-         <div class="formHead">'.$gL10n->get('PLG_STATISTICS_STATISTICS_EDITOR').'</div>
+        <h2>'.$gL10n->get('PLG_STATISTICS_STATISTICS_EDITOR').'</h2>
+
         <form id="form_sta_config" name="form_sta_config" action="editor_process.php" method="post">
-
             <div class= "stdDiv" id="div_config_selection">
-
                 <p>'.$gL10n->get('PLG_STATISTICS_EDITOR_CONFIG_LOAD_OR_CHANGE').'</p>'
                 .generateStatisticConfigSelectBox($allStatisticConfigurations,$getStatisticID,'statistic_conf_select','onchange="loadConf()"').'
                 <a class="admidio-icon-link" href="javascript: doFormSubmit(\'save\')"><i class="bi bi-check-circle" data-bs-toggle="tooltip" title="'.$gL10n->get('SYS_SAVE_CONFIGURATION').'"></i></a>
@@ -357,7 +356,7 @@ if ($pluginInstalled) {
             </div>
         ');
 
-        //Schleife für die Erzegung der Eingabemaske für die Tabellen-Konfigurationen
+        //Schleife für die Erzeugung der Eingabemaske für die Tabellen-Konfigurationen
         for ($tc=0;$tc<$nrOfTables;$tc++) {
             $columns = $tables[$tc]->getColumns();
             $rows = $tables[$tc]->getRows();
@@ -387,7 +386,7 @@ if ($pluginInstalled) {
                     <table class="col_conf_tbl">
             ');
 
-            //Schleife für die Erzegung der Eingabe-Tabelle der Spalten-Konfigurationen
+            //Schleife für die Erzeugung der Eingabe-Tabelle der Spalten-Konfigurationen
             for ($frmRow=0;$frmRow<8;$frmRow++) {
                 if ($frmRow == 0){
                     $page->addHtml('<thead>');
@@ -560,7 +559,7 @@ if ($pluginInstalled) {
             $gMessage->show($gL10n->get('SYS_NO_RIGHTS'));
             // => EXIT
         } else {
-            require_once(ADMIDIO_PATH.'/adm_program/system/login_valid.php');
+            require_once(ADMIDIO_PATH . FOLDER_SYSTEM . '/login_valid.php');
         }
     }
 } else {
