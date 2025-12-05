@@ -1,6 +1,6 @@
 <?php
 /******************************************************************************
- * Statistiken V 3.6.0 (kompatibel mit Admidio 5.0 and above)
+ * Statistiken V 3.7.0 (kompatibel mit Admidio 5.0 and above)
  *
  * Dieses Plugin ermöglicht das Erstellen von Statistiken aus den Profildaten
  * der angemeldeten Benutzer. Konfigurierte Statistiken können gespeichert,
