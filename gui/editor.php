@@ -326,31 +326,48 @@ if ($pluginInstalled) {
 
         <form id="form_sta_config" name="form_sta_config" action="editor_process.php" method="post">
             <div class= "stdDiv" id="div_config_selection">
-                <p>'.$gL10n->get('PLG_STATISTICS_EDITOR_CONFIG_LOAD_OR_CHANGE').'</p>'
-                .generateStatisticConfigSelectBox($allStatisticConfigurations,$getStatisticID,'statistic_conf_select','onchange="loadConf()"').'
-                <a class="admidio-icon-link" href="javascript: doFormSubmit(\'save\')"><i class="bi bi-check-circle" data-bs-toggle="tooltip" title="'.$gL10n->get('SYS_SAVE_CONFIGURATION').'"></i></a>
-                <a class="admidio-icon-link" href="javascript: doFormSubmit(\'saveas\')"><i class="bi bi-copy" data-bs-toggle="tooltip" title="'.$gL10n->get('SYS_COPY_VAR', array($gL10n->get('SYS_CONFIGURATION'))).'"></i></a>
-                <a class="admidio-icon-link" href="javascript: loadConf(true)"><i class="bi bi-plus-circle-fill" data-bs-toggle="tooltip" title="'.$gL10n->get('SYS_CREATE_NEW_CONFIGURATION').'"></i></a>
-                <a class="admidio-icon-link" href="javascript: loadConf()"><i class="bi bi-arrow-counterclockwise" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_UNDO_ALL_CHANGES_OF_CONFIGURATION').'"></i></a>
-                <a class="admidio-icon-link" href="javascript: deleteConfiguration()"><i class="bi bi-trash" data-bs-toggle="tooltip" title="'.$gL10n->get('SYS_DELETE_CONFIGURATION').'"></i></a>
-                <a class="admidio-icon-link" href="../resources/Benutzerhandbuch.pdf" target="_blank"><i class="bi bi-info-circle-fill admidio-info-icon" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_OPEN_MANUAL_GERMAN').'"></i></a>
+                <p>'.$gL10n->get('PLG_STATISTICS_EDITOR_CONFIG_LOAD_OR_CHANGE').'</p>
+                <div class ="admidio-form-group row mb-3">
+                    <label class="col-sm-4 col-form-label">'.$gL10n->get('PLG_STATISTICS_STATISTIC').'</label>
+                    <div class="col-sm-8">'
+                        .generateStatisticConfigSelectBox($allStatisticConfigurations,$getStatisticID,'statistic_conf_select','onchange="loadConf()"').'
+                    </div>
+                </div>
+                <div class="admidio-form-group row mb-3">
+                    <label class="col-sm-4 col-form-label">&nbsp;</label>
+                    <div class="col-sm-8">
+                        <a class="admidio-icon-link" href="javascript: doFormSubmit(\'save\')"><i class="bi bi-check-circle" data-bs-toggle="tooltip" title="'.$gL10n->get('SYS_SAVE_CONFIGURATION').'"></i></a>
+                        <a class="admidio-icon-link" href="javascript: doFormSubmit(\'saveas\')"><i class="bi bi-copy" data-bs-toggle="tooltip" title="'.$gL10n->get('SYS_COPY_VAR', array($gL10n->get('SYS_CONFIGURATION'))).'"></i></a>
+                        <a class="admidio-icon-link" href="javascript: loadConf(true)"><i class="bi bi-plus-circle-fill" data-bs-toggle="tooltip" title="'.$gL10n->get('SYS_CREATE_NEW_CONFIGURATION').'"></i></a>
+                        <a class="admidio-icon-link" href="javascript: loadConf()"><i class="bi bi-arrow-counterclockwise" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_UNDO_ALL_CHANGES_OF_CONFIGURATION').'"></i></a>
+                        <a class="admidio-icon-link" href="javascript: deleteConfiguration()"><i class="bi bi-trash" data-bs-toggle="tooltip" title="'.$gL10n->get('SYS_DELETE_CONFIGURATION').'"></i></a>
+                        <a class="admidio-icon-link" href="../resources/Benutzerhandbuch.pdf" target="_blank"><i class="bi bi-info-circle-fill admidio-info-icon" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_OPEN_MANUAL_GERMAN').'"></i></a>
+                    </div>
+                </div>
 
                 <h3>'.$gL10n->get('PLG_STATISTICS_GENERAL_INFORMATIONS').'</h3>
-                <div class ="InputLabelBox form-group">
-                    <span class="textLabel control-label">'.$gL10n->get('PLG_STATISTICS_STATISTICS_TITLE').'</span>
-                    <input class ="textInput form-control" type="text" name="statistic_title" id="statistic_title" value="'.$statistic->getTitle().'">
+                <div class ="admidio-form-group row mb-3">
+                    <label class="col-sm-4 col-form-label">'.$gL10n->get('PLG_STATISTICS_STATISTICS_TITLE').'</label>
+                    <div class="col-sm-8">
+                        <input class ="textInput form-control" type="text" name="statistic_title" id="statistic_title" value="'.$statistic->getTitle().'">
+                    </div>
                 </div>
-                <div class ="InputLabelBox form-group">
-                    <span class="textLabel control-label">'.$gL10n->get('PLG_STATISTICS_STATISTICS_SUBTITLE').'</span>
-                    <input class ="textInput form-control" type="text" name="statistic_subtitle" id="statistic_subtitle" value="'.$statistic->getSubtitle().'">
+                <div class ="dmidio-form-group row mb-3">
+                    <label class="col-sm-4 col-form-label">'.$gL10n->get('PLG_STATISTICS_STATISTICS_SUBTITLE').'</label>
+                    <div class="col-sm-8">
+                        <input class ="textInput form-control" type="text" name="statistic_subtitle" id="statistic_subtitle" value="'.$statistic->getSubtitle().'">
+                    </div>
                 </div>
-                <div class ="InputLabelBox form-group">
-                    <span class="textLabel control-label">'.$gL10n->get('PLG_STATISTICS_STATISTICS_STANDARD_ROLE').'</span>
-                    <a class="admidio-icon-link openPopup" href="javascript:void(0);" data-href="help.php?help_id=533">
-                        <i class="bi bi-info-circle-fill admidio-info-icon" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'"></i>
-                    </a>'
-                    .FormElements::generateRoleSelectBox($statistic->getStandardRoleID(),'statistic_std_role').'
-                    <input class ="textInput" type="hidden" name="nr_of_tables" id="nr_of_tables" value="'.$nrOfTables.'">
+                <div class ="admidio-form-group row mb-3">
+                    <label class="col-sm-4 col-form-label">'.$gL10n->get('PLG_STATISTICS_STATISTICS_STANDARD_ROLE').'
+                                            <a class="admidio-icon-link openPopup" href="javascript:void(0);" data-href="help.php?help_id=533">
+                            <i class="bi bi-info-circle-fill admidio-info-icon" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'"></i>
+                        </a>
+                    </label>
+                    <div class="col-sm-8">'
+                        .FormElements::generateRoleSelectBox($statistic->getStandardRoleID(),'statistic_std_role').'
+                        <input class ="textInput" type="hidden" name="nr_of_tables" id="nr_of_tables" value="'.$nrOfTables.'">
+                    </div>
                 </div>
                 <br />
             </div>
@@ -367,16 +384,21 @@ if ($pluginInstalled) {
             $page->addHtml('
             <div class= "stdDiv" id="div_table'.$tc.'_config">
                 <h3>'.$gL10n->get('PLG_STATISTICS_XY_TABLE', array(($tc+1).'.')).'</h3>
-                <div class ="InputLabelBox form-group">
-                    <span class="textLabel control-label">'.$gL10n->get('PLG_STATISTICS_TABLE_TITLE').'</span>
-                    <input class ="textInput form-control" type="text" name="table'.$tc.'_title" id="table'.$tc.'_title" value="'.$tables[$tc]->getTitle().'">
+                <div class ="dmidio-form-group row mb-3">
+                    <label class="col-sm-4 col-form-label">'.$gL10n->get('PLG_STATISTICS_TABLE_TITLE').'</label>
+                    <div class="col-sm-8">
+                        <input class ="textInput form-control" type="text" name="table'.$tc.'_title" id="table'.$tc.'_title" value="'.$tables[$tc]->getTitle().'">
+                    </div>
                 </div>
-                <div class ="InputLabelBox form-group">
-                    <span class="textLabel control-label">'.$gL10n->get('PLG_STATISTICS_TABLE_ROLE').'</span>
-                    <a class="admidio-icon-link openPopup" href="javascript:void(0);" data-href="help.php?help_id=542">
-                        <i class="bi bi-info-circle-fill admidio-info-icon" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'"></i>
-                    </a>'
-                    .FormElements::generateRoleSelectBox($tables[$tc]->getRoleID(),'table'.$tc.'_role" class="roleInput').'
+                <div class ="dmidio-form-group row mb-3">
+                    <label class="col-sm-4 col-form-label">'.$gL10n->get('PLG_STATISTICS_TABLE_ROLE').'
+                        <a class="admidio-icon-link openPopup" href="javascript:void(0);" data-href="help.php?help_id=542">
+                            <i class="bi bi-info-circle-fill admidio-info-icon" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC').'"></i>
+                        </a>
+                    </label>
+                    <div class="col-sm-8">'
+                        .FormElements::generateRoleSelectBox($tables[$tc]->getRoleID(),'table'.$tc.'_role" class="roleInput').'
+                    </div>
                 </div>
                 <br />
                 <input type="hidden" name="table'.$tc.'_nr_of_columns" id="table'.$tc.'_nr_of_columns" value="'.$effectiveNrOfColumns.'">

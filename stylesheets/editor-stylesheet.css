@@ -13,41 +13,7 @@
 	float: right;
 }
 
-.InputLabelBox {
-	height: 25px;
-	margin-top: 5px;
-}
-
-.textLabel {
-	margin-top: 3px;
-	float: left;
-}
-
-.textInput {
-	float: right;
-
-	width: 288px;
-}
-
-.roleInput {
-	float: right;
-
-	width: 294px;
-}
-
-#statistic_std_role {
-	float: right;
-
-	width: 294px;
-}
-
-.form-control{
-	float: right;
-	width: 294px;
-
-}
-
-/* Regeln für die Tabelle mit den Spaltendefinitionen */
+/* Regeln fï¿½r die Tabelle mit den Spaltendefinitionen */
 
 .iconTextLink {
 	font-size: 10pt;
@@ -134,7 +100,7 @@
 	width: 118px;
 }
 
-/* Regeln für die Tabelle mit den Zeilendefinitionen */
+/* Regeln fï¿½r die Tabelle mit den Zeilendefinitionen */
 
 .row_conf_tbl_col_last {
 	background-color: inherit;
