@@ -534,7 +534,7 @@ class Evaluator
                 case 'RADIO_BUTTON':
                     $dataType = 'string'; //eigentlich $dataType = 'int';
                     // replace all field values with their internal numbers
-                    $arrListValues = $gProfileFields->getPropertyById($userFieldID, 'usf_value_list', 'text');
+                    $arrListValues = $gProfileFields->getPropertyById($userFieldID, 'ufo_usf_options', 'text');
                     // replace with preg_replace the whole word so that male will not be replaced in female
                     $condition = array_search(StringUtils::strToLower($condition), array_map('Admidio\Infrastructure\Utils\StringUtils::strToLower', $arrListValues), true);
                     break;
