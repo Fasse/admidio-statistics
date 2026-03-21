@@ -146,7 +146,7 @@ if ($pluginInstalled) {
         	//generateHtml
         	$category = '';
 
-        	$selectBoxHtml = '<select class="form-control" size="1" id="'.$fieldId.'" name="'.$fieldId.'" '.$optAttributes.'>';
+        	$selectBoxHtml = '<select class="form-select focus-ring" size="1" id="'.$fieldId.'" name="'.$fieldId.'" '.$optAttributes.'>';
 
         	if ($zeroValue){
         		$zeroSelected = '';
@@ -244,12 +244,6 @@ if ($pluginInstalled) {
 
         //Funktionen für den allgemeinen Gebrauch in diesem Skript
 
-
-        /*function mockGetStatisticName($ID){
-            $mockDB             = array('0'=>'eine neue Konfiguration erstellen','12'=>'Altersstatistik','56'=>'Wohnortstatistik');
-            return $mockDB[$ID];
-        }*/
-
         function generateClassSuffix($actualElement, $nrOfElements){
             $classSuffix = '';
 
@@ -278,7 +272,7 @@ if ($pluginInstalled) {
         {
             global $gL10n;
 
-            $selectBoxHtml = '<select class="form-control" size="1" id="'.$fieldId.'" name="'.$fieldId.'" '.$optAttributes.'>';
+            $selectBoxHtml = '<select class="form-select focus-ring" size="1" id="'.$fieldId.'" name="'.$fieldId.'" '.$optAttributes.'>';
             if($createFirstEntry)
             {
                 $selectBoxHtml .= '<option value=" "';
@@ -349,13 +343,13 @@ if ($pluginInstalled) {
                 <div class ="admidio-form-group row mb-3">
                     <label class="col-sm-4 col-form-label">'.$gL10n->get('PLG_STATISTICS_STATISTICS_TITLE').'</label>
                     <div class="col-sm-8">
-                        <input class ="textInput form-control" type="text" name="statistic_title" id="statistic_title" value="'.$statistic->getTitle().'">
+                        <input class ="form-control focus-ring" type="text" name="statistic_title" id="statistic_title" value="'.$statistic->getTitle().'">
                     </div>
                 </div>
                 <div class ="dmidio-form-group row mb-3">
                     <label class="col-sm-4 col-form-label">'.$gL10n->get('PLG_STATISTICS_STATISTICS_SUBTITLE').'</label>
                     <div class="col-sm-8">
-                        <input class ="textInput form-control" type="text" name="statistic_subtitle" id="statistic_subtitle" value="'.$statistic->getSubtitle().'">
+                        <input class ="form-control focus-ring" type="text" name="statistic_subtitle" id="statistic_subtitle" value="'.$statistic->getSubtitle().'">
                     </div>
                 </div>
                 <div class ="admidio-form-group row mb-3">
@@ -387,7 +381,7 @@ if ($pluginInstalled) {
                 <div class ="dmidio-form-group row mb-3">
                     <label class="col-sm-4 col-form-label">'.$gL10n->get('PLG_STATISTICS_TABLE_TITLE').'</label>
                     <div class="col-sm-8">
-                        <input class ="textInput form-control" type="text" name="table'.$tc.'_title" id="table'.$tc.'_title" value="'.$tables[$tc]->getTitle().'">
+                        <input class ="form-control focus-ring" type="text" name="table'.$tc.'_title" id="table'.$tc.'_title" value="'.$tables[$tc]->getTitle().'">
                     </div>
                 </div>
                 <div class ="dmidio-form-group row mb-3">
@@ -438,11 +432,11 @@ if ($pluginInstalled) {
                         if ($frmRow == 0){
                             $page->addHtml($gL10n->get('PLG_STATISTICS_XY_COLUMN', array(($cc).'.')));
                         }elseif ($frmRow == 1){
-                            $page->addHtml('<input name="table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow].'" id="table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow].'" type="text" value="'.$columns[$colIdf]->getLabel().'">');
+                            $page->addHtml('<input class ="form-control focus-ring" name="table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow].'" id="table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow].'" type="text" value="'.$columns[$colIdf]->getLabel().'">');
                         }elseif ($frmRow == 2){
                         	generateProfileFieldSelectBox($gL10n->get('SYS_ALL'),true,false,false,$columns[$colIdf]->getCondition()->getProfileFieldID(),'table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow],'onchange=" disableConditionInput(this)"');
                         }elseif ($frmRow == 3){
-                            $page->addHtml('<input name="table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow].'" id="table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow].'" type="text" value="'.$columns[$colIdf]->getCondition()->getUserCondition().'">');
+                            $page->addHtml('<input class ="form-control focus-ring" name="table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow].'" id="table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow].'" type="text" value="'.$columns[$colIdf]->getCondition()->getUserCondition().'">');
                         }elseif ($frmRow == 4){
                         	generateProfileFieldSelectBox($gL10n->get('PLG_STATISTICS_SELECTION'),true,false,false,$columns[$colIdf]->getFunction()->getArgument(),'table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow],'onchange="disableInvalidFunctions(this)"');
                         }elseif ($frmRow == 5){
@@ -465,7 +459,7 @@ if ($pluginInstalled) {
                             	$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'addcol\',\''.$tc.'\')"><i class="bi bi-plus-circle-fill" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_ADD_COLUMN').'"></i></a>');
                             }
                         }else{
-                            $page->addHtml('<input class="form-control" name="table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow].'" id="table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow].'" type="text">');
+                            $page->addHtml('<input class="form-control focus-ring" name="table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow].'" id="table'.$tc.'_column'.$colIdf.'_'.$formColumnInputNames[$frmRow].'" type="text">');
                         }
                     }
                     $page->addHtml('</td>');
@@ -511,7 +505,7 @@ if ($pluginInstalled) {
                         if ($frmCol == 0){
                             $page->addHtml($gL10n->get('PLG_STATISTICS_HEADER'));
                         }elseif ($frmCol == 1){
-                            $page->addHtml('<input class="form-control" name="table'.$tc.'_first_column_label" id="table'.$tc.'_first_column_label" type="text" value="'.$tables[$tc]->getFirstColumnLabel().'">');
+                            $page->addHtml('<input class="form-control focus-ring name="table'.$tc.'_first_column_label" id="table'.$tc.'_first_column_label" type="text" value="'.$tables[$tc]->getFirstColumnLabel().'">');
                         }
                     }elseif ($rc == $nrOfRows-1){
                         $tst = 1;
@@ -530,11 +524,11 @@ if ($pluginInstalled) {
                             }
 
                         }elseif($frmCol == 1){
-                            $page->addHtml('<input class="form-control" name="table'.$tc.'_row'.$rowIdf.'_'.$formRowInputNames[$frmCol].'" id="table'.$tc.'_row'.$rowIdf.'_'.$formRowInputNames[$frmCol].'" type="text" value="'.$rows[$rowIdf]->getLabel().'">');
+                            $page->addHtml('<input class="form-control focus-ring" name="table'.$tc.'_row'.$rowIdf.'_'.$formRowInputNames[$frmCol].'" id="table'.$tc.'_row'.$rowIdf.'_'.$formRowInputNames[$frmCol].'" type="text" value="'.$rows[$rowIdf]->getLabel().'">');
                         }elseif($frmCol == 2){
                         	generateProfileFieldSelectBox('Alle',true,false,false,$rows[$rowIdf]->getCondition()->getProfileFieldID(),'table'.$tc.'_row'.$rowIdf.'_'.$formRowInputNames[$frmCol],'onchange="disableConditionInput(this)"');
                         }elseif($frmCol == 3){
-                            $page->addHtml('<input class="form-control" name="table'.$tc.'_row'.$rowIdf.'_'.$formRowInputNames[$frmCol].'" id="table'.$tc.'_row'.$rowIdf.'_'.$formRowInputNames[$frmCol].'" type="text" value="'.$rows[$rowIdf]->getCondition()->getUserCondition().'">');
+                            $page->addHtml('<input class="form-control focus-ring" name="table'.$tc.'_row'.$rowIdf.'_'.$formRowInputNames[$frmCol].'" id="table'.$tc.'_row'.$rowIdf.'_'.$formRowInputNames[$frmCol].'" type="text" value="'.$rows[$rowIdf]->getCondition()->getUserCondition().'">');
                         }elseif($frmCol == 4){
                         	if ($effectiveNrOfRows > 1){
                         		$page->addHtml('<a class="admidio-icon-link" href="javascript: editStructure(\'delrow\',\''.$tc.'\',\'\',\''.$rowIdf.'\')"><i class="bi bi-trash" data-bs-toggle="tooltip" title="'.$gL10n->get('PLG_STATISTICS_DELETE_ROW').'"></i></a>');

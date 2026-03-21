@@ -24,7 +24,7 @@ class FormElements
     {
         global $gL10n;
 
-        $selectBoxHtml = '<select size="1" id="'.$fieldId.'" name="'.$fieldId.'">';
+        $selectBoxHtml = '<select class="form-select focus-ring" size="1" id="'.$fieldId.'" name="'.$fieldId.'">';
             if($createFirstEntry == true)
             {
                 $selectBoxHtml .= '<option value=" "';
@@ -103,7 +103,7 @@ class FormElements
         // Selectbox mit allen selektierten Rollen zusammensetzen
         $act_category = '';
         $selectBoxHtml = '
-        <select class="form-control" size="1" id="'.$fieldId.'" name="'.$fieldId.'">
+        <select class="form-select focus-ring" size="1" id="'.$fieldId.'" name="'.$fieldId.'">
             <option value="0" ';
             if($defaultRole == 0)
             {
