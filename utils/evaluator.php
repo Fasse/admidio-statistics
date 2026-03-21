@@ -496,7 +496,7 @@ class Evaluator
     }
 
     public function getSQLFromUserConditions ($userFieldID, $condition) {
-        global $gL10n, $gProfileFields, $gLogger;
+        global $gL10n, $gProfileFields, $gDb;
 
         $SQLCondStr = '';
 
@@ -543,7 +543,7 @@ class Evaluator
             }
 
             $condParser = new ConditionParser();
-            $SQLCondStr = $condParser->makeSqlStatement($condition, 'usd_value', $dataType, '');
+            $SQLCondStr = $condParser->makeSqlStatement($condition, 'usd_value', $dataType, '', $gDb);
         }
 
         return $SQLCondStr;
