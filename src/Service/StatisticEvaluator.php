@@ -161,20 +161,20 @@ final class StatisticEvaluator
             $rows[] = $cells;
         }
 
+        $totalRow = null;
         if ($table->hasTotalRow()) {
-            $total = array($this->l10n->get('PLG_STATISTICS_TOTAL'));
+            $totalRow = array($this->l10n->get('PLG_STATISTICS_TOTAL'));
             foreach ($table->columns as $columnIndex => $column) {
-                $total[] = $column->hasTotal()
+                $totalRow[] = $column->hasTotal()
                     ? $this->formatTotal($column, array_column($numbers, $columnIndex))
                     : '';
             }
-            $rows[] = $total;
         }
 
         $caption = $this->l10n->get('SYS_ROLE') . ' ' . $this->getRoleNameFromId($roleId) . ', '
             . $this->l10n->get('PLG_STATISTICS_XY_ENTRIES', array($this->getUserCountFromRoleId($roleId)));
 
-        return new ResultTable($table->title, $caption, $headers, $rows);
+        return new ResultTable($table->title, $caption, $headers, $rows, $totalRow);
     }
 
     /**

@@ -13,7 +13,7 @@
             <tbody>
                 {foreach $statistics as $statistic}
                     <tr>
-                        <td><a href="{$statistic.url}">{$statistic.name}</a></td>
+                        <td><a href="{$statistic.url}">{$statistic.name|escape}</a></td>
                     </tr>
                 {/foreach}
             </tbody>
