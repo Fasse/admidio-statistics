@@ -40,6 +40,7 @@ use AdmidioPlugin\Statistics\Service\StatisticFormService;
 use AdmidioPlugin\Statistics\Service\StatisticRepository;
 use AdmidioPlugin\Statistics\Service\StatisticsAccess;
 use AdmidioPlugin\Statistics\Service\StatisticStructureService;
+use AdmidioPlugin\Statistics\Service\StatisticTemplates;
 use AdmidioPlugin\Statistics\Statistics;
 use AdmidioPlugin\Statistics\ValueObject\StatisticDefinition;
 
@@ -93,6 +94,22 @@ try {
             $savedId = $repository->save($copy);
 
             admRedirect(SecurityUtils::encodeUrl($plugin->getUrl('editor.php'), array('sta_id' => $savedId)));
+            // => EXIT
+        } elseif ($action === StatisticEditorPresenter::ACTION_EXAMPLES) {
+            /*
+             * The examples count the role that is chosen in the form above, so there has to be
+             * one. Version 3 wrote the number 2 into them instead.
+             */
+            if ($definition->standardRoleId <= 0) {
+                throw new Exception(
+                    'SYS_FIELD_EMPTY',
+                    array($gL10n->get('PLG_STATISTICS_STATISTICS_STANDARD_ROLE'))
+                );
+            }
+
+            StatisticTemplates::create($repository, $orgId, $definition->standardRoleId);
+
+            admRedirect($plugin->getUrl('editor.php'));
             // => EXIT
         } elseif ($action === StatisticEditorPresenter::ACTION_DELETE) {
             if ($definition->isNew()) {

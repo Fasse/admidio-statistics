@@ -19,6 +19,7 @@
     <string name="PLG_STATISTICS_CONTINUE_TO_STATISTICS_EDITOR">Continue to statistics editor</string>
     <string name="PLG_STATISTICS_CONTINUE_TO_UNINSTALL">Continue to uninstall</string>
     <string name="PLG_STATISTICS_COPY_OF_NAME">#VAR1# (copy)</string>
+    <string name="PLG_STATISTICS_CREATE_EXAMPLES">Add the example statistics</string>
     <string name="PLG_STATISTICS_DELETE_COLUMN">Delete column</string>
     <string name="PLG_STATISTICS_DELETE_ROW">Delete row</string>
     <string name="PLG_STATISTICS_DELETE_TABLE">Delete table</string>

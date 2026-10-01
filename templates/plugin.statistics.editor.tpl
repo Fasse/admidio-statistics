@@ -273,6 +273,11 @@
             <i class="bi bi-file-earmark-plus"></i> {$l10n->get('SYS_CREATE_NEW_CONFIGURATION')}
         </a>
 
+        <button type="submit" class="btn btn-secondary adm-statistics-action"
+                data-adm-action="{$staActions.examples}">
+            <i class="bi bi-stars"></i> {$l10n->get('PLG_STATISTICS_CREATE_EXAMPLES')}
+        </button>
+
         <a class="btn btn-secondary" href="{$staUrlManual}" target="_blank" rel="noopener">
             <i class="bi bi-book-fill"></i> {$l10n->get('PLG_STATISTICS_OPEN_MANUAL')}
         </a>

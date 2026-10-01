@@ -40,6 +40,7 @@ final class StatisticEditorPresenter
     public const ACTION_SAVE = 'save';
     public const ACTION_SAVE_AS = 'saveas';
     public const ACTION_DELETE = 'delete';
+    public const ACTION_EXAMPLES = 'examples';
 
     /**
      * Everything the editor accepts in its action field: the structure operations plus the four that
@@ -49,7 +50,8 @@ final class StatisticEditorPresenter
         self::ACTION_PREVIEW,
         self::ACTION_SAVE,
         self::ACTION_SAVE_AS,
-        self::ACTION_DELETE
+        self::ACTION_DELETE,
+        self::ACTION_EXAMPLES
     );
 
     /**
@@ -476,6 +478,7 @@ final class StatisticEditorPresenter
             'save' => self::ACTION_SAVE,
             'saveAs' => self::ACTION_SAVE_AS,
             'delete' => self::ACTION_DELETE,
+            'examples' => self::ACTION_EXAMPLES,
             'addTable' => StatisticStructureService::ADD_TABLE,
             'deleteTable' => StatisticStructureService::DELETE_TABLE,
             'duplicateTable' => StatisticStructureService::DUPLICATE_TABLE,
