@@ -39,10 +39,12 @@
     <string name="PLG_STATISTICS_MOVE_ROW_UP">Zeile nach oben verschieben</string>
     <string name="PLG_STATISTICS_MOVE_TABLE_DOWN">Tabelle nach unten verschieben</string>
     <string name="PLG_STATISTICS_MOVE_TABLE_UP">Tabelle nach oben verschieben</string>
+    <string name="PLG_STATISTICS_NO_DEFINITIONS_FOUND">Es wurden noch keine Statistiken konfiguriert.</string>
     <string name="PLG_STATISTICS_NO_INFORMATION">Keine Angabe</string>
     <string name="PLG_STATISTICS_NONE">keine</string>
     <string name="PLG_STATISTICS_NUMBER">Anzahl</string>
     <string name="PLG_STATISTICS_OPEN_MANUAL">Handbuch des Statistik-Plugins öffnen</string>
+    <string name="PLG_STATISTICS_OVERVIEW_DESC">Wähle eine Statistik aus, die angezeigt werden soll.</string>
     <string name="PLG_STATISTICS_PERCENT">Prozent</string>
     <string name="PLG_STATISTICS_PERFORM_ACTION">Aktion ausführen</string>
     <string name="PLG_STATISTICS_PLUGIN_ALREADY_INSTALLED">Das Plugin wurde bereits installiert.</string>
