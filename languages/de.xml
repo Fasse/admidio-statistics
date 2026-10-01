@@ -68,6 +68,10 @@
     <string name="PLG_STATISTICS_TABLE_ROLE">Rolle der Tabelle</string>
     <string name="PLG_STATISTICS_TABLES_CREATED">Die Tabellen für das Plugin wurden in der Admidio-Datenbank angelegt.</string>
     <string name="PLG_STATISTICS_TOTAL">Gesamt</string>
+    <string name="PLG_STATISTICS_TOTAL_AVERAGE">(Ø) #VAR1#</string>
+    <string name="PLG_STATISTICS_TOTAL_MAXIMUM">(max) #VAR1#</string>
+    <string name="PLG_STATISTICS_TOTAL_MINIMUM">(min) #VAR1#</string>
+    <string name="PLG_STATISTICS_TOTAL_SUM">(Σ) #VAR1#</string>
     <string name="PLG_STATISTICS_UNDO_ALL_CHANGES_OF_CONFIGURATION">Alle Änderungen an der aktuellen Konfiguration rückgängig machen</string>
     <string name="PLG_STATISTICS_UNINSTALL">Deinstallieren</string>
     <string name="PLG_STATISTICS_UNINSTALL_PLUGIN">Plugin deinstallieren</string>
