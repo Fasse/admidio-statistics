@@ -531,7 +531,18 @@ final class StatisticEvaluator
 
         $parser = new ConditionParser();
 
-        return $parser->makeSqlStatement($condition, 'usd_value', $dataType, '', $this->database);
+        /*
+         * The parser reads the comparison characters in their stored form: it maps "}=" to greater or
+         * equal and "{=" to less or equal, and does not know ">" or "<" at all. So the condition goes
+         * back through the codec before it is handed over, which is what the old evaluator did too.
+         */
+        return $parser->makeSqlStatement(
+            ConditionCompiler::encode($condition),
+            'usd_value',
+            $dataType,
+            '',
+            $this->database
+        );
     }
 
     /**
