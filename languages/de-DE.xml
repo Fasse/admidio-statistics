@@ -31,6 +31,7 @@
     <string name="PLG_STATISTICS_FUNCTION">Funktion</string>
     <string name="PLG_STATISTICS_GENERAL_INFORMATIONS">Allgemeine Angaben zur Statistik</string>
     <string name="PLG_STATISTICS_HEADER">Kopfzeile</string>
+    <string name="PLG_STATISTICS_HELP_CHAPTER_NOT_FOUND">Kapitel #VAR1# wurde nicht gefunden.</string>
     <string name="PLG_STATISTICS_INSTALL">Installieren</string>
     <string name="PLG_STATISTICS_INSTALL_PLUGIN">Plugin installieren</string>
     <string name="PLG_STATISTICS_INSTALLATION_STATISTICS_PLUGIN">Installation Statistik-Plugin</string>

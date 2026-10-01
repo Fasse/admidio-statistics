@@ -31,6 +31,7 @@
     <string name="PLG_STATISTICS_FUNCTION">Function</string>
     <string name="PLG_STATISTICS_GENERAL_INFORMATIONS">General information on statistics</string>
     <string name="PLG_STATISTICS_HEADER">Header</string>
+    <string name="PLG_STATISTICS_HELP_CHAPTER_NOT_FOUND">Chapter #VAR1# was not found.</string>
     <string name="PLG_STATISTICS_INSTALL">Install</string>
     <string name="PLG_STATISTICS_INSTALL_PLUGIN">Install plugin</string>
     <string name="PLG_STATISTICS_INSTALLATION_STATISTICS_PLUGIN">Installation statistics plugin</string>

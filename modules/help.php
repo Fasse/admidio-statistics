@@ -1,20 +1,44 @@
 <?php
-/******************************************************************************
- * Hilfeseite & Benutzerhandbuch für das Statistik-Plugin
+/**
+ ***********************************************************************************************
+ * The manual of the statistics plugin, shown as a whole or one chapter at a time.
  *
- * @copyright 2004-2021 The Admidio Team
- * @see https://www.admidio.org/
- * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License v2.0 only
+ * The editor links to a chapter from each of its fields, which is why the chapter numbers are the
+ * ones the manual has always used. The content is German, as it has always been; translating it is a
+ * piece of work of its own and not part of moving the plugin to the plugin system.
  *
  * Parameters:
  *
- * help_id       :   id des Hilfetextes
- * full         :   true = ganzer Hilfetext
- *              :   false = Kurzfassung des Hilfetextes
- * example      :   true = zeigt ein Beispiel zum Hilfethema (falls vorhanden)
- *****************************************************************************/
-require_once('../includes.php');
+ * help_id : number of the chapter to show, 0 or absent for the whole manual
+ *
+ * Two things changed in the move. The page requires a login and the view permission, where the old
+ * one checked nothing at all and served the manual to anybody who asked. And the screenshots are
+ * addressed through the plugin rather than with a path relative to the page: the same page is
+ * reachable as plugins/statistics/modules/help.php and, when the administrator switches the core
+ * preference plugin_module_pages on, as modules/statistics/help.php, and a relative path cannot be
+ * right under both.
+ *
+ * @copyright 2004-2025 The Admidio Team
+ * @see https://www.admidio.org/
+ * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License v2.0 only
+ ***********************************************************************************************
+ */
 
+use AdmidioPlugin\Statistics\Service\StatisticsAccess;
+use AdmidioPlugin\Statistics\Statistics;
+
+try {
+    require_once(__DIR__ . '/../../../system/common.php');
+    require(__DIR__ . '/../../../system/login_valid.php');
+
+    StatisticsAccess::assertMayView();
+
+    $plugin = Statistics::plugin();
+    $staImageBase = ADMIDIO_URL . FOLDER_PLUGINS . '/' . $plugin->id . '/resources/images/';
+} catch (Throwable $e) {
+    handleException($e, false, true);
+    // => EXIT
+}
 $documentTitle = 'Statistik Plug-In für Admidio - Benutzerhandbuch';
 
 $helpTitles = array(
@@ -243,30 +267,30 @@ $helpImages = array(
     'saveas'                 =>'<i class="bi bi-copy"></i>',
     'undo'                   =>'<i class="bi bi-arrow-counterclockwise"></i>',
     'delete'                 =>'<i class="bi bi-trash"></i>',
-    'button_show'            =>'<img src="../resources/images/button_show.png" alt="button_show"/>',
-    'button_back'            =>'<img src="../resources/images/button_back.png" alt="button_back"/>',
-    'button_add_table'       =>'<img src="../resources/images/button_add_table.png" alt="button_add_table"/>',
-    'button_del_table'       =>'<img src="../resources/images/button_del_table.png" alt="button_del_table"/>',
-    'button_add_col'         =>'<img src="../resources/images/button_add_col.png" alt="button_add_col"/>',
-    'button_add_row'         =>'<img src="../resources/images/button_add_row.png" alt="button_add_row"/>',
-    'statistic_title'        =>'<img src="../resources/images/statistic_title.png" alt="statistic_title"/>',
-    'statistic_subtitle'     =>'<img src="../resources/images/statistic_subtitle.png" alt="statistic_subtitle"/>',
-    'statistic_std_role'     =>'<img src="../resources/images/statistic_std_role.png" alt="statistic_std_role"/>',
-    'table_title'            =>'<img src="../resources/images/table_title.png" alt="table_title"/>',
-    'table_role'             =>'<img src="../resources/images/table_role.png" alt="table_role"/>',
-    'col_label'              =>'<img src="../resources/images/col_label.png" alt="col_label"/>',
-    'col_profile_field'      =>'<img src="../resources/images/col_profile_field.png" alt="col_profile_field"/>',
-    'col_condition'          =>'<img src="../resources/images/col_condition.png" alt="col_condition"/>',
-    'col_func_arg'           =>'<img src="../resources/images/col_func_arg.png" alt="col_func_arg"/>',
-    'col_func'               =>'<img src="../resources/images/col_func.png" alt="col_func"/>',
-    'col_func_total'         =>'<img src="../resources/images/col_func_total.png" alt="col_func_total"/>',
-    'row_headrow'            =>'<img src="../resources/images/row_headrow.png" alt="row_headrow"/>',
-    'row_label'              =>'<img src="../resources/images/row_label.png" alt="row_label"/>',
-    'row_profile_field'      =>'<img src="../resources/images/row_profile_field.png" alt="row_profile_field"/>',
-    'row_condition'          =>'<img src="../resources/images/row_condition.png" alt="row_condition"/>',
-    'example_select_count'   =>'<img src="../resources/images/example_select_count.png" alt="example_select_count"/>',
-    'example_select_percent' =>'<img src="../resources/images/example_select_percent.png" alt="example_select_percent"/>',
-    'example_specific_field' =>'<img src="../resources/images/example_specific_field.png" alt="example_specific_field"/>'
+    'button_show'            =>'<img src="' . $staImageBase . 'button_show.png" alt="button_show"/>',
+    'button_back'            =>'<img src="' . $staImageBase . 'button_back.png" alt="button_back"/>',
+    'button_add_table'       =>'<img src="' . $staImageBase . 'button_add_table.png" alt="button_add_table"/>',
+    'button_del_table'       =>'<img src="' . $staImageBase . 'button_del_table.png" alt="button_del_table"/>',
+    'button_add_col'         =>'<img src="' . $staImageBase . 'button_add_col.png" alt="button_add_col"/>',
+    'button_add_row'         =>'<img src="' . $staImageBase . 'button_add_row.png" alt="button_add_row"/>',
+    'statistic_title'        =>'<img src="' . $staImageBase . 'statistic_title.png" alt="statistic_title"/>',
+    'statistic_subtitle'     =>'<img src="' . $staImageBase . 'statistic_subtitle.png" alt="statistic_subtitle"/>',
+    'statistic_std_role'     =>'<img src="' . $staImageBase . 'statistic_std_role.png" alt="statistic_std_role"/>',
+    'table_title'            =>'<img src="' . $staImageBase . 'table_title.png" alt="table_title"/>',
+    'table_role'             =>'<img src="' . $staImageBase . 'table_role.png" alt="table_role"/>',
+    'col_label'              =>'<img src="' . $staImageBase . 'col_label.png" alt="col_label"/>',
+    'col_profile_field'      =>'<img src="' . $staImageBase . 'col_profile_field.png" alt="col_profile_field"/>',
+    'col_condition'          =>'<img src="' . $staImageBase . 'col_condition.png" alt="col_condition"/>',
+    'col_func_arg'           =>'<img src="' . $staImageBase . 'col_func_arg.png" alt="col_func_arg"/>',
+    'col_func'               =>'<img src="' . $staImageBase . 'col_func.png" alt="col_func"/>',
+    'col_func_total'         =>'<img src="' . $staImageBase . 'col_func_total.png" alt="col_func_total"/>',
+    'row_headrow'            =>'<img src="' . $staImageBase . 'row_headrow.png" alt="row_headrow"/>',
+    'row_label'              =>'<img src="' . $staImageBase . 'row_label.png" alt="row_label"/>',
+    'row_profile_field'      =>'<img src="' . $staImageBase . 'row_profile_field.png" alt="row_profile_field"/>',
+    'row_condition'          =>'<img src="' . $staImageBase . 'row_condition.png" alt="row_condition"/>',
+    'example_select_count'   =>'<img src="' . $staImageBase . 'example_select_count.png" alt="example_select_count"/>',
+    'example_select_percent' =>'<img src="' . $staImageBase . 'example_select_percent.png" alt="example_select_percent"/>',
+    'example_specific_field' =>'<img src="' . $staImageBase . 'example_specific_field.png" alt="example_specific_field"/>'
 );
 
 $helpTables = array(
@@ -466,75 +490,59 @@ $helpTables = array(
     'example_select_percent'   =>'',
     'example_specific_field'   =>''
 );
+try {
+    /**
+     * One chapter, with the screenshots and reference tables its text asks for by name.
+     *
+     * @param int $chapterId
+     * @return string The empty string when there is no such chapter.
+     */
+    $staRenderChapter = static function (int $chapterId) use ($helpTitles, $helpTexts, $helpImages, $helpTables): string {
+        if (!array_key_exists($chapterId, $helpTitles)) {
+            return '';
+        }
 
-//falls Hilfetext-ID gesetzt, vorhandene Konfiguration auslesen
-if (isset($_GET['help_id'])){
-    $helpID      = admFuncVariableIsValid($_GET, 'help_id', 'numeric');
-    if($helpID != 0){
-        displayHelpText($helpID);
-    }else{
-        displayWholeManual();
-    }
-}else{
-    displayWholeManual();
-}
+        $text = (string) ($helpTexts[$chapterId] ?? '');
+        $text = (string) preg_replace_callback(
+            '/\(image:(.*?)\)/',
+            static fn(array $match): string => (string) ($helpImages[$match[1]] ?? ''),
+            $text
+        );
+        $text = (string) preg_replace_callback(
+            '/\(table:(.*?)\)/',
+            static fn(array $match): string => (string) ($helpTables[$match[1]] ?? ''),
+            $text
+        );
 
-function replaceImageLink($sourceText){
-    global $helpImages;
-    $replacedText = $sourceText;
-    if (preg_match_all("#\(image:(.*?)\)#", $sourceText, $match)){
-        for ($i = 0; $i < count($match[1]); $i++) {
-            $search = "(image:".$match[1][$i].")";
-            $replace = $helpImages[$match[1][$i]];
-            $replacedText = str_replace($search,$replace,$replacedText);
+        return '<h4>' . $helpTitles[$chapterId] . '</h4><p>' . $text . '</p>';
+    };
+
+    $getHelpId = (int) admFuncVariableIsValid($_GET, 'help_id', 'numeric', array('defaultValue' => 0));
+
+    header('Content-type: text/html; charset=utf-8');
+
+    if ($getHelpId > 0) {
+        $staBody = $staRenderChapter($getHelpId);
+
+        if ($staBody === '') {
+            $staBody = '<p>' . $gL10n->get('PLG_STATISTICS_HELP_CHAPTER_NOT_FOUND', array($getHelpId)) . '</p>';
+        }
+    } else {
+        /*
+         * The whole manual, one chapter after another. The old page emitted the modal frame around
+         * every single chapter when it was asked for all of them.
+         */
+        $staBody = '';
+        foreach (array_keys($helpTitles) as $staChapterId) {
+            $staBody .= $staRenderChapter((int) $staChapterId);
         }
     }
-    return $replacedText;
+
+    echo '<div class="modal-header">'
+        . '<h3 class="modal-title">' . $gL10n->get('SYS_NOTE') . '</h3>'
+        . '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>'
+        . '</div>'
+        . '<div class="modal-body">' . $staBody . '</div>';
+} catch (Throwable $e) {
+    handleException($e, false, true);
 }
-
-function replaceTable($sourceText){
-    global $helpTables;
-    $replacedText = $sourceText;
-    if (preg_match_all("#\(table:(.*?)\)#", $sourceText, $match)){
-        for ($i = 0; $i < count($match[1]); $i++) {
-            $search = "(table:".$match[1][$i].")";
-            $replace = $helpTables[$match[1][$i]];
-            $replacedText = str_replace($search,$replace,$replacedText);
-        }
-    }
-    return $replacedText;
-}
-
-function displayHelpText($helpID){
-
-    global $gL10n, $helpTitles, $helpTexts;
-
-    $helpWindow = header('Content-type: text/html; charset=utf-8');
-
-    $helpWindow .= '
-        <div class="modal-header">
-            <h3 class="modal-title">'.$gL10n->get('SYS_NOTE').'</h3>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">';
-            if (array_key_exists($helpID,$helpTitles)){
-
-                $outputText = replaceImageLink($helpTexts[$helpID]);
-                $outputText2 = replaceTable($outputText);
-
-                $helpWindow .= '<p>'.$outputText2.'</p>';
-            }else{
-                $helpWindow .= 'Kapitel '.$helpID.' wurde nicht gefunden.';
-            }
-
-        $helpWindow .= '</div>';
-        echo $helpWindow;
-}
-
-function displayWholeManual(){
-    global $helpTitles;
-    foreach ($helpTitles as $key => $value){
-        displayHelpText($key);
-    }
-}
-?>

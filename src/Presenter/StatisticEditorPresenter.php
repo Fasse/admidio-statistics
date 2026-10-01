@@ -539,10 +539,7 @@ final class StatisticEditorPresenter
      */
     private static function helpUrl(Plugin $plugin, int $helpId): string
     {
-        return SecurityUtils::encodeUrl($plugin->getUrl('help.php'), array(
-            'help_id' => $helpId,
-            'inline' => 'true'
-        ));
+        return SecurityUtils::encodeUrl($plugin->getUrl('help.php'), array('help_id' => $helpId));
     }
 
     /**
