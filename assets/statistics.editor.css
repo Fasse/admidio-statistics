@@ -1,0 +1,75 @@
+/**
+ * Layout of the statistics configuration editor.
+ *
+ * This replaces stylesheets/editor-stylesheet.css. That file was encoded in Latin-1, opened with an
+ * @CHARSET rule that is not valid CSS where it stood and was therefore ignored by every browser, and
+ * carried a selector for Font Awesome, which Admidio left behind when it moved to Bootstrap icons.
+ *
+ * The colour coding is the one the manual documents, and it still groups the parts of a column the
+ * same way: labels, then the two that select members, then the two that compute a value, then the
+ * total. It is applied to the edge of the heading cell rather than to its text, because the original
+ * colours as text on a white background were barely legible.
+ *
+ * The widths are no longer fixed at 118 and 124 pixels per control. The grid scrolls inside its own
+ * container instead, which is what makes the editor usable on a narrow screen.
+ *
+ * @copyright 2004-2025 The Admidio Team
+ * @see https://www.admidio.org/
+ * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License v2.0 only
+ */
+
+.adm-statistics-grid {
+    min-width: 40rem;
+}
+
+.adm-statistics-grid th,
+.adm-statistics-grid td {
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+/* The column holding the names of the parts stays readable while the grid scrolls. */
+.adm-statistics-grid-head {
+    min-width: 11rem;
+    border-left-style: solid;
+    border-left-width: 0.25rem;
+    border-left-color: transparent;
+}
+
+.adm-statistics-grid td input,
+.adm-statistics-grid td select {
+    min-width: 7.5rem;
+}
+
+/* Labels. */
+.adm-statistics-cell-label .adm-statistics-grid-head {
+    border-left-color: orange;
+}
+
+/* The two parts that choose which members a cell counts. */
+.adm-statistics-cell-profile_field .adm-statistics-grid-head,
+.adm-statistics-cell-condition .adm-statistics-grid-head {
+    border-left-color: #add8e6;
+}
+
+/* The two parts that decide what is computed. */
+.adm-statistics-cell-func_arg .adm-statistics-grid-head,
+.adm-statistics-cell-func_main .adm-statistics-grid-head {
+    border-left-color: #9acd32;
+}
+
+/* The total of the column. */
+.adm-statistics-cell-func_total .adm-statistics-grid-head {
+    border-left-color: #fa8072;
+}
+
+.adm-statistics-cell-actions td {
+    white-space: nowrap;
+}
+
+.adm-statistics-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}

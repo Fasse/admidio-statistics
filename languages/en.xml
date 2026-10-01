@@ -15,8 +15,10 @@
     <string name="PLG_STATISTICS_COLUMNS">Columns</string>
     <string name="PLG_STATISTICS_COMPLETENESS_OF_PROFILE">Completeness of profile information</string>
     <string name="PLG_STATISTICS_CONFIGURE_STATISTIC">Configure statistic</string>
+    <string name="PLG_STATISTICS_CONFIRM_DELETE_CONFIGURATION">Do you really want to delete the configuration "#VAR1#"?</string>
     <string name="PLG_STATISTICS_CONTINUE_TO_STATISTICS_EDITOR">Continue to statistics editor</string>
     <string name="PLG_STATISTICS_CONTINUE_TO_UNINSTALL">Continue to uninstall</string>
+    <string name="PLG_STATISTICS_COPY_OF_NAME">#VAR1# (copy)</string>
     <string name="PLG_STATISTICS_DELETE_COLUMN">Delete column</string>
     <string name="PLG_STATISTICS_DELETE_ROW">Delete row</string>
     <string name="PLG_STATISTICS_DELETE_TABLE">Delete table</string>
@@ -55,6 +57,7 @@
     <string name="PLG_STATISTICS_POSSIBLE_INFORMATIONS">Possible informations</string>
     <string name="PLG_STATISTICS_PROFILE_COMPLETENESS">Profile completeness</string>
     <string name="PLG_STATISTICS_ROWS">Rows</string>
+    <string name="PLG_STATISTICS_SAVE_AS">Save as a new configuration</string>
     <string name="PLG_STATISTICS_SELECTION">Selection</string>
     <string name="PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC">Show help on this topic (German)</string>
     <string name="PLG_STATISTICS_STATISTIC">Statistic</string>
@@ -79,6 +82,7 @@
     <string name="PLG_STATISTICS_UNINSTALL_PLUGIN">Uninstall plugin</string>
     <string name="PLG_STATISTICS_UNINSTALL_TABLES_DELETED">The tables of the plugin have been removed from the Admidio database.</string>
     <string name="PLG_STATISTICS_UNINSTALL_WARNING">This process removes the plugin and deletes all saved statistics configurations!</string>
+    <string name="PLG_STATISTICS_USE_STANDARD_ROLE">Use the standard role of the statistic</string>
     <string name="PLG_STATISTICS_WELCOME_HEADLINE">Welcome to the installation of the Admidio statistics plugin</string>
     <string name="PLG_STATISTICS_XY_ENTRIES">#VAR1# entries</string>
     <string name="PLG_STATISTICS_XY_COLUMN">#VAR1# column</string>

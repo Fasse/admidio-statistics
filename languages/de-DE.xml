@@ -15,8 +15,10 @@
     <string name="PLG_STATISTICS_COLUMNS">Spalten</string>
     <string name="PLG_STATISTICS_COMPLETENESS_OF_PROFILE">Vollständigkeit der Profilangaben</string>
     <string name="PLG_STATISTICS_CONFIGURE_STATISTIC">Statistik konfigurieren</string>
+    <string name="PLG_STATISTICS_CONFIRM_DELETE_CONFIGURATION">Möchten Sie die Konfiguration „#VAR1#“ wirklich löschen?</string>
     <string name="PLG_STATISTICS_CONTINUE_TO_STATISTICS_EDITOR">Weiter zum Statistikeditor</string>
     <string name="PLG_STATISTICS_CONTINUE_TO_UNINSTALL">Weiter zur Deinstallation</string>
+    <string name="PLG_STATISTICS_COPY_OF_NAME">#VAR1# (Kopie)</string>
     <string name="PLG_STATISTICS_DELETE_COLUMN">Spalte löschen</string>
     <string name="PLG_STATISTICS_DELETE_ROW">Zeile löschen</string>
     <string name="PLG_STATISTICS_DELETE_TABLE">Tabelle löschen</string>
@@ -55,6 +57,7 @@
     <string name="PLG_STATISTICS_POSSIBLE_INFORMATIONS">Mögliche Angaben</string>
     <string name="PLG_STATISTICS_PROFILE_COMPLETENESS">Profilvollständigkeit</string>
     <string name="PLG_STATISTICS_ROWS">Zeilen</string>
+    <string name="PLG_STATISTICS_SAVE_AS">Als neue Konfiguration speichern</string>
     <string name="PLG_STATISTICS_SELECTION">Auswahl</string>
     <string name="PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC">Hilfe zu diesem Thema anzeigen</string>
     <string name="PLG_STATISTICS_STATISTIC">Statistik</string>
@@ -79,6 +82,7 @@
     <string name="PLG_STATISTICS_UNINSTALL_PLUGIN">Plugin deinstallieren</string>
     <string name="PLG_STATISTICS_UNINSTALL_TABLES_DELETED">Die Tabellen des Plugins wurden aus der Admidio-Datenbank entfernt.</string>
     <string name="PLG_STATISTICS_UNINSTALL_WARNING">Mit diesem Vorgang wird das Plugin entfernt und alle gespeicherten Statistik-Konfigurationen gelöscht!</string>
+    <string name="PLG_STATISTICS_USE_STANDARD_ROLE">Standardrolle der Statistik verwenden</string>
     <string name="PLG_STATISTICS_WELCOME_HEADLINE">Willkommen zur Installation des Admidio-Statistik-Plugin</string>
     <string name="PLG_STATISTICS_XY_COLUMN">#VAR1# Spalte</string>
     <string name="PLG_STATISTICS_XY_ENTRIES">#VAR1# Einträge</string>
