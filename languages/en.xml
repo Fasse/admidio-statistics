@@ -42,7 +42,7 @@
     <string name="PLG_STATISTICS_NO_INFORMATION">No information</string>
     <string name="PLG_STATISTICS_NONE">none</string>
     <string name="PLG_STATISTICS_NUMBER">Number</string>
-    <string name="PLG_STATISTICS_OPEN_MANUAL_GERMAN">Open the statistics plugin manual (German)</string>
+    <string name="PLG_STATISTICS_OPEN_MANUAL">Open the statistics plugin manual (German)</string>
     <string name="PLG_STATISTICS_PERCENT">Percent</string>
     <string name="PLG_STATISTICS_PERFORM_ACTION">Perform action</string>
     <string name="PLG_STATISTICS_PLUGIN_ALREADY_INSTALLED">The plugin has already been installed.</string>

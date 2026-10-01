@@ -1,0 +1,31 @@
+{
+    "name": "PLG_STATISTICS_STATISTICS",
+    "description": "PLG_STATISTICS_STATISTICS_DESC",
+    "version": "4.0.0",
+    "author": "Fasse",
+    "url": "https://www.admidio.org/dokuwiki/doku.php?id=en:plugins:statistics",
+    "icon": "bi-bar-chart-line-fill",
+    "requires": {
+        "admidio": ">=5.1",
+        "php": ">=8.2"
+    },
+    "autoload": {
+        "AdmidioPlugin\\Statistics\\": "src/"
+    },
+    "preferences": {
+        "section": "extensions"
+    },
+    "settings": {
+        "statistics_plugin_enabled": {
+            "type": "enum",
+            "default": "2",
+            "values": {
+                "0": "SYS_DISABLED",
+                "1": "SYS_ENABLED",
+                "2": "ORG_ONLY_FOR_REGISTERED_USER"
+            },
+            "label": "ORG_ACCESS_TO_PLUGIN",
+            "description": "ORG_ACCESS_TO_PLUGIN_DESC"
+        }
+    }
+}
