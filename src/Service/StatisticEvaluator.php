@@ -588,6 +588,18 @@ final class StatisticEvaluator
         $today = new \DateTimeImmutable('today');
 
         foreach ($dates as $date) {
+            /*
+             * Only a value that looks like a stored date is one. PHP reads an empty string as the
+             * current moment and finds a date in a good deal of other text as well, so without
+             * this an empty profile field would count as an age of nought.
+             */
+            if (preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', trim($date), $parts) !== 1) {
+                continue;
+            }
+            if ((int) $parts[1] === 0 || (int) $parts[2] === 0 || (int) $parts[3] === 0) {
+                continue;
+            }
+
             try {
                 $birthday = new \DateTimeImmutable($date);
             } catch (\Throwable) {
