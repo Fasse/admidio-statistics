@@ -45,6 +45,7 @@
     <string name="PLG_STATISTICS_MOVE_TABLE_UP">Tabelle nach oben verschieben</string>
     <string name="PLG_STATISTICS_NO_DEFINITIONS_FOUND">Es wurden noch keine Statistiken konfiguriert.</string>
     <string name="PLG_STATISTICS_NO_INFORMATION">Keine Angabe</string>
+    <string name="PLG_STATISTICS_NO_ROLE_AVAILABLE">Es gibt keine Rolle, die die Beispielstatistiken auswerten könnten.</string>
     <string name="PLG_STATISTICS_NONE">keine</string>
     <string name="PLG_STATISTICS_NUMBER">Anzahl</string>
     <string name="PLG_STATISTICS_OPEN_MANUAL">Handbuch des Statistik-Plugins öffnen</string>

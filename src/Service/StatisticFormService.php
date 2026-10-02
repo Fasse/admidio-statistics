@@ -182,6 +182,28 @@ final class StatisticFormService
     }
 
     /**
+     * The first role the current user may pick, for the example statistics: they have to count
+     * some role, and asking the editor for the one in its form would tie them to whatever statistic
+     * happened to be open.
+     *
+     * @return int|null **null** when this user may see no role at all.
+     * @throws Exception
+     */
+    public static function firstSelectableRoleId(): ?int
+    {
+        global $gDb;
+
+        foreach ((new RolesService($gDb))->findAll() as $role) {
+            $id = (int) $role['rol_id'];
+            if ($id > 0) {
+                return $id;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * The profile fields the current user may pick, grouped by their category.
      *
      * A hidden field is offered only to a user who may see hidden profile data, which is the rule

@@ -97,16 +97,10 @@ try {
             // => EXIT
         } elseif ($action === StatisticEditorPresenter::ACTION_EXAMPLES) {
             /*
-             * The examples count the role that is chosen in the form above, so there has to be
-             * one. Version 3 wrote the number 2 into them instead.
+             * The role of the form is passed on when one is chosen, and the examples find one of
+             * their own when it is not - they are their own statistics and must not depend on
+             * whatever is half-entered in the editor at the time.
              */
-            if ($definition->standardRoleId <= 0) {
-                throw new Exception(
-                    'SYS_FIELD_EMPTY',
-                    array($gL10n->get('PLG_STATISTICS_STATISTICS_STANDARD_ROLE'))
-                );
-            }
-
             StatisticTemplates::create($repository, $orgId, $definition->standardRoleId);
 
             admRedirect($plugin->getUrl('editor.php'));

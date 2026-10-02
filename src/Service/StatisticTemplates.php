@@ -70,8 +70,21 @@ final class StatisticTemplates
      * @return int How many examples were created.
      * @throws Exception
      */
-    public static function create(StatisticRepository $repository, int $orgId, int $standardRoleId): int
+    public static function create(StatisticRepository $repository, int $orgId, int $standardRoleId = 0): int
     {
+        /*
+         * The role of the editor's form if one is chosen there, and otherwise the first role this
+         * user may see. The examples are examples: they have to count something, and an administrator
+         * can point them at another role afterwards. Version 3 wrote the number 2 into them.
+         */
+        if ($standardRoleId <= 0) {
+            $standardRoleId = StatisticFormService::firstSelectableRoleId() ?? 0;
+        }
+
+        if ($standardRoleId <= 0) {
+            throw new Exception('PLG_STATISTICS_NO_ROLE_AVAILABLE');
+        }
+
         $created = 0;
 
         foreach (array(self::ageStatistic($orgId, $standardRoleId), self::completeness($orgId, $standardRoleId)) as $example) {
