@@ -5,12 +5,12 @@ is a set of cross tables: each row and each column selects members by a profile 
 and each cell counts them or aggregates one of their fields. Configurations are saved, so a statistic
 can be set up once and looked at whenever it is wanted.
 
-Version 4 is the plugin ported to the native plugin system of Admidio 5.1. It installs, updates and
+Version 4 is the plugin ported to the native plugin system of Admidio 6.0. It installs, updates and
 uninstalls through the plugin manager; the installer wizard of earlier versions is gone.
 
 ## Requirements
 
-- Admidio 5.1 or newer
+- Admidio 6.0 or newer
 - PHP 8.2 or newer
 
 ## Installing
