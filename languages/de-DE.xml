@@ -15,7 +15,7 @@
     <string name="PLG_STATISTICS_COLUMNS">Spalten</string>
     <string name="PLG_STATISTICS_COMPLETENESS_OF_PROFILE">Vollständigkeit der Profilangaben</string>
     <string name="PLG_STATISTICS_CONFIGURE_STATISTIC">Statistik konfigurieren</string>
-    <string name="PLG_STATISTICS_CONFIRM_DELETE_CONFIGURATION">Willst du die Konfiguration „#VAR1#“ wirklich löschen?</string>
+    <string name="PLG_STATISTICS_CONFIRM_DELETE_CONFIGURATION">Möchten Sie die Konfiguration „#VAR1#“ wirklich löschen?</string>
     <string name="PLG_STATISTICS_CONTINUE_TO_STATISTICS_EDITOR">Weiter zum Statistikeditor</string>
     <string name="PLG_STATISTICS_CONTINUE_TO_UNINSTALL">Weiter zur Deinstallation</string>
     <string name="PLG_STATISTICS_COPY_OF_NAME">#VAR1# (Kopie)</string>
@@ -26,7 +26,7 @@
     <string name="PLG_STATISTICS_DUPLICATE_COLUMN">Spalte duplizieren</string>
     <string name="PLG_STATISTICS_DUPLICATE_ROW">Zeile duplizieren</string>
     <string name="PLG_STATISTICS_DUPLICATE_TABLE">Tabelle duplizieren</string>
-    <string name="PLG_STATISTICS_EDITOR_CONFIG_LOAD_OR_CHANGE">Möchtest du eine gespeicherte Konfiguration laden und verändern oder eine neue Statistikkonfiguration erstellen?</string>
+    <string name="PLG_STATISTICS_EDITOR_CONFIG_LOAD_OR_CHANGE">Möchten Sie eine gespeicherte Konfiguration laden und verändern oder eine neue Statistikkonfiguration erstellen?</string>
     <string name="PLG_STATISTICS_EVALUATE">Auswerten</string>
     <string name="PLG_STATISTICS_EXAMPLES_ADDED">Beispielstatistiken wurden hinzugefügt.</string>
     <string name="PLG_STATISTICS_FUNCTION">Funktion</string>
@@ -49,7 +49,7 @@
     <string name="PLG_STATISTICS_NONE">keine</string>
     <string name="PLG_STATISTICS_NUMBER">Anzahl</string>
     <string name="PLG_STATISTICS_OPEN_MANUAL">Handbuch des Statistik-Plugins öffnen</string>
-    <string name="PLG_STATISTICS_OVERVIEW_DESC">Wähle eine Statistik aus, die angezeigt werden soll.</string>
+    <string name="PLG_STATISTICS_OVERVIEW_DESC">Wählen Sie eine Statistik aus, die angezeigt werden soll.</string>
     <string name="PLG_STATISTICS_PERCENT">Prozent</string>
     <string name="PLG_STATISTICS_PERFORM_ACTION">Aktion ausführen</string>
     <string name="PLG_STATISTICS_PLUGIN_ALREADY_INSTALLED">Das Plugin wurde bereits installiert.</string>
