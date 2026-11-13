@@ -33,15 +33,18 @@ an administrator sees that entry.
 
 **Install the new version over the old one. Do not remove the old plugin first.**
 
-1. Put the files of version 4 in place. Installing the archive through the plugin manager is the
-   cleanest way: it replaces the directory, so nothing of the old layout is left behind.
-2. Install, or simply enable, the plugin in the plugin manager. Version 3 never registered itself as a
-   component, so the manager lists it as available rather than installed.
+The plugin manager lists the folder of version 3 as a plugin made for an earlier Admidio version and
+offers "Update to the current version". That replaces the files and installs the new version at once.
+Instead, you can put the files of the new version in place by hand and then install the plugin in the
+plugin manager. Version 3 never registered itself as a component, so the manager lists it as
+available rather than installed.
 
-No saved statistic is lost. The four tables keep their names, and the installation script finds them
-already there and leaves them alone. What it does remove is the wreckage of version 3: the row the old
-editor reserved as a scratch pad, any statistic that ended up belonging to no organization, and the two
-menu entries the old installer inserted by hand.
+No saved statistic is lost. The four tables keep their names; the installation creates the tables
+that are missing and adds the new columns to the old ones. It removes the wreckage of version 3: the
+row the old editor reserved as a scratch pad and any statistic that ended up belonging to no
+organization. The menu entry of the overview that the old installer inserted by hand becomes the
+entry of the plugin, with the name, position and role rights it was given. The entry of the old
+editor is removed, because the editor has no page of its own any more.
 
 ### Figures that change
 
@@ -92,9 +95,8 @@ one whose membership has not begun.
 
 ### Updating
 
-From 4.0, the plugin manager offers the update, which adds nine columns and two tables. Installing
-4.1 directly over the tables of version 3 does not add the columns to them; install 4.0 first and update
-from there.
+From 4.0, the plugin manager offers the update, which adds nine columns and two tables. Version 3 is
+updated to 4.1 directly, as described above.
 
 ## Removing the plugin
 

@@ -6,7 +6,7 @@
     "url": "https://www.admidio.org/dokuwiki/doku.php?id=en:plugins:statistics",
     "icon": "bi-bar-chart-line-fill",
     "requires": {
-        "admidio": ">=5.1",
+        "admidio": ">=6.0",
         "php": ">=8.2"
     },
     "autoload": {
