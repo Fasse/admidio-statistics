@@ -6,6 +6,8 @@ namespace AdmidioPlugin\Statistics;
 
 use Admidio\Infrastructure\Plugins\Plugin;
 use Admidio\Infrastructure\Plugins\PluginRegistry;
+use Admidio\Infrastructure\Plugins\PluginWidget;
+use AdmidioPlugin\Statistics\Service\StatisticWidget;
 
 /**
  * The identity of the statistics plugin.
@@ -36,5 +38,29 @@ final class Statistics
     public static function plugin(): Plugin
     {
         return PluginRegistry::requireEnabled(self::PLUGIN_ID);
+    }
+
+    /**
+     * Where the widget is placed on the overview page until an administrator moves it.
+     */
+    public const DEFAULT_SEQUENCE = 20;
+
+    /**
+     * Declare the widget of the overview page. Who sees it follows the access preference of the
+     * plugin and where it stands follows **statistics_overview_sequence**, the two names Admidio
+     * derives from the plugin id.
+     *
+     * @return void
+     */
+    public static function register(): void
+    {
+        $plugin = PluginRegistry::get(self::PLUGIN_ID);
+        if ($plugin === null) {
+            return;
+        }
+
+        PluginWidget::register($plugin, array(StatisticWidget::class, 'render'), array(
+            'sequence' => self::DEFAULT_SEQUENCE
+        ));
     }
 }

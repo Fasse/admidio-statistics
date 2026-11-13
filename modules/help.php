@@ -77,6 +77,8 @@ $helpTitles = array(
     '531'   =>'Titel der Statistik',
     '532'   =>'Untertitel der Statistik',
     '533'   =>'Standardrolle der Statistik',
+    '534'   =>'Ausgeschlossene Rollen',
+    '535'   =>'Anzeige auf der Übersichtsseite',
     '540'       =>'Angaben für eine Tabelle',
     '541'   =>'Titel der Tabelle',
     '542'   =>'Rolle der Tabelle',
@@ -87,11 +89,17 @@ $helpTitles = array(
     '554'   =>'Profilfeld-Auswahl für eine Spalten-Funktion',
     '555'   =>'Spalten-Funktion',
     '556'   =>'Total-Funktion',
+    '557'   =>'Rolle der Spalte',
+    '558'   =>'Stichtag der Spalte',
+    '559'   =>'Wiederholung des Stichtags der Spalte',
     '560'       =>'Angaben für die Zeilen einer Tabelle',
     '561'   =>'Kopfzeile',
     '562'   =>'Bezeichnung der Zeile',
     '563'   =>'Profilfeld-Auswahl für eine Zeile',
     '564'   =>'Bedingung für die Profilfeld-Auswahl der Zeile',
+    '565'   =>'Rolle der Zeile',
+    '566'   =>'Stichtag der Zeile',
+    '567'   =>'Wiederholung des Stichtags der Zeile',
 
     '600'           =>'Beispiele für Konfigurationen',
     '610'       =>'Zusammenspiel von Spalten und Zeilenkonfigurationen',
@@ -166,10 +174,17 @@ $helpTexts = array(
                         </ul>',
     '512'   =>'Im Allgemeinen sind praktisch alle Sonderzeichen erlaubt, für die Formulierungen von Bedingungen sind die speziellen Zeichen (Operatoren, Wildcards, etc.) zu beachten. Nicht erlaubt sind hingegen gewisse Kombinationen von Zeichen, z.B: "<" in Verbindung mit einem darauffolgenden Zeichen. Diese Kombination wird i.d.R. als Beginn eines HTML-Tags gewertet und wird aus Sicherheitsgründen entfernt.',
     '520'       =>'Der Namen einer Statistik-Konfiguration dient wird verwendet um die Konfiguration in der Datenbank abzuspeichern. Dieser Name erscheint in der Übersicht (Kapitel  2.2.2 ) und bei der Auswahl im Konfigurations-Editor(Kapitel  2.2.3 ). Er erscheint hingegen nicht in der Statistik-Anzeige. Der Name einer Konfiguration muss zwingend angegeben werden, jedoch nicht eindeutig sein. Es können also auch mehrere Konfigurationen gleich benannt werden. Es ist zu empfehlen, eindeutige und sprechende Namen für eine Konfiguration zu vergeben, da dies für den Benutzer das einzige Identifikationsmerkmal einer Konfiguration ist.',
-    '530'       =>'Jede Statistik hat drei allgemeine Angaben, welche in diesem Kapitel kurz beschrieben sind.',
+    '530'       =>'Jede Statistik hat fünf allgemeine Angaben, welche in diesem Kapitel kurz beschrieben sind.',
     '531'   =>'Der Titel einer Statistik erscheint zuoberst bei der Statistik-Anzeige. Ein Titel für die Statistik ist nicht zwingend. (image:statistic_title)',
     '532'   =>'Optional kann auch ein Untertitel gespeichert werden, der weitergehende Informationen zu einer Statistik enthält. (image:statistic_subtitle)',
     '533'   =>'Die Standardrolle der Statistik kommt nur dann zum Zug, falls für die einzelne Tabelle keine Rolle angegeben wurde. Es muss zwingend eine gültige Standardrolle angegeben werden, auch wenn für alle Tabellen eine eigene Rolle ausgewählt wurde. (image:statistic_std_role)',
+    '534'   =>'Die Mitglieder der hier gewählten Rollen werden in der ganzen Statistik nicht mitgezählt: in keiner Zelle, in keinem Prozentsatz und nicht in der Anzahl der Einträge unter dem Tabellentitel. Die Angabe ist optional, es können mehrere Rollen gewählt werden.<br />
+                        Massgebend ist die Mitgliedschaft am Stichtag der jeweiligen Zelle. Wer an diesem Tag Mitglied einer ausgeschlossenen Rolle war, wird für diesen Tag nicht gezählt; wer es erst später wurde, wird für die früheren Stichtage weiterhin gezählt.<br />
+                        Die Statistik-Anzeige nennt die ausgeschlossenen Rollen unter dem Untertitel.',
+    '535'   =>'Ist diese Option gesetzt, erscheint die Statistik im Statistik-Bereich der Übersichtsseite: mit ihrem Titel, dem Untertitel und ihren Tabellen in kompakter Form. Der Titel führt zur vollständigen Statistik-Anzeige. Sind mehrere Statistiken markiert, stehen sie untereinander, sortiert nach ihrem Namen.<br />
+                        Der Bereich wird nur angemeldeten Benutzern angezeigt, die das Plugin sehen dürfen. Seine Position auf der Übersichtsseite wird wie bei den anderen Bereichen in den Einstellungen von Admidio festgelegt.<br />
+                        Die Übersichtsseite wird häufig aufgerufen, deshalb werden die berechneten Zahlen zwischengespeichert. Neu berechnet wird, wenn die Statistik geändert wurde, wenn sich Mitgliedschaften oder Profile geändert haben, und an jedem neuen Tag. Für die Übersichtsseite eignen sich vor allem Statistiken mit wenigen Spalten; eine breitere Tabelle lässt sich im Bereich seitlich verschieben.<br />
+                        Eine Kopie einer Statistik (Kapitel  4.2.4 ) übernimmt diese Option nicht.',
     '540'       =>'Die Tabelle enthält neben den Spalten und Zeilenkonfigurationen allgemeine Angaben. Jede Tabelle enthält mindestens eine Spalte und eine Zeile.',
     '541'   =>'Der Tabellentitel ist optional und ist vor allem bei Statistiken mit mehreren Tabellen zu empfehlen. (image:table_title)',
     '542'   =>'Es kann für jede Tabelle eine spezifische Rolle definiert werden. Diese ist optional und überschreibt die Standardrolle der Statistik. Folglich kommt die Standardrolle zum Zug, wenn keine spezifische Rolle für die Tabelle eingetragen wurde. (image:table_role)',
@@ -231,6 +246,25 @@ $helpTexts = array(
     '556'   =>'Optional kann eine Total-Funktion für eine Spalte definiert werden.
                         (image:col_func_total)
                         Diese bezieht sich immer auf alle Ergebnisse der jeweiligen Spalte. Hier stehen die Funktionen Summe, Durchschnitt, Minimum und Maximum zur Verfügung.',
+    '557'   =>'Optional kann für eine Spalte eine eigene Rolle gewählt werden. Die Zellen dieser Spalte zählen dann die Mitglieder dieser Rolle anstelle der Rolle der Tabelle (Kapitel  5.4.2 ). Auch frühere, nicht mehr aktive Rollen stehen zur Auswahl.<br />
+                        Ist sowohl für die Spalte als auch für die Zeile eine Rolle gewählt, zählt die Zelle die Personen, die Mitglied beider Rollen sind.<br />
+                        Bleibt die Bezeichnung der Spalte leer, wird der Name der Rolle als Spalten-Überschrift verwendet.',
+    '558'   =>'Optional kann für eine Spalte ein Stichtag angegeben werden. Die Zellen dieser Spalte zählen dann die Personen, die an diesem Tag Mitglied waren. Ohne Stichtag gilt der Tag, für den die Statistik angezeigt wird, also normalerweise der heutige.<br />
+                        Mit einer Spalte je Stichtag und einer Zeile je Rolle (Kapitel  5.6.5 ) entsteht so eine Übersicht über die Entwicklung der Mitgliederzahlen.<br />
+                        Zu beachten:<br />
+                        - Nur die Mitgliedschaften haben eine Geschichte. Bedingungen auf Profilfelder werden immer mit den heutigen Profildaten geprüft.<br />
+                        - Ein Alter als Ergebnis einer Spalten-Funktion wird auf den Stichtag berechnet.<br />
+                        - In einer Tabelle können Stichtage entweder in den Spalten oder in den Zeilen stehen, nicht in beiden.<br />
+                        - Hat eine Statistik Stichtage in Spalten oder Zeilen, kann sie nicht zusätzlich als Ganzes für einen anderen Tag angezeigt werden.<br />
+                        Bleibt die Bezeichnung der Spalte leer, wird der Stichtag als Spalten-Überschrift verwendet.',
+    '559'   =>'Ein Stichtag (Kapitel  5.5.8 ) kann sich jedes Jahr, jeden Monat oder jede Woche wiederholen. Die Spalte steht dann für eine ganze Reihe von Tagen: Sie beginnt am Stichtag und setzt sich im gewählten Abstand fort bis zu dem Tag, für den die Statistik angezeigt wird. In der Statistik-Anzeige erscheint für jeden dieser Tage eine eigene Spalte.<br />
+                        Beispiel: Der Stichtag 01.01.2020 mit der Wiederholung «jedes Jahr» ergibt eine Spalte für den 1. Januar jedes Jahres. Im nächsten Januar kommt die neue Spalte von selbst dazu, ohne dass die Statistik geändert werden muss.<br />
+                        Mit «Höchstens» wird die Anzahl der angezeigten Tage begrenzt; es werden die jüngsten Tage der Reihe gezeigt. Ohne Angabe sind es 10, möglich sind höchstens 366.<br />
+                        Zu beachten:<br />
+                        - Fällt der Stichtag auf einen Tag, den ein Monat nicht hat, wird der letzte Tag dieses Monats verwendet. Eine monatliche Reihe ab dem 31. Januar läuft also über den 28. oder 29. Februar und den 31. März.<br />
+                        - Ist eine Bezeichnung eingetragen, wird sie jedem Tag vorangestellt; ohne Bezeichnung wird der Tag allein als Überschrift verwendet.<br />
+                        - Eine Wiederholung braucht einen Stichtag. Liegt dieser in der Zukunft, erscheint noch keine Spalte.<br />
+                        - Jede Zelle wird einzeln berechnet. Lange Reihen in Tabellen mit vielen Zeilen verlängern die Rechenzeit entsprechend.',
     '560'       =>'Für eine Zeile können zusätzliche Angaben und Kriterien gemacht werden. Sie werden mit den Angaben der Spalten-Konfigurationen kombiniert, wie folgendes Beispiel zeigt: Kaptiel  6.1 .',
     '561'   =>'Hier kann ein Text eingetragen werden, der als Überschrift für die 1. Spalte mit den Zeilenbezeichnungen dient. (image:row_headrow)',
     '562'   =>'Hier kann ein Text eingetragen werden, der die Ergebnisse in dieser Zeile beschreibt.<br />
@@ -238,6 +272,10 @@ $helpTexts = array(
     '563'   =>'Diese Eingabe wird nach den gleichen Regeln gemacht wie die Profifeld-Auswahl für eine Spalte (Kapitel  5.5.2 ). (image:row_profile_field)',
     '564'   =>'Diese Eingabe wird nach den gleichen Regeln gemacht wie die Bedingung für die Profifeld-Auswahl für eine Spalte (Kapitel  5.5.3 ). Die Einschränkung für eine Zeile ist gleichwertig wie die der Spalte und wird mit der Einschränkung für die Spalte kombiniert. Dies bedeutet, dass nur Ergebnisse angezeigt werden, die sowohl die Einschränkung für die Zeile als auch diejenige der Spalte erfüllt. Es kann jedoch auch nur eine Einschränkung für die Spalte oder eine Einschränkung für die Zeile oder gar keine Einschränkung gemacht werden. Im letztgenannten Fall, werden dann alle Datensätze ausgewertet, die in der Rolle sind, die für diese Tabelle gilt. <br />
                         (image:row_condition)',
+
+    '565'   =>'Diese Eingabe wird nach den gleichen Regeln gemacht wie die Rolle der Spalte (Kapitel  5.5.7 ). Bleibt die Bezeichnung der Zeile leer, wird der Name der Rolle als Zeilenbezeichnung verwendet.',
+    '566'   =>'Diese Eingabe wird nach den gleichen Regeln gemacht wie der Stichtag der Spalte (Kapitel  5.5.8 ).',
+    '567'   =>'Diese Eingabe wird nach den gleichen Regeln gemacht wie die Wiederholung des Stichtags der Spalte (Kapitel  5.5.9 ). Für jeden Tag der Reihe erscheint eine eigene Zeile.',
 
     '600'           =>'',
     '610'       =>'(image:example_select_count)<br />

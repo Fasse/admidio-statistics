@@ -33,6 +33,10 @@ final class FieldNames
      */
     public const COLUMN_PARTS = array(
         'label',
+        'role',
+        'ref_date',
+        'repeat',
+        'repeat_max',
         'profile_field',
         'condition',
         'func_arg',
@@ -43,7 +47,7 @@ final class FieldNames
     /**
      * The parts of a row, in the order the editor lays them out as the columns of its row grid.
      */
-    public const ROW_PARTS = array('label', 'profile_field', 'condition');
+    public const ROW_PARTS = array('label', 'role', 'ref_date', 'repeat', 'repeat_max', 'profile_field', 'condition');
 
     /**
      * @param int $table Index of the table, counted from zero.

@@ -77,8 +77,9 @@ try {
 
             $definition = StatisticStructureService::apply($definition, $action, $targetTable, $targetElement);
         } elseif ($action === StatisticEditorPresenter::ACTION_PREVIEW) {
-            $asOf = (new DateTime(DATE_NOW))->format($gSettingsManager->getString('system_date'));
-            $evaluator = new StatisticEvaluator($gDb, $gProfileFields, $gL10n);
+            $dateFormat = $gSettingsManager->getString('system_date');
+            $asOf = (new DateTime(DATE_NOW))->format($dateFormat);
+            $evaluator = new StatisticEvaluator($gDb, $gProfileFields, $gL10n, $dateFormat);
             $previewResult = $evaluator->evaluate($definition, $asOf);
         } elseif ($action === StatisticEditorPresenter::ACTION_SAVE) {
             StatisticFormService::assertSaveable($definition);

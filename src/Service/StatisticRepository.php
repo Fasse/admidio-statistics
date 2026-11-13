@@ -72,6 +72,34 @@ final class StatisticRepository
     }
 
     /**
+     * The statistics of one organization that ask to be shown on the overview page, complete and in
+     * the order of their names.
+     *
+     * @param int $orgId
+     * @return array<int,StatisticDefinition>
+     * @throws Exception
+     */
+    public function findForOverview(int $orgId): array
+    {
+        $sql = 'SELECT * FROM ' . Statistic::table() . '
+                 WHERE sta_org_id = ? AND sta_overview = true
+              ORDER BY sta_name, sta_id';
+        $statement = $this->database->queryPrepared($sql, array($orgId));
+
+        $definitions = array();
+        while ($record = $statement->fetch()) {
+            $id = (int) $record['sta_id'];
+            $definitions[] = StatisticDefinition::fromRecord(
+                $record,
+                $this->findTables($id),
+                $this->findExcludedRoleIds($id)
+            );
+        }
+
+        return $definitions;
+    }
+
+    /**
      * One saved statistic with all of its tables, columns and rows.
      *
      * @param int $id
@@ -89,7 +117,7 @@ final class StatisticRepository
             return null;
         }
 
-        return StatisticDefinition::fromRecord($record, $this->findTables($id));
+        return StatisticDefinition::fromRecord($record, $this->findTables($id), $this->findExcludedRoleIds($id));
     }
 
     /**
@@ -120,6 +148,7 @@ final class StatisticRepository
             $statistic->setValue('sta_title', $definition->title);
             $statistic->setValue('sta_subtitle', $definition->subtitle);
             $statistic->setValue('sta_std_role', $definition->standardRoleId);
+            $statistic->setValue('sta_overview', $definition->showOnOverview ? 1 : 0);
             $statistic->save();
 
             $statisticId = (int) $statistic->getValue('sta_id');
@@ -136,6 +165,15 @@ final class StatisticRepository
 
             foreach ($definition->tables as $table) {
                 $this->insertTable($statisticId, $table);
+            }
+
+            // The excluded roles are replaced as a whole for the same reason.
+            $sql = 'DELETE FROM ' . self::excludedRolesTable() . ' WHERE ser_sta_id = ?';
+            $this->database->queryPrepared($sql, array($statisticId));
+
+            foreach ($definition->excludedRoleIds as $roleId) {
+                $sql = 'INSERT INTO ' . self::excludedRolesTable() . ' (ser_sta_id, ser_rol_id) VALUES (?, ?)';
+                $this->database->queryPrepared($sql, array($statisticId, $roleId));
             }
 
             $this->database->endTransaction();
@@ -166,6 +204,35 @@ final class StatisticRepository
         }
 
         $statistic->delete();
+    }
+
+    /**
+     * The name of the table that links a statistic to its excluded roles, with the table prefix of
+     * this installation. It is a plain link without a record of its own, so it has no entity.
+     *
+     * @return string
+     */
+    public static function excludedRolesTable(): string
+    {
+        return TABLE_PREFIX . '_statistics_excluded_roles';
+    }
+
+    /**
+     * @param int $statisticId
+     * @return array<int,int>
+     * @throws Exception
+     */
+    private function findExcludedRoleIds(int $statisticId): array
+    {
+        $sql = 'SELECT ser_rol_id FROM ' . self::excludedRolesTable() . ' WHERE ser_sta_id = ? ORDER BY ser_rol_id';
+        $statement = $this->database->queryPrepared($sql, array($statisticId));
+
+        $roleIds = array();
+        while ($record = $statement->fetch()) {
+            $roleIds[] = (int) $record['ser_rol_id'];
+        }
+
+        return $roleIds;
     }
 
     /**
@@ -259,6 +326,10 @@ final class StatisticRepository
             $record->setValue('stc_function_main', $column->functionName);
             $record->setValue('stc_function_arg', (string) ($column->functionArgument ?? ''));
             $record->setValue('stc_function_total', $column->functionTotal);
+            $record->setValue('stc_role', $column->roleId ?? '');
+            $record->setValue('stc_ref_date', $column->referenceDate ?? '');
+            $record->setValue('stc_repeat', $column->repeat);
+            $record->setValue('stc_repeat_max', $column->repeatMax ?? '');
             $record->save();
         }
 
@@ -268,6 +339,10 @@ final class StatisticRepository
             $record->setValue('str_label', $row->label);
             $record->setValue('str_profile_field', (string) ($row->profileFieldId ?? ''));
             $record->setValue('str_field_condition', ConditionCompiler::encode($row->condition));
+            $record->setValue('str_role', $row->roleId ?? '');
+            $record->setValue('str_ref_date', $row->referenceDate ?? '');
+            $record->setValue('str_repeat', $row->repeat);
+            $record->setValue('str_repeat_max', $row->repeatMax ?? '');
             $record->save();
         }
     }

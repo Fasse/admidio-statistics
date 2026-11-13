@@ -19,12 +19,14 @@ require_once dirname(__DIR__) . '/autoload.php';
 use Admidio\Infrastructure\Database;
 use Admidio\Infrastructure\Exception;
 use Admidio\Tests\Support\AdministratorTestCase;
+use Admidio\Tests\Support\AdmidioTestFixture;
 use AdmidioPlugin\Statistics\Entity\Statistic;
 use AdmidioPlugin\Statistics\Entity\StatisticColumn;
 use AdmidioPlugin\Statistics\Entity\StatisticRow;
 use AdmidioPlugin\Statistics\Entity\StatisticTable;
 use AdmidioPlugin\Statistics\Service\StatisticRepository;
 use AdmidioPlugin\Statistics\ValueObject\ColumnDefinition;
+use AdmidioPlugin\Statistics\ValueObject\DateSeries;
 use AdmidioPlugin\Statistics\ValueObject\RowDefinition;
 use AdmidioPlugin\Statistics\ValueObject\StatisticDefinition;
 use AdmidioPlugin\Statistics\ValueObject\StatisticFunction;
@@ -155,6 +157,118 @@ final class StatisticRepositoryTest extends AdministratorTestCase
         $this->assertNull($read->tables[0]->roleId, 'no role of its own means the standard role');
         $this->assertSame(7, $read->tables[1]->roleId);
         $this->assertSame('A second table', $read->tables[1]->title);
+    }
+
+    /**
+     * The role and the day of a row and of a column, and the excluded roles of the statistic.
+     */
+    public function testTheRolesAndTheDaysSurviveTheRoundTrip(): void
+    {
+        $fixture = new AdmidioTestFixture($this->getDatabase());
+        $counted = (int)$fixture->createAndSaveRole('Statistics counted role', $this->orgId)['rol_id'];
+        $excluded = (int)$fixture->createAndSaveRole('Statistics excluded role', $this->orgId)['rol_id'];
+
+        $table = new TableDefinition(
+            '',
+            null,
+            '',
+            array(
+                new ColumnDefinition('', null, '', StatisticFunction::COUNT, null, '', null, '2020-01-01'),
+                new ColumnDefinition('Today'),
+                new ColumnDefinition('Year', null, '', StatisticFunction::COUNT, null, '', null, '2021-01-01', DateSeries::YEARLY, 7),
+                new ColumnDefinition('Month', null, '', StatisticFunction::COUNT, null, '', null, '2021-01-31', DateSeries::MONTHLY)
+            ),
+            array(
+                new RowDefinition('', null, '', $counted),
+                new RowDefinition('All')
+            )
+        );
+
+        $id = $this->repository->save(
+            new StatisticDefinition(null, $this->orgId, 'History', '', '', 12, array($table), array($excluded))
+        );
+        $read = $this->repository->find($id, $this->orgId);
+
+        $this->assertSame(array($excluded), $read->excludedRoleIds);
+
+        $columns = $read->tables[0]->columns;
+        $this->assertSame('2020-01-01', $columns[0]->referenceDate);
+        $this->assertNull($columns[0]->roleId);
+        $this->assertNull($columns[1]->referenceDate, 'no day means the day the statistic is shown for');
+        $this->assertFalse($columns[0]->isSeries());
+        $this->assertSame(DateSeries::YEARLY, $columns[2]->repeat);
+        $this->assertSame(7, $columns[2]->repeatMax);
+        $this->assertSame(DateSeries::MONTHLY, $columns[3]->repeat);
+        $this->assertNull($columns[3]->repeatMax, 'no number means the default');
+
+        $rows = $read->tables[0]->rows;
+        $this->assertSame($counted, $rows[0]->roleId);
+        $this->assertNull($rows[0]->referenceDate);
+        $this->assertNull($rows[1]->roleId, 'no role means the role of the table');
+
+        // Saving again replaces the excluded roles rather than adding to them.
+        $this->repository->save(
+            new StatisticDefinition($id, $this->orgId, 'History', '', '', 12, array($table), array())
+        );
+        $this->assertSame(array(), $this->repository->find($id, $this->orgId)->excludedRoleIds);
+    }
+
+    /**
+     * An excluded role that is deleted leaves the statistic, which keeps the other excluded roles and
+     * can still be read and saved.
+     */
+    public function testDeletingAnExcludedRoleTakesItOutOfTheStatistic(): void
+    {
+        $fixture = new AdmidioTestFixture($this->getDatabase());
+        $kept = (int)$fixture->createAndSaveRole('Statistics kept excluded role', $this->orgId)['rol_id'];
+        $deleted = (int)$fixture->createAndSaveRole('Statistics deleted excluded role', $this->orgId)['rol_id'];
+
+        $id = $this->repository->save(
+            new StatisticDefinition(null, $this->orgId, 'Excluding', '', '', 12, $this->definition()->tables, array($kept, $deleted))
+        );
+        $this->assertCount(2, $this->repository->find($id, $this->orgId)->excludedRoleIds);
+
+        $this->assertTrue($fixture->deleteRole($deleted));
+
+        $read = $this->repository->find($id, $this->orgId);
+        $this->assertNotNull($read, 'the statistic itself survives');
+        $this->assertSame(array($kept), $read->excludedRoleIds);
+
+        $this->repository->save($read);
+        $this->assertSame(array($kept), $this->repository->find($id, $this->orgId)->excludedRoleIds);
+    }
+
+    /**
+     * A row or a column whose role is deleted stays, and counts the role of its table from then on.
+     */
+    public function testDeletingTheRoleOfARowOrAColumnLeavesThemWithTheRoleOfTheTable(): void
+    {
+        $fixture = new AdmidioTestFixture($this->getDatabase());
+        $kept = (int)$fixture->createAndSaveRole('Statistics kept row role', $this->orgId)['rol_id'];
+        $deleted = (int)$fixture->createAndSaveRole('Statistics deleted row role', $this->orgId)['rol_id'];
+
+        $table = new TableDefinition(
+            '',
+            null,
+            '',
+            array(
+                new ColumnDefinition('Gone', null, '', StatisticFunction::COUNT, null, '', $deleted),
+                new ColumnDefinition('Kept', null, '', StatisticFunction::COUNT, null, '', $kept)
+            ),
+            array(new RowDefinition('Gone', null, '', $deleted, '2020-01-01'))
+        );
+        $id = $this->repository->save(new StatisticDefinition(null, $this->orgId, 'Roles', '', '', 12, array($table)));
+
+        $this->assertTrue($fixture->deleteRole($deleted));
+
+        $read = $this->repository->find($id, $this->orgId)->tables[0];
+        $this->assertCount(2, $read->columns, 'the column stays');
+        $this->assertNull($read->columns[0]->roleId);
+        $this->assertSame('Gone', $read->columns[0]->label);
+        $this->assertSame($kept, $read->columns[1]->roleId);
+        $this->assertCount(1, $read->rows, 'the row stays');
+        $this->assertNull($read->rows[0]->roleId);
+        $this->assertSame('2020-01-01', $read->rows[0]->referenceDate, 'only the role is taken out');
     }
 
     /**

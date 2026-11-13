@@ -52,4 +52,55 @@ final class ResultTable
         $this->rows = array_map('array_values', array_values($rows));
         $this->totalRow = $totalRow === null ? null : array_values($totalRow);
     }
+
+    /**
+     * The table as plain values, for the cache.
+     *
+     * @return array<string,mixed>
+     */
+    public function toArray(): array
+    {
+        return array(
+            'title' => $this->title,
+            'caption' => $this->caption,
+            'headers' => $this->headers,
+            'rows' => $this->rows,
+            'totalRow' => $this->totalRow
+        );
+    }
+
+    /**
+     * The table back from its plain values. Anything that is not of the shape toArray() writes is
+     * refused, so that a stored result that cannot be trusted is computed again instead.
+     *
+     * @param mixed $data
+     * @return self
+     * @throws \InvalidArgumentException
+     */
+    public static function fromArray(mixed $data): self
+    {
+        if (!is_array($data) || !is_array($data['headers'] ?? null) || !is_array($data['rows'] ?? null)) {
+            throw new \InvalidArgumentException('not a stored table');
+        }
+
+        $strings = static fn (array $values): array => array_map('strval', $values);
+
+        $rows = array();
+        foreach ($data['rows'] as $row) {
+            if (!is_array($row)) {
+                throw new \InvalidArgumentException('not a stored table');
+            }
+            $rows[] = $strings($row);
+        }
+
+        $totalRow = $data['totalRow'] ?? null;
+
+        return new self(
+            (string) ($data['title'] ?? ''),
+            (string) ($data['caption'] ?? ''),
+            $strings($data['headers']),
+            $rows,
+            is_array($totalRow) ? $strings($totalRow) : null
+        );
+    }
 }

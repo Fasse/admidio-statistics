@@ -63,7 +63,28 @@ final class StatisticResultPresenter
 
         $page->assignSmartyVariable('staSubtitle', $result->subtitle);
         $page->assignSmartyVariable('staAsOf', $result->asOf);
+        $page->assignSmartyVariable('staExcludedRoles', implode(', ', $result->excludedRoles));
         $page->assignSmartyVariable('staResultTables', $tables);
         $page->assignSmartyVariable('staPrintMode', $printMode);
+        $page->assignSmartyVariable('staDateForm', null);
+    }
+
+    /**
+     * Offer the statistic for another day. The form is a plain GET of the page that shows it, so
+     * the day ends up in the address and the result can be bookmarked and printed.
+     *
+     * @param PagePresenter $page
+     * @param string $url The page that shows the statistic.
+     * @param int $statisticId
+     * @param string $date The day (Y-m-d) the figures on the page are of.
+     * @return void
+     */
+    public static function assignDateForm(PagePresenter $page, string $url, int $statisticId, string $date): void
+    {
+        $page->assignSmartyVariable('staDateForm', array(
+            'url' => $url,
+            'statisticId' => $statisticId,
+            'date' => $date
+        ));
     }
 }

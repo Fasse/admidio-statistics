@@ -46,7 +46,11 @@
     border-left-color: orange;
 }
 
-/* The two parts that choose which members a cell counts. */
+/* The six parts that choose which members a cell counts. */
+.adm-statistics-cell-role .adm-statistics-grid-head,
+.adm-statistics-cell-ref_date .adm-statistics-grid-head,
+.adm-statistics-cell-repeat .adm-statistics-grid-head,
+.adm-statistics-cell-repeat_max .adm-statistics-grid-head,
 .adm-statistics-cell-profile_field .adm-statistics-grid-head,
 .adm-statistics-cell-condition .adm-statistics-grid-head {
     border-left-color: #add8e6;

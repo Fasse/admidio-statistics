@@ -29,6 +29,7 @@
     <string name="PLG_STATISTICS_EDITOR_CONFIG_LOAD_OR_CHANGE">Do you want to load and modify a saved configuration or create a new statistic configuration?</string>
     <string name="PLG_STATISTICS_EVALUATE">Evaluate</string>
     <string name="PLG_STATISTICS_EXAMPLES_ADDED">Sample statistics have been added.</string>
+    <string name="PLG_STATISTICS_EXCLUDED_ROLES">Excluded roles</string>
     <string name="PLG_STATISTICS_FUNCTION">Function</string>
     <string name="PLG_STATISTICS_GENERAL_INFORMATIONS">General information on statistics</string>
     <string name="PLG_STATISTICS_HEADER">Header</string>
@@ -36,6 +37,7 @@
     <string name="PLG_STATISTICS_INSTALL">Install</string>
     <string name="PLG_STATISTICS_INSTALL_PLUGIN">Install plugin</string>
     <string name="PLG_STATISTICS_INSTALLATION_STATISTICS_PLUGIN">Installation statistics plugin</string>
+    <string name="PLG_STATISTICS_MEMBERSHIP_DEVELOPMENT">Membership development</string>
     <string name="PLG_STATISTICS_MISSING">missing</string>
     <string name="PLG_STATISTICS_MOVE_COLUMN_BACKWARDS">Move column backwards</string>
     <string name="PLG_STATISTICS_MOVE_COLUMN_FORWARD">Move column forward</string>
@@ -59,10 +61,20 @@
     <string name="PLG_STATISTICS_PLUGIN_UNINSTALLED">The plugin was uninstalled.</string>
     <string name="PLG_STATISTICS_POSSIBLE_INFORMATIONS">Possible informations</string>
     <string name="PLG_STATISTICS_PROFILE_COMPLETENESS">Profile completeness</string>
+    <string name="PLG_STATISTICS_REFERENCE_DATE">Reference date</string>
+    <string name="PLG_STATISTICS_REFERENCE_DATES_ON_BOTH_AXES">Table #VAR1# has reference dates on its rows and on its columns. A table can have them on one of the two only.</string>
+    <string name="PLG_STATISTICS_REPEAT">Repeat</string>
+    <string name="PLG_STATISTICS_REPEAT_MAX">At most</string>
+    <string name="PLG_STATISTICS_REPEAT_MONTHLY">every month</string>
+    <string name="PLG_STATISTICS_REPEAT_NEEDS_REFERENCE_DATE">Table #VAR1# has a row or a column that repeats but has no reference date. A repetition needs the day it starts on.</string>
+    <string name="PLG_STATISTICS_REPEAT_WEEKLY">every week</string>
+    <string name="PLG_STATISTICS_REPEAT_YEARLY">every year</string>
     <string name="PLG_STATISTICS_ROWS">Rows</string>
     <string name="PLG_STATISTICS_SAVE_AS">Save as a new configuration</string>
     <string name="PLG_STATISTICS_SELECTION">Selection</string>
     <string name="PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC">Show help on this topic (German)</string>
+    <string name="PLG_STATISTICS_SHOW_ON_OVERVIEW">Show on the overview page</string>
+    <string name="PLG_STATISTICS_SHOW_ON_OVERVIEW_DESC">The statistic is shown to logged-in users in the statistics widget of the overview page. Its figures are computed again only when memberships or profiles have changed, and once a day.</string>
     <string name="PLG_STATISTICS_STATISTIC">Statistic</string>
     <string name="PLG_STATISTICS_STATISTICS">Statistics</string>
     <string name="PLG_STATISTICS_STATISTICS_DESC">Presentation of various statistics. The statistics may include evaluations on specific fields or role members. The statistics can be created or edited via the associated editor.</string>
@@ -75,6 +87,7 @@
     <string name="PLG_STATISTICS_TABLE_ROLE">Role of the table</string>
     <string name="PLG_STATISTICS_TABLE_TITLE">Title of the table</string>
     <string name="PLG_STATISTICS_TABLES_CREATED">The tables for the plugin have been created in the Admidio database.</string>
+    <string name="PLG_STATISTICS_TODAY">Today</string>
     <string name="PLG_STATISTICS_TOTAL">Total</string>
     <string name="PLG_STATISTICS_TOTAL_AVERAGE">(Ø) #VAR1#</string>
     <string name="PLG_STATISTICS_TOTAL_MAXIMUM">(max) #VAR1#</string>
@@ -87,6 +100,7 @@
     <string name="PLG_STATISTICS_UNINSTALL_WARNING">This process removes the plugin and deletes all saved statistics configurations!</string>
     <string name="PLG_STATISTICS_USE_STANDARD_ROLE">Use the standard role of the statistic</string>
     <string name="PLG_STATISTICS_WELCOME_HEADLINE">Welcome to the installation of the Admidio statistics plugin</string>
+    <string name="PLG_STATISTICS_WITHOUT_MEMBERS_OF">Without the members of: #VAR1#</string>
     <string name="PLG_STATISTICS_XY_ENTRIES">#VAR1# entries</string>
     <string name="PLG_STATISTICS_XY_COLUMN">#VAR1# column</string>
     <string name="PLG_STATISTICS_XY_ROW">#VAR1# row</string>

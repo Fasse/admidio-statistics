@@ -8,7 +8,9 @@ use Admidio\Infrastructure\Exception;
 use Admidio\Infrastructure\Language;
 use Admidio\Roles\Service\RolesService;
 use Admidio\UI\Presenter\FormPresenter;
+use Admidio\UI\Presenter\GroupsRolesPresenter;
 use AdmidioPlugin\Statistics\ValueObject\ColumnDefinition;
+use AdmidioPlugin\Statistics\ValueObject\DateSeries;
 use AdmidioPlugin\Statistics\ValueObject\FieldNames;
 use AdmidioPlugin\Statistics\ValueObject\RowDefinition;
 use AdmidioPlugin\Statistics\ValueObject\StatisticDefinition;
@@ -40,6 +42,14 @@ final class StatisticFormService
     public const FIELD_TITLE = 'statistic_title';
     public const FIELD_SUBTITLE = 'statistic_subtitle';
     public const FIELD_STANDARD_ROLE = 'statistic_std_role';
+    public const FIELD_EXCLUDED_ROLES = 'statistic_excluded_roles';
+    public const FIELD_OVERVIEW = 'statistic_overview';
+
+    /**
+     * @var array<string,array<int,array<int,string>>> The role lists already built in this request.
+     *      The editor asks for the same list once per row and per column.
+     */
+    private static array $roleOptions = array();
 
     public const FIELD_ACTION = 'adm_statistics_action';
     public const FIELD_TARGET = 'adm_statistics_target';
@@ -106,20 +116,28 @@ final class StatisticFormService
             (string) ($values[self::FIELD_TITLE] ?? ''),
             (string) ($values[self::FIELD_SUBTITLE] ?? ''),
             (int) ($values[self::FIELD_STANDARD_ROLE] ?? 0),
-            $tables
+            $tables,
+            array_map('intval', (array) ($values[self::FIELD_EXCLUDED_ROLES] ?? array())),
+            !empty($values[self::FIELD_OVERVIEW])
         );
     }
 
     /**
-     * The two values a statistic cannot be stored without.
+     * What a statistic cannot be stored without: its name, its standard role, and tables that name
+     * their days on one side only and repeat no day that is not there.
      *
-     * They are checked here rather than marked as required fields, because the form is submitted for
-     * every structure action too and adding a column must not be refused because the statistic has
-     * not been named yet.
+     * A cell looks at the memberships of one day. With a day on its row and another on its column it
+     * would have two, so a table carries them on its rows or on its columns.
+     *
+     * The name and the role are checked here rather than marked as required fields, because the form
+     * is submitted for every structure action too and adding a column must not be refused because
+     * the statistic has not been named yet.
      *
      * @param StatisticDefinition $definition
      * @return void
-     * @throws Exception SYS_FIELD_EMPTY naming the field that is missing.
+     * @throws Exception SYS_FIELD_EMPTY naming the field that is missing, or
+     *         PLG_STATISTICS_REFERENCE_DATES_ON_BOTH_AXES or
+     *         PLG_STATISTICS_REPEAT_NEEDS_REFERENCE_DATE naming the table.
      */
     public static function assertSaveable(StatisticDefinition $definition): void
     {
@@ -131,6 +149,18 @@ final class StatisticFormService
 
         if ($definition->standardRoleId <= 0) {
             throw new Exception('SYS_FIELD_EMPTY', array($gL10n->get('PLG_STATISTICS_STATISTICS_STANDARD_ROLE')));
+        }
+
+        foreach ($definition->tables as $index => $table) {
+            if ($table->rowsUseReferenceDates() && $table->columnsUseReferenceDates()) {
+                throw new Exception('PLG_STATISTICS_REFERENCE_DATES_ON_BOTH_AXES', array($index + 1));
+            }
+
+            foreach (array_merge($table->columns, $table->rows) as $element) {
+                if ($element->repeat !== DateSeries::NONE && $element->referenceDate === null) {
+                    throw new Exception('PLG_STATISTICS_REPEAT_NEEDS_REFERENCE_DATE', array($index + 1));
+                }
+            }
         }
     }
 
@@ -159,16 +189,24 @@ final class StatisticFormService
      * organization that the user is allowed to view, and leaves the event categories out - the same
      * three conditions the old plugin wrote into a query of its own.
      *
-     * @param string $firstEntry The label of the entry that selects no role at all.
+     * @param string|null $firstEntry The label of the entry that selects no role at all, or **null**
+     *                                for a list without such an entry.
+     * @param bool $withInactive Whether the roles that are no longer active are offered as well, in
+     *                           a group of their own. A history is often about a role that has gone.
      * @return array<int,array<int,string>> Triples of value, label and group, which is the shape
      *         FormPresenter turns into option groups.
      * @throws Exception
      */
-    public static function roleOptions(string $firstEntry): array
+    public static function roleOptions(?string $firstEntry, bool $withInactive = false): array
     {
-        global $gDb;
+        global $gDb, $gL10n;
 
-        $options = array(array('', $firstEntry, ''));
+        $key = (string) $firstEntry . '|' . ($firstEntry === null ? '0' : '1') . '|' . ($withInactive ? '1' : '0');
+        if (isset(self::$roleOptions[$key])) {
+            return self::$roleOptions[$key];
+        }
+
+        $options = $firstEntry === null ? array() : array(array('', $firstEntry, ''));
 
         foreach ((new RolesService($gDb))->findAll() as $role) {
             $options[] = array(
@@ -178,7 +216,17 @@ final class StatisticFormService
             );
         }
 
-        return $options;
+        if ($withInactive) {
+            foreach ((new RolesService($gDb))->findAll(GroupsRolesPresenter::ROLE_TYPE_INACTIVE) as $role) {
+                $options[] = array(
+                    (string) $role['rol_id'],
+                    Language::translateIfTranslationStrId((string) $role['rol_name']),
+                    $gL10n->get('SYS_INACTIVE_GROUPS_ROLES')
+                );
+            }
+        }
+
+        return self::$roleOptions[$key] = $options;
     }
 
     /**
@@ -235,6 +283,23 @@ final class StatisticFormService
     }
 
     /**
+     * The intervals a reference date can repeat at, with the entry that means it does not.
+     *
+     * @return array<int,array<int,string>>
+     */
+    public static function repeatOptions(): array
+    {
+        global $gL10n;
+
+        return array(
+            array(DateSeries::NONE, $gL10n->get('PLG_STATISTICS_NONE')),
+            array(DateSeries::YEARLY, $gL10n->get('PLG_STATISTICS_REPEAT_YEARLY')),
+            array(DateSeries::MONTHLY, $gL10n->get('PLG_STATISTICS_REPEAT_MONTHLY')),
+            array(DateSeries::WEEKLY, $gL10n->get('PLG_STATISTICS_REPEAT_WEEKLY'))
+        );
+    }
+
+    /**
      * The functions a column can apply, as a select box offers them.
      *
      * @return array<int,array<int,string>>
@@ -287,7 +352,11 @@ final class StatisticFormService
                 RowDefinition::toFieldId($column['func_arg'] ?? null),
                 StatisticFunction::isValidTotal((string) ($column['func_total'] ?? ''))
                     ? (string) ($column['func_total'] ?? '')
-                    : ''
+                    : '',
+                RowDefinition::toFieldId($column['role'] ?? null),
+                RowDefinition::toDate($column['ref_date'] ?? null),
+                DateSeries::toInterval($column['repeat'] ?? null),
+                DateSeries::toMaximum($column['repeat_max'] ?? null)
             );
         }
 
@@ -298,7 +367,11 @@ final class StatisticFormService
             $rows[] = new RowDefinition(
                 (string) ($row['label'] ?? ''),
                 RowDefinition::toFieldId($row['profile_field'] ?? null),
-                (string) ($row['condition'] ?? '')
+                (string) ($row['condition'] ?? ''),
+                RowDefinition::toFieldId($row['role'] ?? null),
+                RowDefinition::toDate($row['ref_date'] ?? null),
+                DateSeries::toInterval($row['repeat'] ?? null),
+                DateSeries::toMaximum($row['repeat_max'] ?? null)
             );
         }
 
