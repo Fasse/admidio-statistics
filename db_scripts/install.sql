@@ -138,10 +138,9 @@ DELETE FROM %PREFIX%_statistics WHERE sta_id = 1;
 DELETE FROM %PREFIX%_statistics WHERE sta_org_id = 0;
 
 /*
- * Version 3 inserted its two menu entries itself, with no component of their own. Admidio adds the
- * menu entry of a plugin when it is installed and removes it with the plugin, so the two rows left
- * over would be a second, dead copy - and one of them claims the internal name this plugin is
- * about to be given. The men_com_id condition keeps this away from any entry that belongs to a
- * component, including this plugin's own on a re-install.
+ * Version 3 inserted its two menu entries itself, with no component of their own. The entry of the
+ * overview is taken over by update_4_1.xml, with the name, the position and the rights the
+ * administrator gave it. The editor has no page of its own any more, so its entry would be dead.
+ * The men_com_id condition keeps this away from any entry that belongs to a component.
  */
-DELETE FROM %PREFIX%_menu WHERE men_name_intern IN ('statistics', 'statistics_editor') AND men_com_id IS NULL;
+DELETE FROM %PREFIX%_menu WHERE men_name_intern = 'statistics_editor' AND men_com_id IS NULL;

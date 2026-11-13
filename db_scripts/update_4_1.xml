@@ -44,5 +44,10 @@ COLLATE = utf8mb4_unicode_ci</step>
     <step id="90" error="ignore">ALTER TABLE %PREFIX%_statistics_columns ADD COLUMN stc_repeat_max smallint NULL</step>
     <step id="100" error="ignore">ALTER TABLE %PREFIX%_statistics_rows ADD COLUMN str_repeat varchar(10) NULL</step>
     <step id="110" error="ignore">ALTER TABLE %PREFIX%_statistics_rows ADD COLUMN str_repeat_max smallint NULL</step>
+    <!--
+        The menu entry version 3 inserted itself becomes the entry of the plugin. Admidio adds one
+        only to a plugin that has none after these steps, and points this one at the page.
+    -->
+    <step id="120">UPDATE %PREFIX%_menu SET men_url = '/plugins/statistics/modules/index.php', men_com_id = (SELECT com_id FROM %PREFIX%_components WHERE com_type = 'PLUGIN' AND com_name_intern = 'statistics') WHERE men_name_intern = 'statistics' AND men_com_id IS NULL</step>
     <step>stop</step>
 </update>
