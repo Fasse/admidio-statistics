@@ -19,12 +19,14 @@ require_once dirname(__DIR__) . '/autoload.php';
 use Admidio\Infrastructure\Database;
 use Admidio\Infrastructure\Exception;
 use Admidio\Tests\Support\AdministratorTestCase;
+use Admidio\Tests\Support\AdmidioTestFixture;
 use AdmidioPlugin\Statistics\Entity\Statistic;
 use AdmidioPlugin\Statistics\Entity\StatisticColumn;
 use AdmidioPlugin\Statistics\Entity\StatisticRow;
 use AdmidioPlugin\Statistics\Entity\StatisticTable;
 use AdmidioPlugin\Statistics\Service\StatisticRepository;
 use AdmidioPlugin\Statistics\ValueObject\ColumnDefinition;
+use AdmidioPlugin\Statistics\ValueObject\DateSeries;
 use AdmidioPlugin\Statistics\ValueObject\RowDefinition;
 use AdmidioPlugin\Statistics\ValueObject\StatisticDefinition;
 use AdmidioPlugin\Statistics\ValueObject\StatisticFunction;
@@ -155,6 +157,60 @@ final class StatisticRepositoryTest extends AdministratorTestCase
         $this->assertNull($read->tables[0]->roleId, 'no role of its own means the standard role');
         $this->assertSame(7, $read->tables[1]->roleId);
         $this->assertSame('A second table', $read->tables[1]->title);
+    }
+
+    /**
+     * The role and the day of a row and of a column, and the excluded roles of the statistic.
+     */
+    public function testTheRolesAndTheDaysSurviveTheRoundTrip(): void
+    {
+        $fixture = new AdmidioTestFixture($this->getDatabase());
+        $counted = (int)$fixture->createAndSaveRole('Statistics counted role', $this->orgId)['rol_id'];
+        $excluded = (int)$fixture->createAndSaveRole('Statistics excluded role', $this->orgId)['rol_id'];
+
+        $table = new TableDefinition(
+            '',
+            null,
+            '',
+            array(
+                new ColumnDefinition('', null, '', StatisticFunction::COUNT, null, '', null, '2020-01-01'),
+                new ColumnDefinition('Today'),
+                new ColumnDefinition('Year', null, '', StatisticFunction::COUNT, null, '', null, '2021-01-01', DateSeries::YEARLY, 7),
+                new ColumnDefinition('Month', null, '', StatisticFunction::COUNT, null, '', null, '2021-01-31', DateSeries::MONTHLY)
+            ),
+            array(
+                new RowDefinition('', null, '', $counted),
+                new RowDefinition('All')
+            )
+        );
+
+        $id = $this->repository->save(
+            new StatisticDefinition(null, $this->orgId, 'History', '', '', 12, array($table), array($excluded))
+        );
+        $read = $this->repository->find($id, $this->orgId);
+
+        $this->assertSame(array($excluded), $read->excludedRoleIds);
+
+        $columns = $read->tables[0]->columns;
+        $this->assertSame('2020-01-01', $columns[0]->referenceDate);
+        $this->assertNull($columns[0]->roleId);
+        $this->assertNull($columns[1]->referenceDate, 'no day means the day the statistic is shown for');
+        $this->assertFalse($columns[0]->isSeries());
+        $this->assertSame(DateSeries::YEARLY, $columns[2]->repeat);
+        $this->assertSame(7, $columns[2]->repeatMax);
+        $this->assertSame(DateSeries::MONTHLY, $columns[3]->repeat);
+        $this->assertNull($columns[3]->repeatMax, 'no number means the default');
+
+        $rows = $read->tables[0]->rows;
+        $this->assertSame($counted, $rows[0]->roleId);
+        $this->assertNull($rows[0]->referenceDate);
+        $this->assertNull($rows[1]->roleId, 'no role means the role of the table');
+
+        // Saving again replaces the excluded roles rather than adding to them.
+        $this->repository->save(
+            new StatisticDefinition($id, $this->orgId, 'History', '', '', 12, array($table), array())
+        );
+        $this->assertSame(array(), $this->repository->find($id, $this->orgId)->excludedRoleIds);
     }
 
     /**

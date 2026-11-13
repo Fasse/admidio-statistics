@@ -22,6 +22,9 @@ final class StatisticDefinition
     /** @var array<int,TableDefinition> */
     public readonly array $tables;
 
+    /** @var array<int,int> */
+    public readonly array $excludedRoleIds;
+
     /**
      * @param int|null $id The database id, or **null** for a statistic that has not been saved yet.
      * @param int $orgId The organization the statistic belongs to.
@@ -30,6 +33,8 @@ final class StatisticDefinition
      * @param string $subtitle The second line of the rendered statistic.
      * @param int $standardRoleId The role every table counts unless it names one of its own.
      * @param array<int,TableDefinition> $tables
+     * @param array<int,int> $excludedRoleIds The roles whose members are left out of every figure.
+     * @param bool $showOnOverview Whether the statistic is part of the widget of the overview page.
      */
     public function __construct(
         public readonly ?int $id,
@@ -38,9 +43,36 @@ final class StatisticDefinition
         public readonly string $title = '',
         public readonly string $subtitle = '',
         public readonly int $standardRoleId = 0,
-        array $tables = array()
+        array $tables = array(),
+        array $excludedRoleIds = array(),
+        public readonly bool $showOnOverview = false
     ) {
         $this->tables = array_values($tables);
+
+        $ids = array();
+        foreach ($excludedRoleIds as $roleId) {
+            if ((int) $roleId > 0) {
+                $ids[(int) $roleId] = (int) $roleId;
+            }
+        }
+        $this->excludedRoleIds = array_values($ids);
+    }
+
+    /**
+     * Whether a row or a column of any table names a day of its own. Such a statistic is a history
+     * already, so it is not offered for another day as a whole.
+     *
+     * @return bool
+     */
+    public function usesReferenceDates(): bool
+    {
+        foreach ($this->tables as $table) {
+            if ($table->rowsUseReferenceDates() || $table->columnsUseReferenceDates()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -48,9 +80,10 @@ final class StatisticDefinition
      *
      * @param array<string,mixed> $record A record of the statistics table.
      * @param array<int,TableDefinition> $tables
+     * @param array<int,int> $excludedRoleIds
      * @return self
      */
-    public static function fromRecord(array $record, array $tables): self
+    public static function fromRecord(array $record, array $tables, array $excludedRoleIds = array()): self
     {
         return new self(
             (int) $record['sta_id'],
@@ -59,7 +92,9 @@ final class StatisticDefinition
             (string) ($record['sta_title'] ?? ''),
             (string) ($record['sta_subtitle'] ?? ''),
             (int) ($record['sta_std_role'] ?? 0),
-            $tables
+            $tables,
+            $excludedRoleIds,
+            !empty($record['sta_overview'])
         );
     }
 
@@ -98,13 +133,16 @@ final class StatisticDefinition
             $this->title,
             $this->subtitle,
             $this->standardRoleId,
-            $tables
+            $tables,
+            $this->excludedRoleIds,
+            $this->showOnOverview
         );
     }
 
     /**
      * Used when the editor saves a loaded statistic under a new name, which has to become a new
-     * record rather than overwrite the one it was read from.
+     * record rather than overwrite the one it was read from. The copy does not take the place of
+     * the original on the overview page.
      *
      * @param string $name
      * @return self
@@ -118,7 +156,8 @@ final class StatisticDefinition
             $this->title,
             $this->subtitle,
             $this->standardRoleId,
-            $this->tables
+            $this->tables,
+            $this->excludedRoleIds
         );
     }
 }

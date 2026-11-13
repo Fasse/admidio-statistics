@@ -21,6 +21,7 @@ use Admidio\Tests\Support\AdministratorTestCase;
 use AdmidioPlugin\Statistics\Service\StatisticFormService;
 use AdmidioPlugin\Statistics\Service\StatisticRepository;
 use AdmidioPlugin\Statistics\Service\StatisticTemplates;
+use AdmidioPlugin\Statistics\ValueObject\DateSeries;
 use AdmidioPlugin\Statistics\ValueObject\RowDefinition;
 use AdmidioPlugin\Statistics\ValueObject\StatisticDefinition;
 
@@ -84,8 +85,8 @@ final class StatisticTemplatesTest extends AdministratorTestCase
     {
         $created = StatisticTemplates::create($this->repository, $this->orgId);
 
-        $this->assertSame(2, $created);
-        $this->assertCount(2, $this->readAll());
+        $this->assertSame(3, $created);
+        $this->assertCount(3, $this->readAll());
     }
 
     public function testEveryExampleCountsARoleThatExists(): void
@@ -208,7 +209,49 @@ final class StatisticTemplatesTest extends AdministratorTestCase
         StatisticTemplates::create($this->repository, $this->orgId);
         StatisticTemplates::create($this->repository, $this->orgId);
 
-        $this->assertCount(4, $this->readAll());
+        $this->assertCount(6, $this->readAll());
+    }
+
+    /**
+     * The membership development is a row for each role, a column that repeats every first of
+     * January, and one last column for today.
+     */
+    public function testTheMembershipDevelopmentCountsRolesOverTheYears(): void
+    {
+        global $gL10n;
+
+        StatisticTemplates::create($this->repository, $this->orgId);
+
+        $development = null;
+        foreach ($this->readAll() as $definition) {
+            if ($definition->name === $gL10n->get('PLG_STATISTICS_MEMBERSHIP_DEVELOPMENT')) {
+                $development = $definition;
+            }
+        }
+
+        $this->assertNotNull($development);
+        $this->assertTrue($development->usesReferenceDates());
+
+        $table = $development->tables[0];
+        $this->assertFalse($table->usesTableRole(), 'every row names its own role');
+
+        foreach ($table->rows as $row) {
+            $this->assertNotNull($row->roleId);
+            $this->assertNull($row->referenceDate);
+        }
+
+        $this->assertCount(2, $table->columns);
+
+        $series = $table->columns[0];
+        $this->assertTrue($series->isSeries());
+        $this->assertSame(DateSeries::YEARLY, $series->repeat);
+        $this->assertSame(5, $series->repeatMax);
+        $this->assertSame(((int)date('Y') - 4) . '-01-01', $series->referenceDate);
+        $this->assertSame('', $series->label, 'each year is named after its day');
+
+        $today = $table->columns[1];
+        $this->assertNull($today->referenceDate, 'the last column is today');
+        $this->assertSame($gL10n->get('PLG_STATISTICS_TODAY'), $today->label);
     }
 
     public function testTheExamplesHaveRowsAndColumnsToShow(): void

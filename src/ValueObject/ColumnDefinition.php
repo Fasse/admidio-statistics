@@ -26,6 +26,14 @@ final class ColumnDefinition
      * @param int|null $functionArgument The profile field the function aggregates, for the four
      *                                   functions that need one; **null** for count and percent.
      * @param string $functionTotal One of StatisticFunction::TOTAL_NAMES, empty for no total.
+     * @param int|null $roleId The role whose members this column counts instead of the role of the
+     *                         table, or **null** for the role of the table.
+     * @param string|null $referenceDate The day (Y-m-d) on which the memberships are looked at, or
+     *                                   **null** for the day the statistic is shown for.
+     * @param string $repeat One of DateSeries::INTERVALS when the reference date is the first day
+     *                       of a series, empty when it is one day.
+     * @param int|null $repeatMax How many days of the series are shown at most, **null** for
+     *                            DateSeries::DEFAULT_MAXIMUM.
      */
     public function __construct(
         public readonly string $label = '',
@@ -33,7 +41,11 @@ final class ColumnDefinition
         public readonly string $condition = '',
         public readonly string $functionName = StatisticFunction::COUNT,
         public readonly ?int $functionArgument = null,
-        public readonly string $functionTotal = ''
+        public readonly string $functionTotal = '',
+        public readonly ?int $roleId = null,
+        public readonly ?string $referenceDate = null,
+        public readonly string $repeat = DateSeries::NONE,
+        public readonly ?int $repeatMax = null
     ) {
     }
 
@@ -54,7 +66,40 @@ final class ColumnDefinition
             $condition,
             StatisticFunction::isValid($function) ? $function : StatisticFunction::COUNT,
             RowDefinition::toFieldId($record['stc_function_arg'] ?? null),
-            self::toTotal($record['stc_function_total'] ?? null)
+            self::toTotal($record['stc_function_total'] ?? null),
+            RowDefinition::toFieldId($record['stc_role'] ?? null),
+            RowDefinition::toDate($record['stc_ref_date'] ?? null),
+            DateSeries::toInterval($record['stc_repeat'] ?? null),
+            DateSeries::toMaximum($record['stc_repeat_max'] ?? null)
+        );
+    }
+
+    /**
+     * @return bool Whether the column stands for a series of days.
+     */
+    public function isSeries(): bool
+    {
+        return $this->referenceDate !== null && $this->repeat !== DateSeries::NONE;
+    }
+
+    /**
+     * The column for one day of its series.
+     *
+     * @param string $date
+     * @param string $label
+     * @return self
+     */
+    public function onDate(string $date, string $label): self
+    {
+        return new self(
+            $label,
+            $this->profileFieldId,
+            $this->condition,
+            $this->functionName,
+            $this->functionArgument,
+            $this->functionTotal,
+            $this->roleId,
+            $date
         );
     }
 

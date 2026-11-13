@@ -11,6 +11,7 @@ use Admidio\UI\Presenter\FormPresenter;
 use Admidio\UI\Presenter\PagePresenter;
 use AdmidioPlugin\Statistics\Service\StatisticFormService;
 use AdmidioPlugin\Statistics\Service\StatisticStructureService;
+use AdmidioPlugin\Statistics\ValueObject\DateSeries;
 use AdmidioPlugin\Statistics\ValueObject\FieldNames;
 use AdmidioPlugin\Statistics\ValueObject\StatisticDefinition;
 use AdmidioPlugin\Statistics\ValueObject\StatisticFunction;
@@ -62,6 +63,7 @@ final class StatisticEditorPresenter
      */
     private const HELP_IDS = array(
         'standard_role' => 533,
+        'excluded_roles' => 534,
         'table_role' => 542,
         'column_label' => 551,
         'column_profile_field' => 552,
@@ -69,10 +71,18 @@ final class StatisticEditorPresenter
         'column_func_arg' => 554,
         'column_func_main' => 555,
         'column_func_total' => 556,
+        'column_role' => 557,
+        'column_ref_date' => 558,
+        'column_repeat' => 559,
+        'column_repeat_max' => 559,
         'first_column_label' => 561,
         'row_label' => 562,
         'row_profile_field' => 563,
         'row_condition' => 564,
+        'row_role' => 565,
+        'row_ref_date' => 566,
+        'row_repeat' => 567,
+        'row_repeat_max' => 567,
         'preview' => 427
     );
 
@@ -120,6 +130,10 @@ final class StatisticEditorPresenter
                     'canMoveDown' => $columnIndex < $lastColumn,
                     'canDelete' => $lastColumn > 0,
                     'label' => FieldNames::column($tableIndex, $columnIndex, 'label'),
+                    'role' => FieldNames::column($tableIndex, $columnIndex, 'role'),
+                    'ref_date' => FieldNames::column($tableIndex, $columnIndex, 'ref_date'),
+                    'repeat' => FieldNames::column($tableIndex, $columnIndex, 'repeat'),
+                    'repeat_max' => FieldNames::column($tableIndex, $columnIndex, 'repeat_max'),
                     'profile_field' => FieldNames::column($tableIndex, $columnIndex, 'profile_field'),
                     'condition' => FieldNames::column($tableIndex, $columnIndex, 'condition'),
                     'func_arg' => FieldNames::column($tableIndex, $columnIndex, 'func_arg'),
@@ -140,6 +154,10 @@ final class StatisticEditorPresenter
                     'canMoveDown' => $rowIndex < $lastRow,
                     'canDelete' => $lastRow > 0,
                     'label' => FieldNames::row($tableIndex, $rowIndex, 'label'),
+                    'role' => FieldNames::row($tableIndex, $rowIndex, 'role'),
+                    'ref_date' => FieldNames::row($tableIndex, $rowIndex, 'ref_date'),
+                    'repeat' => FieldNames::row($tableIndex, $rowIndex, 'repeat'),
+                    'repeat_max' => FieldNames::row($tableIndex, $rowIndex, 'repeat_max'),
                     'profile_field' => FieldNames::row($tableIndex, $rowIndex, 'profile_field'),
                     'condition' => FieldNames::row($tableIndex, $rowIndex, 'condition')
                 );
@@ -236,6 +254,82 @@ final class StatisticEditorPresenter
                 'showContextDependentFirstEntry' => false
             )
         );
+        $form->addSelectBox(
+            StatisticFormService::FIELD_EXCLUDED_ROLES,
+            $gL10n->get('PLG_STATISTICS_EXCLUDED_ROLES'),
+            StatisticFormService::roleOptions(null, true),
+            array(
+                'defaultValue' => array_map('strval', $definition->excludedRoleIds),
+                'multiselect' => true
+            )
+        );
+        $form->addCheckbox(
+            StatisticFormService::FIELD_OVERVIEW,
+            $gL10n->get('PLG_STATISTICS_SHOW_ON_OVERVIEW'),
+            $definition->showOnOverview,
+            array('helpTextId' => 'PLG_STATISTICS_SHOW_ON_OVERVIEW_DESC')
+        );
+    }
+
+    /**
+     * The parts a row and a column have in common beyond their label and their condition: the role
+     * they count, the day they look at, and whether and how often that day repeats.
+     *
+     * @param FormPresenter $form
+     * @param string $prefix The name of the row or column without its part, as FieldNames builds it.
+     * @param int|null $roleId
+     * @param string|null $referenceDate
+     * @param string $repeat
+     * @param int|null $repeatMax
+     * @return void
+     * @throws Exception
+     */
+    private static function addRoleAndDateFields(
+        FormPresenter $form,
+        string $prefix,
+        ?int $roleId,
+        ?string $referenceDate,
+        string $repeat,
+        ?int $repeatMax
+    ): void {
+        $roleField = $prefix . 'role';
+        $dateField = $prefix . 'ref_date';
+
+        global $gL10n;
+
+        $form->addSelectBox(
+            $roleField,
+            $gL10n->get('SYS_ROLE'),
+            StatisticFormService::roleOptions($gL10n->get('PLG_STATISTICS_TABLE_ROLE'), true),
+            array(
+                'defaultValue' => $roleId === null ? '' : (string) $roleId,
+                'showContextDependentFirstEntry' => false
+            )
+        );
+        $form->addInput(
+            $dateField,
+            $gL10n->get('PLG_STATISTICS_REFERENCE_DATE'),
+            (string) $referenceDate,
+            array('type' => 'date')
+        );
+        $form->addSelectBox(
+            $prefix . 'repeat',
+            $gL10n->get('PLG_STATISTICS_REPEAT'),
+            StatisticFormService::repeatOptions(),
+            array('defaultValue' => $repeat, 'showContextDependentFirstEntry' => false)
+        );
+        $form->addInput(
+            $prefix . 'repeat_max',
+            $gL10n->get('PLG_STATISTICS_REPEAT_MAX'),
+            $repeatMax === null ? '' : (string) $repeatMax,
+            array(
+                'type' => 'number',
+                'minNumber' => 1,
+                'maxNumber' => DateSeries::HIGHEST_MAXIMUM,
+                'step' => 1,
+                'placeholder' => (string) DateSeries::DEFAULT_MAXIMUM
+            )
+        );
     }
 
     /**
@@ -301,6 +395,14 @@ final class StatisticEditorPresenter
             $column->label,
             array('maxLength' => 50)
         );
+        self::addRoleAndDateFields(
+            $form,
+            FieldNames::column($tableIndex, $columnIndex, ''),
+            $column->roleId,
+            $column->referenceDate,
+            $column->repeat,
+            $column->repeatMax
+        );
         $form->addSelectBox(
             FieldNames::column($tableIndex, $columnIndex, 'profile_field'),
             $gL10n->get('PLG_STATISTICS_SELECTION'),
@@ -360,6 +462,14 @@ final class StatisticEditorPresenter
             $gL10n->get('SYS_DESIGNATION'),
             $row->label,
             array('maxLength' => 50)
+        );
+        self::addRoleAndDateFields(
+            $form,
+            FieldNames::row($tableIndex, $rowIndex, ''),
+            $row->roleId,
+            $row->referenceDate,
+            $row->repeat,
+            $row->repeatMax
         );
         $form->addSelectBox(
             FieldNames::row($tableIndex, $rowIndex, 'profile_field'),
@@ -437,6 +547,10 @@ final class StatisticEditorPresenter
          */
         $page->assignSmartyVariable('staColumnPartTypes', array(
             'label' => 'input',
+            'role' => 'select',
+            'ref_date' => 'input',
+            'repeat' => 'select',
+            'repeat_max' => 'input',
             'profile_field' => 'select',
             'condition' => 'input',
             'func_arg' => 'select',
@@ -445,12 +559,20 @@ final class StatisticEditorPresenter
         ));
         $page->assignSmartyVariable('staRowPartTypes', array(
             'label' => 'input',
+            'role' => 'select',
+            'ref_date' => 'input',
+            'repeat' => 'select',
+            'repeat_max' => 'input',
             'profile_field' => 'select',
             'condition' => 'input'
         ));
 
         $page->assignSmartyVariable('staColumnPartLabels', array(
             'label' => $gL10n->get('SYS_DESIGNATION'),
+            'role' => $gL10n->get('SYS_ROLE'),
+            'ref_date' => $gL10n->get('PLG_STATISTICS_REFERENCE_DATE'),
+            'repeat' => $gL10n->get('PLG_STATISTICS_REPEAT'),
+            'repeat_max' => $gL10n->get('PLG_STATISTICS_REPEAT_MAX'),
             'profile_field' => $gL10n->get('PLG_STATISTICS_SELECTION'),
             'condition' => $gL10n->get('SYS_CONDITION'),
             'func_arg' => $gL10n->get('PLG_STATISTICS_EVALUATE'),
@@ -459,6 +581,10 @@ final class StatisticEditorPresenter
         ));
         $page->assignSmartyVariable('staRowPartLabels', array(
             'label' => $gL10n->get('SYS_DESIGNATION'),
+            'role' => $gL10n->get('SYS_ROLE'),
+            'ref_date' => $gL10n->get('PLG_STATISTICS_REFERENCE_DATE'),
+            'repeat' => $gL10n->get('PLG_STATISTICS_REPEAT'),
+            'repeat_max' => $gL10n->get('PLG_STATISTICS_REPEAT_MAX'),
             'profile_field' => $gL10n->get('PLG_STATISTICS_SELECTION'),
             'condition' => $gL10n->get('SYS_CONDITION')
         ));
@@ -469,6 +595,9 @@ final class StatisticEditorPresenter
         $page->assignSmartyVariable('staHelpPreview', self::helpUrl($plugin, self::HELP_IDS['preview']));
         $page->assignSmartyVariable('staHelpTableRole', self::helpUrl($plugin, self::HELP_IDS['table_role']));
         $page->assignSmartyVariable('staHelpStandardRole', self::helpUrl($plugin, self::HELP_IDS['standard_role']));
+        $page->assignSmartyVariable('staHelpExcludedRoles', self::helpUrl($plugin, self::HELP_IDS['excluded_roles']));
+        $page->assignSmartyVariable('staFieldExcludedRoles', StatisticFormService::FIELD_EXCLUDED_ROLES);
+        $page->assignSmartyVariable('staFieldOverview', StatisticFormService::FIELD_OVERVIEW);
 
         $page->assignSmartyVariable('staUrlEditor', $plugin->getUrl('editor.php'));
         $page->assignSmartyVariable('staUrlManual', self::manualUrl($plugin));

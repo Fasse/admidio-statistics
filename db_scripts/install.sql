@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS %PREFIX%_statistics
     sta_title                   varchar(200)        NULL,
     sta_subtitle                varchar(200)        NULL,
     sta_std_role                integer unsigned    NOT NULL,
+    sta_overview                boolean             NOT NULL    DEFAULT false,
     PRIMARY KEY (sta_id)
 )
 ENGINE = InnoDB
@@ -54,6 +55,10 @@ CREATE TABLE IF NOT EXISTS %PREFIX%_statistics_columns
     stc_function_main           varchar(50)         NULL,
     stc_function_arg            varchar(200)        NULL,
     stc_function_total          varchar(50)         NULL,
+    stc_role                    integer unsigned    NULL,
+    stc_ref_date                date                NULL,
+    stc_repeat                  varchar(10)         NULL,
+    stc_repeat_max              smallint            NULL,
     stc_stt_id                  integer unsigned    NOT NULL,
     PRIMARY KEY (stc_id),
     CONSTRAINT %PREFIX%_FK_STC_STT FOREIGN KEY (stc_stt_id)
@@ -69,10 +74,49 @@ CREATE TABLE IF NOT EXISTS %PREFIX%_statistics_rows
     str_label                   varchar(50)         NULL,
     str_field_condition         varchar(200)        NULL,
     str_profile_field           varchar(50)         NULL,
+    str_role                    integer unsigned    NULL,
+    str_ref_date                date                NULL,
+    str_repeat                  varchar(10)         NULL,
+    str_repeat_max              smallint            NULL,
     str_stt_id                  integer unsigned    NOT NULL,
     PRIMARY KEY (str_id),
     CONSTRAINT %PREFIX%_FK_STR_STT FOREIGN KEY (str_stt_id)
         REFERENCES %PREFIX%_statistics_tables (stt_id) ON DELETE CASCADE ON UPDATE CASCADE
+)
+ENGINE = InnoDB
+DEFAULT CHARSET = utf8mb4
+COLLATE = utf8mb4_unicode_ci;
+
+/*
+ * The roles whose members a statistic leaves out. Both foreign keys cascade, so the link goes with
+ * the statistic and with the role.
+ */
+CREATE TABLE IF NOT EXISTS %PREFIX%_statistics_excluded_roles
+(
+    ser_sta_id                  integer unsigned    NOT NULL,
+    ser_rol_id                  integer unsigned    NOT NULL,
+    PRIMARY KEY (ser_sta_id, ser_rol_id),
+    CONSTRAINT %PREFIX%_FK_SER_STA FOREIGN KEY (ser_sta_id)
+        REFERENCES %PREFIX%_statistics (sta_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT %PREFIX%_FK_SER_ROL FOREIGN KEY (ser_rol_id)
+        REFERENCES %PREFIX%_roles (rol_id) ON DELETE CASCADE ON UPDATE CASCADE
+)
+ENGINE = InnoDB
+DEFAULT CHARSET = utf8mb4
+COLLATE = utf8mb4_unicode_ci;
+
+/*
+ * The computed figures of a statistic that is shown on the overview page, one row per statistic.
+ * See StatisticCache for what the key is made of.
+ */
+CREATE TABLE IF NOT EXISTS %PREFIX%_statistics_cache
+(
+    sca_sta_id                  integer unsigned    NOT NULL,
+    sca_key                     varchar(64)         NOT NULL,
+    sca_data                    text                NOT NULL,
+    PRIMARY KEY (sca_sta_id),
+    CONSTRAINT %PREFIX%_FK_SCA_STA FOREIGN KEY (sca_sta_id)
+        REFERENCES %PREFIX%_statistics (sta_id) ON DELETE CASCADE ON UPDATE CASCADE
 )
 ENGINE = InnoDB
 DEFAULT CHARSET = utf8mb4

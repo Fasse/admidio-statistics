@@ -11,6 +11,7 @@ use Admidio\Infrastructure\Utils\StringUtils;
 use Admidio\ProfileFields\ValueObjects\ProfileFields;
 use Admidio\Roles\ValueObject\ConditionParser;
 use AdmidioPlugin\Statistics\ValueObject\ColumnDefinition;
+use AdmidioPlugin\Statistics\ValueObject\DateSeries;
 use AdmidioPlugin\Statistics\ValueObject\ResultTable;
 use AdmidioPlugin\Statistics\ValueObject\RowDefinition;
 use AdmidioPlugin\Statistics\ValueObject\StatisticDefinition;
@@ -24,6 +25,12 @@ use AdmidioPlugin\Statistics\ValueObject\TableDefinition;
  * A cell counts, or aggregates over, the members of the table's role that meet both the condition of
  * its row and the condition of its column. Free text conditions go through Admidio's own
  * ConditionParser, the same path the list module uses.
+ *
+ * Who is a member is decided for one day, in one place: membershipCondition(). A row or a column may
+ * name a role of its own, which then stands in for the role of the table, and a day of its own, which
+ * stands in for the day the statistic is shown for. The members of the excluded roles of the statistic
+ * are left out on that same day. Only the memberships have a history - a profile value is the one the
+ * member has now, whatever day the cell looks at.
  *
  * Seven defects of version 3 are fixed here, and four of them change figures that are shown today:
  *
@@ -56,25 +63,38 @@ use AdmidioPlugin\Statistics\ValueObject\TableDefinition;
 final class StatisticEvaluator
 {
     /**
-     * The date Admidio uses for a membership that has not ended.
-     */
-    private const DATE_OPEN_END = '9999-12-31';
-
-    /**
      * @var array<int,string> Cache of profile field types, keyed by field id.
      */
     private array $fieldTypes = array();
 
     /**
+     * @var array<string,int> Cache of the percentage bases, keyed by the roles and the day.
+     */
+    private array $populations = array();
+
+    /**
+     * @var string The day (Y-m-d) a cell looks at unless its row or its column names another.
+     */
+    private string $date;
+
+    /**
+     * @var array<int,int> The roles whose members are left out.
+     */
+    private array $excludedRoleIds = array();
+
+    /**
      * @param Database $database
      * @param ProfileFields $profileFields
      * @param Language $l10n
+     * @param string $dateFormat The format a reference date is shown in when it serves as a label.
      */
     public function __construct(
         private readonly Database $database,
         private readonly ProfileFields $profileFields,
-        private readonly Language $l10n
+        private readonly Language $l10n,
+        private readonly string $dateFormat = 'Y-m-d'
     ) {
+        $this->date = date('Y-m-d');
     }
 
     /**
@@ -82,21 +102,36 @@ final class StatisticEvaluator
      *
      * @param StatisticDefinition $definition
      * @param string $asOf The date of the figures, already formatted for display.
+     * @param string|null $date The day (Y-m-d) the memberships are looked at wherever a row or a
+     *                          column does not name one of its own, **null** for today.
      * @return StatisticResult
      * @throws Exception
      */
-    public function evaluate(StatisticDefinition $definition, string $asOf): StatisticResult
+    public function evaluate(StatisticDefinition $definition, string $asOf, ?string $date = null): StatisticResult
     {
+        $this->date = RowDefinition::toDate($date) ?? date('Y-m-d');
+        $this->excludedRoleIds = $definition->excludedRoleIds;
+        $this->populations = array();
+
         $tables = array();
         foreach ($definition->tables as $table) {
             $tables[] = $this->evaluateTable($table, $definition->standardRoleId);
         }
 
-        return new StatisticResult($definition->title, $definition->subtitle, $asOf, $tables);
+        $excludedRoles = array();
+        foreach ($this->excludedRoleIds as $roleId) {
+            $name = $this->getRoleNameFromId($roleId);
+            if ($name !== '') {
+                $excludedRoles[] = $name;
+            }
+        }
+
+        return new StatisticResult($definition->title, $definition->subtitle, $asOf, $tables, $excludedRoles);
     }
 
     /**
-     * The number of members a role currently has.
+     * The number of members a role has on the day of the figures, without the members of the
+     * excluded roles.
      *
      * @param int $roleId
      * @return int
@@ -104,13 +139,7 @@ final class StatisticEvaluator
      */
     public function getUserCountFromRoleId(int $roleId): int
     {
-        $sql = 'SELECT COUNT(*) AS member_count
-                  FROM ' . TBL_MEMBERS . '
-                 WHERE mem_end = ? AND mem_rol_id = ?';
-
-        $record = $this->database->queryPrepared($sql, array(self::DATE_OPEN_END, $roleId))->fetch();
-
-        return $record === false ? 0 : (int) $record['member_count'];
+        return count($this->readRoleMemberIds(array($roleId), $this->date));
     }
 
     /**
@@ -129,7 +158,7 @@ final class StatisticEvaluator
         $sql = 'SELECT rol_name FROM ' . TBL_ROLES . ' WHERE rol_id = ?';
         $record = $this->database->queryPrepared($sql, array($roleId))->fetch();
 
-        return $record === false ? '' : (string) $record['rol_name'];
+        return $record === false ? '' : Language::translateIfTranslationStrId((string) $record['rol_name']);
     }
 
     /**
@@ -141,20 +170,20 @@ final class StatisticEvaluator
     private function evaluateTable(TableDefinition $table, int $standardRoleId): ResultTable
     {
         $roleId = $table->effectiveRoleId($standardRoleId);
-        $population = $this->tablePopulation($table, $roleId);
+        $table = $this->expandSeries($table);
 
         $headers = array($table->firstColumnLabel);
         foreach ($table->columns as $column) {
-            $headers[] = $column->label;
+            $headers[] = $this->label($column->label, $column->roleId, $column->referenceDate);
         }
 
         $rows = array();
         $numbers = array();
 
         foreach ($table->rows as $rowIndex => $row) {
-            $cells = array($row->label);
+            $cells = array($this->label($row->label, $row->roleId, $row->referenceDate));
             foreach ($table->columns as $columnIndex => $column) {
-                $cell = $this->evaluateCell($row, $column, $roleId, $population);
+                $cell = $this->evaluateCell($table, $row, $column, $roleId);
                 $numbers[$rowIndex][$columnIndex] = $cell['value'];
                 $cells[] = $cell['display'];
             }
@@ -171,24 +200,123 @@ final class StatisticEvaluator
             }
         }
 
-        $caption = $this->l10n->get('SYS_ROLE') . ' ' . $this->getRoleNameFromId($roleId) . ', '
-            . $this->l10n->get('PLG_STATISTICS_XY_ENTRIES', array($this->getUserCountFromRoleId($roleId)));
+        /*
+         * The line that names the role says something only while a cell counts that role. A table
+         * whose rows, or whose columns, each name a role of their own never does.
+         */
+        $caption = '';
+        if ($table->usesTableRole()) {
+            $caption = $this->l10n->get('SYS_ROLE') . ' ' . $this->getRoleNameFromId($roleId) . ', '
+                . $this->l10n->get('PLG_STATISTICS_XY_ENTRIES', array($this->getUserCountFromRoleId($roleId)));
+        }
 
         return new ResultTable($table->title, $caption, $headers, $rows, $totalRow);
     }
 
     /**
-     * The number of members a percentage is taken of. When neither the rows nor the columns leave a
-     * condition out, it is the number of members that meet at least one of them; otherwise it is the
-     * whole role, because a row or column without a condition already covers all of it.
+     * Replace every row and every column that stands for a series of days by one for each day, up
+     * to the day the statistic is shown for. Everything after this sees ordinary rows and columns.
+     *
+     * A series that was given a label carries it in front of each day; one without is named after
+     * the day alone, like any other dated row or column. A series that has not begun yet contributes
+     * nothing.
      *
      * @param TableDefinition $table
-     * @param int $roleId
+     * @return TableDefinition
+     */
+    private function expandSeries(TableDefinition $table): TableDefinition
+    {
+        $expand = function (array $elements): array {
+            $expanded = array();
+            foreach ($elements as $element) {
+                if (!$element->isSeries()) {
+                    $expanded[] = $element;
+                    continue;
+                }
+
+                $dates = DateSeries::dates($element->referenceDate, $element->repeat, $element->repeatMax, $this->date);
+                foreach ($dates as $date) {
+                    $label = $element->label === ''
+                        ? ''
+                        : $element->label . ' ' . (new \DateTimeImmutable($date))->format($this->dateFormat);
+                    $expanded[] = $element->onDate($date, $label);
+                }
+            }
+
+            return $expanded;
+        };
+
+        return $table->withColumns($expand($table->columns))->withRows($expand($table->rows));
+    }
+
+    /**
+     * The text of a row or a column. One that was given no label is named after what it selects: its
+     * role, its day, or both.
+     *
+     * @param string $label
+     * @param int|null $roleId
+     * @param string|null $referenceDate
+     * @return string
+     * @throws Exception
+     */
+    private function label(string $label, ?int $roleId, ?string $referenceDate): string
+    {
+        if ($label !== '') {
+            return $label;
+        }
+
+        $parts = array();
+        if ($roleId !== null) {
+            $parts[] = $this->getRoleNameFromId($roleId);
+        }
+        if ($referenceDate !== null) {
+            $parts[] = (new \DateTimeImmutable($referenceDate))->format($this->dateFormat);
+        }
+
+        return implode(', ', array_filter($parts, static fn (string $part): bool => $part !== ''));
+    }
+
+    /**
+     * The roles a cell counts: the ones its row and its column name, and the role of the table when
+     * neither names one. A member has to be in all of them.
+     *
+     * @param RowDefinition $row
+     * @param ColumnDefinition $column
+     * @param int $tableRoleId
+     * @return array<int,int>
+     */
+    private function cellRoleIds(RowDefinition $row, ColumnDefinition $column, int $tableRoleId): array
+    {
+        $roleIds = array();
+        if ($row->roleId !== null) {
+            $roleIds[] = $row->roleId;
+        }
+        if ($column->roleId !== null && $column->roleId !== $row->roleId) {
+            $roleIds[] = $column->roleId;
+        }
+
+        return $roleIds === array() ? array($tableRoleId) : $roleIds;
+    }
+
+    /**
+     * The number of members a percentage is taken of, for the roles and the day of one cell. When
+     * neither the rows nor the columns leave a condition out, it is the number of members that meet
+     * at least one of them; otherwise it is all members of those roles, because a row or column
+     * without a condition already covers all of them.
+     *
+     * @param TableDefinition $table
+     * @param array<int,int> $roleIds
+     * @param string $date
      * @return int
      * @throws Exception
      */
-    private function tablePopulation(TableDefinition $table, int $roleId): int
+    private function tablePopulation(TableDefinition $table, array $roleIds, string $date): int
     {
+        $key = implode(',', $roleIds) . '@' . $date;
+        if (array_key_exists($key, $this->populations)) {
+            return $this->populations[$key];
+        }
+
         $conditions = array();
         $unconditionalColumn = false;
         $unconditionalRow = false;
@@ -210,25 +338,30 @@ final class StatisticEvaluator
         }
 
         if (($unconditionalColumn && $unconditionalRow) || $conditions === array()) {
-            return $this->getUserCountFromRoleId($roleId);
+            $population = count($this->readRoleMemberIds($roleIds, $date));
+        } else {
+            $population = count($this->selectUserIds($roleIds, $date, $conditions, false));
         }
 
-        return count($this->selectUserIds($roleId, $conditions, false));
+        return $this->populations[$key] = $population;
     }
 
     /**
      * One cell: the figure as a number, so that a total can be computed from it, and the figure as
      * the table shows it.
      *
+     * @param TableDefinition $table
      * @param RowDefinition $row
      * @param ColumnDefinition $column
-     * @param int $roleId
-     * @param int $population
+     * @param int $tableRoleId
      * @return array{value:float|null,display:string}
      * @throws Exception
      */
-    private function evaluateCell(RowDefinition $row, ColumnDefinition $column, int $roleId, int $population): array
+    private function evaluateCell(TableDefinition $table, RowDefinition $row, ColumnDefinition $column, int $tableRoleId): array
     {
+        $roleIds = $this->cellRoleIds($row, $column, $tableRoleId);
+        $date = $row->referenceDate ?? $column->referenceDate ?? $this->date;
+
         $conditions = array();
         if ($row->profileFieldId !== null) {
             $conditions[] = array('fieldId' => $row->profileFieldId, 'condition' => $row->condition);
@@ -238,38 +371,40 @@ final class StatisticEvaluator
         }
 
         if ($column->functionName === StatisticFunction::COUNT) {
-            $count = count($this->selectUserIds($roleId, $conditions));
+            $count = count($this->selectUserIds($roleIds, $date, $conditions));
 
             return array('value' => (float) $count, 'display' => (string) $count);
         }
 
         if ($column->functionName === StatisticFunction::PERCENT) {
+            $population = $this->tablePopulation($table, $roleIds, $date);
             $share = $population > 0
-                ? 100 / $population * count($this->selectUserIds($roleId, $conditions))
+                ? 100 / $population * count($this->selectUserIds($roleIds, $date, $conditions))
                 : 0.0;
 
             return array('value' => $share, 'display' => sprintf('%01.1f', $share) . ' %');
         }
 
-        return $this->aggregate($column, $roleId, $conditions);
+        return $this->aggregate($column, $roleIds, $date, $conditions);
     }
 
     /**
      * The four functions that aggregate the values of a profile field.
      *
      * @param ColumnDefinition $column
-     * @param int $roleId
+     * @param array<int,int> $roleIds
+     * @param string $date
      * @param array<int,array{fieldId:int,condition:string}> $conditions
      * @return array{value:float|null,display:string}
      * @throws Exception
      */
-    private function aggregate(ColumnDefinition $column, int $roleId, array $conditions): array
+    private function aggregate(ColumnDefinition $column, array $roleIds, string $date, array $conditions): array
     {
         if ($column->functionArgument === null) {
             return array('value' => null, 'display' => '');
         }
 
-        $userIds = $this->selectUserIds($roleId, $conditions);
+        $userIds = $this->selectUserIds($roleIds, $date, $conditions);
         if ($userIds === array()) {
             return array('value' => 0.0, 'display' => '0');
         }
@@ -278,7 +413,7 @@ final class StatisticEvaluator
         $type = $this->getProfileFieldType($column->functionArgument);
 
         if ($type === 'DATE') {
-            $values = $this->agesFromDates($values);
+            $values = $this->agesFromDates($values, $date);
         } elseif ($type === 'TEXT') {
             /*
              * The smallest and the largest of a set of texts are texts, so they are shown but they
@@ -376,24 +511,25 @@ final class StatisticEvaluator
     }
 
     /**
-     * The member ids of a role that meet the given conditions.
+     * The ids of the members of some roles, on one day, that meet the given conditions.
      *
-     * @param int $roleId
+     * @param array<int,int> $roleIds
+     * @param string $date
      * @param array<int,array{fieldId:int,condition:string}> $conditions
      * @param bool $mustMeetAll **true** for the intersection, which is what a cell of a cross table
      *                          is, **false** for the union, which is what a percentage is taken of.
      * @return array<int,int>
      * @throws Exception
      */
-    private function selectUserIds(int $roleId, array $conditions, bool $mustMeetAll = true): array
+    private function selectUserIds(array $roleIds, string $date, array $conditions, bool $mustMeetAll = true): array
     {
         if ($conditions === array()) {
-            return $this->readRoleMemberIds($roleId);
+            return $this->readRoleMemberIds($roleIds, $date);
         }
 
         $sets = array();
         foreach ($conditions as $condition) {
-            $sets[] = $this->readUserIdsForCondition($roleId, $condition['fieldId'], $condition['condition']);
+            $sets[] = $this->readUserIdsForCondition($roleIds, $date, $condition['fieldId'], $condition['condition']);
         }
 
         $result = array_shift($sets);
@@ -405,45 +541,93 @@ final class StatisticEvaluator
     }
 
     /**
-     * @param int $roleId
-     * @return array<int,int>
-     * @throws Exception
+     * Who counts as a member: the one place that decides it, for every query of this class.
+     *
+     * A membership counts on a day from its first day to its last, both included, which is how the
+     * profile of a member shows it. Version 4.0 asked for a membership without an end instead, so it
+     * left out a member whose membership was going to end and counted one whose membership had not
+     * begun.
+     *
+     * A member has to be in every one of the roles on that day, and in none of the excluded roles
+     * of the statistic on that day.
+     *
+     * @param array<int,int> $roleIds At least one role.
+     * @param string $date The day, as Y-m-d.
+     * @return array{0:string,1:array<int,mixed>} The condition on the members table under its alias
+     *         **m**, and the values it binds.
      */
-    private function readRoleMemberIds(int $roleId): array
+    private function membershipCondition(array $roleIds, string $date): array
     {
-        $sql = 'SELECT DISTINCT mem_usr_id
-                  FROM ' . TBL_MEMBERS . '
-                 WHERE mem_end = ? AND mem_rol_id = ?';
+        $roleIds = array_values($roleIds);
 
-        return $this->readIds($sql, array(self::DATE_OPEN_END, $roleId), 'mem_usr_id');
+        $sql = 'm.mem_rol_id = ? AND m.mem_begin <= ? AND m.mem_end >= ?';
+        $params = array($roleIds[0] ?? 0, $date, $date);
+
+        foreach (array_slice($roleIds, 1) as $roleId) {
+            $sql .= ' AND EXISTS (SELECT 1 FROM ' . TBL_MEMBERS . ' o
+                                   WHERE o.mem_usr_id = m.mem_usr_id AND o.mem_rol_id = ?
+                                     AND o.mem_begin <= ? AND o.mem_end >= ?)';
+            array_push($params, $roleId, $date, $date);
+        }
+
+        if ($this->excludedRoleIds !== array()) {
+            $sql .= ' AND NOT EXISTS (SELECT 1 FROM ' . TBL_MEMBERS . ' x
+                                       WHERE x.mem_usr_id = m.mem_usr_id
+                                         AND x.mem_rol_id IN (' . Database::getQmForValues($this->excludedRoleIds) . ')
+                                         AND x.mem_begin <= ? AND x.mem_end >= ?)';
+            array_push($params, ...$this->excludedRoleIds);
+            array_push($params, $date, $date);
+        }
+
+        return array($sql, $params);
     }
 
     /**
-     * The members of a role that meet one condition. The result is a set, which is what makes the
+     * @param array<int,int> $roleIds
+     * @param string $date
+     * @return array<int,int>
+     * @throws Exception
+     */
+    private function readRoleMemberIds(array $roleIds, string $date): array
+    {
+        list($membership, $params) = $this->membershipCondition($roleIds, $date);
+
+        $sql = 'SELECT DISTINCT m.mem_usr_id
+                  FROM ' . TBL_MEMBERS . ' m
+                 WHERE ' . $membership;
+
+        return $this->readIds($sql, $params, 'mem_usr_id');
+    }
+
+    /**
+     * The members that meet one condition. The result is a set, which is what makes the
      * intersection in selectUserIds() correct.
      *
-     * @param int $roleId
+     * @param array<int,int> $roleIds
+     * @param string $date
      * @param int $fieldId
      * @param string $condition
      * @return array<int,int>
      * @throws Exception
      */
-    private function readUserIdsForCondition(int $roleId, int $fieldId, string $condition): array
+    private function readUserIdsForCondition(array $roleIds, string $date, int $fieldId, string $condition): array
     {
-        if ($this->isKeyword($condition, 'PLG_STATISTICS_MISSING', array('FEHLT', 'MISSING'))) {
-            $sql = 'SELECT DISTINCT mem_usr_id
-                      FROM ' . TBL_MEMBERS . '
-                     WHERE mem_end = ? AND mem_rol_id = ?
-                       AND mem_usr_id NOT IN (SELECT usd_usr_id FROM ' . TBL_USER_DATA . ' WHERE usd_usf_id = ?)';
+        list($membership, $params) = $this->membershipCondition($roleIds, $date);
+        $params[] = $fieldId;
 
-            return $this->readIds($sql, array(self::DATE_OPEN_END, $roleId, $fieldId), 'mem_usr_id');
+        if ($this->isKeyword($condition, 'PLG_STATISTICS_MISSING', array('FEHLT', 'MISSING'))) {
+            $sql = 'SELECT DISTINCT m.mem_usr_id
+                      FROM ' . TBL_MEMBERS . ' m
+                     WHERE ' . $membership . '
+                       AND m.mem_usr_id NOT IN (SELECT usd_usr_id FROM ' . TBL_USER_DATA . ' WHERE usd_usf_id = ?)';
+
+            return $this->readIds($sql, $params, 'mem_usr_id');
         }
 
-        $sql = 'SELECT DISTINCT mem_usr_id
-                  FROM ' . TBL_MEMBERS . '
-            INNER JOIN ' . TBL_USER_DATA . ' ON mem_usr_id = usd_usr_id
-                 WHERE mem_end = ? AND mem_rol_id = ? AND usd_usf_id = ?';
-        $params = array(self::DATE_OPEN_END, $roleId, $fieldId);
+        $sql = 'SELECT DISTINCT m.mem_usr_id
+                  FROM ' . TBL_MEMBERS . ' m
+            INNER JOIN ' . TBL_USER_DATA . ' ON m.mem_usr_id = usd_usr_id
+                 WHERE ' . $membership . ' AND usd_usf_id = ?';
 
         if ($this->isKeyword($condition, 'PLG_STATISTICS_AVAILABLE', array('VORHANDEN', 'AVAILABLE'))
             || $condition === '') {
@@ -575,17 +759,18 @@ final class StatisticEvaluator
     }
 
     /**
-     * The ages, in whole years, of a list of dates of birth. A value that is not a date is left out
+     * The ages, in whole years, of a list of dates of birth on the day a cell looks at. A value that is not a date is left out
      * rather than producing a nonsensical age, which is what version 3 did by handing whatever it
      * found to explode().
      *
      * @param array<int,string> $dates
+     * @param string $onDate The day (Y-m-d) the ages are taken on.
      * @return array<int,string>
      */
-    private function agesFromDates(array $dates): array
+    private function agesFromDates(array $dates, string $onDate): array
     {
         $ages = array();
-        $today = new \DateTimeImmutable('today');
+        $today = new \DateTimeImmutable($onDate);
 
         foreach ($dates as $date) {
             /*

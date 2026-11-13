@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Statistics plugin 4.1: the history of the memberships, excluded roles and the overview widget.
+
+    A row and a column may name a role of their own and the day on which the memberships are looked
+    at, and that day may repeat every year, month or week. A statistic may name roles whose members it leaves out, and it may ask to be shown on the
+    overview page, where its computed figures are kept in a table of their own.
+
+    The steps that change a table ignore their error, so that they can meet a table that already has
+    the column - install.sql creates the tables in this shape.
+-->
+<update>
+    <step id="10" error="ignore">ALTER TABLE %PREFIX%_statistics_columns ADD COLUMN stc_role integer unsigned NULL</step>
+    <step id="20" error="ignore">ALTER TABLE %PREFIX%_statistics_columns ADD COLUMN stc_ref_date date NULL</step>
+    <step id="30" error="ignore">ALTER TABLE %PREFIX%_statistics_rows ADD COLUMN str_role integer unsigned NULL</step>
+    <step id="40" error="ignore">ALTER TABLE %PREFIX%_statistics_rows ADD COLUMN str_ref_date date NULL</step>
+    <step id="50">CREATE TABLE IF NOT EXISTS %PREFIX%_statistics_excluded_roles
+(
+    ser_sta_id                  integer unsigned    NOT NULL,
+    ser_rol_id                  integer unsigned    NOT NULL,
+    PRIMARY KEY (ser_sta_id, ser_rol_id),
+    CONSTRAINT %PREFIX%_FK_SER_STA FOREIGN KEY (ser_sta_id)
+        REFERENCES %PREFIX%_statistics (sta_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT %PREFIX%_FK_SER_ROL FOREIGN KEY (ser_rol_id)
+        REFERENCES %PREFIX%_roles (rol_id) ON DELETE CASCADE ON UPDATE CASCADE
+)
+ENGINE = InnoDB
+DEFAULT CHARSET = utf8mb4
+COLLATE = utf8mb4_unicode_ci</step>
+    <step id="60" error="ignore">ALTER TABLE %PREFIX%_statistics ADD COLUMN sta_overview boolean NOT NULL DEFAULT false</step>
+    <step id="70">CREATE TABLE IF NOT EXISTS %PREFIX%_statistics_cache
+(
+    sca_sta_id                  integer unsigned    NOT NULL,
+    sca_key                     varchar(64)         NOT NULL,
+    sca_data                    text                NOT NULL,
+    PRIMARY KEY (sca_sta_id),
+    CONSTRAINT %PREFIX%_FK_SCA_STA FOREIGN KEY (sca_sta_id)
+        REFERENCES %PREFIX%_statistics (sta_id) ON DELETE CASCADE ON UPDATE CASCADE
+)
+ENGINE = InnoDB
+DEFAULT CHARSET = utf8mb4
+COLLATE = utf8mb4_unicode_ci</step>
+    <step id="80" error="ignore">ALTER TABLE %PREFIX%_statistics_columns ADD COLUMN stc_repeat varchar(10) NULL</step>
+    <step id="90" error="ignore">ALTER TABLE %PREFIX%_statistics_columns ADD COLUMN stc_repeat_max smallint NULL</step>
+    <step id="100" error="ignore">ALTER TABLE %PREFIX%_statistics_rows ADD COLUMN str_repeat varchar(10) NULL</step>
+    <step id="110" error="ignore">ALTER TABLE %PREFIX%_statistics_rows ADD COLUMN str_repeat_max smallint NULL</step>
+    <step>stop</step>
+</update>

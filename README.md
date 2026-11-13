@@ -15,7 +15,7 @@ uninstalls through the plugin manager; the installer wizard of earlier versions 
 
 ## Installing
 
-In Admidio, go to the plugin administration, install the plugin and enable it. That creates the four
+In Admidio, go to the plugin administration, install the plugin and enable it. That creates the six
 database tables it needs, the preference that decides who may see it, and one menu entry under
 Extensions.
 
@@ -59,15 +59,51 @@ Version 4 fixes four faults in the calculation, so some saved statistics will sh
 - **A minimum is the smallest value.** Version 3 started looking from 10000, so a column whose figures
   were all larger reported 10000.
 
+## New in version 4.1
+
+- **A row and a column can name a role and a reference date.** A role stands in for the role of the
+  table, a reference date for today: the cell counts who was a member of that role on that day. One
+  row per role and one column per date give the development of the member numbers over the years. A
+  row or column without a label is named after its role or its date.
+- **A reference date can repeat** every year, every month or every week. Such a row or column stands
+  for a series of days up to today, and gets its next day by itself: a column for the first of
+  January of every year needs no editing when a new year begins. "At most" limits how many of the
+  latest days are shown (10 unless set, 366 at most).
+- **Excluded roles.** A statistic can name roles whose members it leaves out of every figure. A
+  member is left out on the days they were in such a role.
+- **Any statistic can be shown for another day**, with the date field above the result - unless its
+  rows or columns name days of their own.
+- A new example, "Membership development", shows the first two together.
+- **A statistic can be shown on the overview page.** The checkbox "Show on the overview page" in the
+  editor puts it into the statistics widget there, for logged-in users. The figures of the widget are
+  cached: they are computed again when the statistic was edited, when a membership or a profile has
+  changed, and on every new day.
+
+Only the memberships have a history. A condition on a profile field always tests the value the
+member has today.
+
+### Figures that change
+
+Version 4.0 counted the memberships that have no end date. Version 4.1 counts the memberships that
+include the day in question, which is how the profile of a member shows them. Today's figures
+therefore now include a member whose membership has an end date in the future, and no longer include
+one whose membership has not begun.
+
+### Updating
+
+From 4.0, the plugin manager offers the update, which adds nine columns and two tables. Installing
+4.1 directly over the tables of version 3 does not add the columns to them; install 4.0 first and update
+from there.
+
 ## Removing the plugin
 
-**Removing the plugin drops its four tables and every statistic saved in them.** There is no way back
+**Removing the plugin drops its six tables and every statistic saved in them.** There is no way back
 short of a database backup. Disabling the plugin is always safe: it hides the plugin and changes no
 data.
 
 ## The manual
 
-The plugin carries its own manual, in German, with 49 chapters and screenshots. Every field of the
+The plugin carries its own manual, in German, with 57 chapters and screenshots. Every field of the
 editor links to the chapter that explains it, and the whole manual is reachable from the editor as
 well. It lives in `resources/`, together with the PDF of the same text.
 

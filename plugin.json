@@ -1,7 +1,7 @@
 {
     "name": "PLG_STATISTICS_STATISTICS",
     "description": "PLG_STATISTICS_STATISTICS_DESC",
-    "version": "4.0.0",
+    "version": "4.1.0",
     "author": "Fasse",
     "url": "https://www.admidio.org/dokuwiki/doku.php?id=en:plugins:statistics",
     "icon": "bi-bar-chart-line-fill",
@@ -26,6 +26,10 @@
             },
             "label": "ORG_ACCESS_TO_PLUGIN",
             "description": "ORG_ACCESS_TO_PLUGIN_DESC"
+        },
+        "statistics_overview_sequence": {
+            "type": "integer",
+            "default": 20
         }
     }
 }

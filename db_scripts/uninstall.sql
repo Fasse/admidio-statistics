@@ -10,6 +10,10 @@
  * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License v2.0 only
  */
 
+DROP TABLE IF EXISTS %PREFIX%_statistics_cache;
+
+DROP TABLE IF EXISTS %PREFIX%_statistics_excluded_roles;
+
 DROP TABLE IF EXISTS %PREFIX%_statistics_rows;
 
 DROP TABLE IF EXISTS %PREFIX%_statistics_columns;
