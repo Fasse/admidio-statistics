@@ -61,6 +61,7 @@ CREATE TABLE IF NOT EXISTS %PREFIX%_statistics_columns
     stc_repeat_max              smallint            NULL,
     stc_stt_id                  integer unsigned    NOT NULL,
     PRIMARY KEY (stc_id),
+    CONSTRAINT %PREFIX%_FK_STC_ROL FOREIGN KEY (stc_role) REFERENCES %PREFIX%_roles (rol_id) ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT %PREFIX%_FK_STC_STT FOREIGN KEY (stc_stt_id)
         REFERENCES %PREFIX%_statistics_tables (stt_id) ON DELETE CASCADE ON UPDATE CASCADE
 )
@@ -80,6 +81,7 @@ CREATE TABLE IF NOT EXISTS %PREFIX%_statistics_rows
     str_repeat_max              smallint            NULL,
     str_stt_id                  integer unsigned    NOT NULL,
     PRIMARY KEY (str_id),
+    CONSTRAINT %PREFIX%_FK_STR_ROL FOREIGN KEY (str_role) REFERENCES %PREFIX%_roles (rol_id) ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT %PREFIX%_FK_STR_STT FOREIGN KEY (str_stt_id)
         REFERENCES %PREFIX%_statistics_tables (stt_id) ON DELETE CASCADE ON UPDATE CASCADE
 )

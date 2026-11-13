@@ -64,7 +64,8 @@ Version 4 fixes four faults in the calculation, so some saved statistics will sh
 - **A row and a column can name a role and a reference date.** A role stands in for the role of the
   table, a reference date for today: the cell counts who was a member of that role on that day. One
   row per role and one column per date give the development of the member numbers over the years. A
-  row or column without a label is named after its role or its date.
+  row or column without a label is named after its role or its date. When its role is deleted, it
+  counts the role of its table again.
 - **A reference date can repeat** every year, every month or every week. Such a row or column stands
   for a series of days up to today, and gets its next day by itself: a column for the first of
   January of every year needs no editing when a new year begins. "At most" limits how many of the

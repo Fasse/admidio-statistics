@@ -348,6 +348,60 @@ final class StatisticEvaluatorTest extends AdministratorTestCase
     }
 
     /**
+     * The age of a member is taken on the day of the cell, whether that day comes from the column or
+     * from the day the whole statistic is shown for, and not on today.
+     */
+    public function testAnAgeIsTakenOnTheDayOfTheCell(): void
+    {
+        global $gProfileFields;
+
+        $birthdayId = (int)$gProfileFields->getProperty('BIRTHDAY', 'usf_id');
+        $this->assertGreaterThan(0, $birthdayId);
+
+        // Stored directly, so that the test does not depend on the date format of the input.
+        foreach (array('sta_one' => '1990-06-15', 'sta_two' => '2000-01-01') as $login => $birthday) {
+            $this->getDatabase()->queryPrepared(
+                'INSERT INTO ' . TBL_USER_DATA . ' (usd_usr_id, usd_usf_id, usd_value) VALUES (?, ?, ?)',
+                array($this->userIds[$login], $birthdayId, $birthday)
+            );
+        }
+
+        $age = fn(string $function, ?string $date): ColumnDefinition
+            => new ColumnDefinition('', null, '', $function, $birthdayId, '', null, $date);
+
+        $table = $this->computeResult(
+            array(new RowDefinition('All')),
+            array(
+                $age(StatisticFunction::MINIMUM, '2010-01-01'),
+                $age(StatisticFunction::MAXIMUM, '2010-01-01'),
+                $age(StatisticFunction::SUM, '2010-01-01'),
+                $age(StatisticFunction::MINIMUM, '2020-06-15'),
+                $age(StatisticFunction::MAXIMUM, '2020-06-15'),
+                $age(StatisticFunction::SUM, '2020-06-15')
+            )
+        )->tables[0];
+
+        $this->assertSame(
+            array(array('All', '10', '19', '29', '20', '30', '50')),
+            $table->rows,
+            'the ages on 1 January 2010 are 10 and 19, on 15 June 2020 they are 20 and 30 (a birthday counts on its day)'
+        );
+
+        $shownThen = $this->computeResult(
+            array(new RowDefinition('All')),
+            array($age(StatisticFunction::MINIMUM, null), $age(StatisticFunction::MAXIMUM, null)),
+            array(),
+            '2010-01-01'
+        )->tables[0];
+
+        $this->assertSame(
+            array(array('All', '10', '19')),
+            $shownThen->rows,
+            'a column without a day takes the ages on the day the statistic is shown for'
+        );
+    }
+
+    /**
      * @param array<int,RowDefinition> $rows
      * @param array<int,ColumnDefinition> $columns
      */

@@ -16,6 +16,7 @@ namespace AdmidioPlugin\Statistics\Tests\Unit;
 require_once dirname(__DIR__) . '/autoload.php';
 
 use AdmidioPlugin\Statistics\ValueObject\ColumnDefinition;
+use AdmidioPlugin\Statistics\ValueObject\DateSeries;
 use AdmidioPlugin\Statistics\ValueObject\RowDefinition;
 use AdmidioPlugin\Statistics\ValueObject\StatisticDefinition;
 use AdmidioPlugin\Statistics\ValueObject\StatisticFunction;
@@ -55,6 +56,121 @@ final class StatisticDefinitionTest extends TestCase
 
         /** @phpstan-ignore-next-line the wrong type is the point of this test */
         new StatisticDefinition(null, 'Age groups', 'Age groups');
+    }
+
+    public function testTheExcludedRolesAndTheOverviewMarkAreRead(): void
+    {
+        $record = array('sta_id' => '7', 'sta_org_id' => '3', 'sta_std_role' => '12');
+
+        $definition = StatisticDefinition::fromRecord($record + array('sta_overview' => '1'), array(), array(5, 9));
+        $this->assertSame(array(5, 9), $definition->excludedRoleIds);
+        $this->assertTrue($definition->showOnOverview);
+
+        $plain = StatisticDefinition::fromRecord($record, array());
+        $this->assertSame(array(), $plain->excludedRoleIds);
+        $this->assertFalse($plain->showOnOverview, 'a record of version 4.0 has no mark');
+    }
+
+    /**
+     * The excluded roles come from a multi-select, so the list may repeat a role or carry an empty
+     * entry. Each role is kept once, in the order it first appeared, and nothing else.
+     */
+    public function testEachExcludedRoleIsKeptOnceAndNothingThatIsNotARole(): void
+    {
+        $definition = new StatisticDefinition(null, 3, 'S', '', '', 12, array(), array(9, '5', 0, 9, -1, '', 5));
+
+        $this->assertSame(array(9, 5), $definition->excludedRoleIds);
+    }
+
+    /**
+     * A copy keeps the roles it leaves out, because they are part of what its figures mean, but it is
+     * not shown on the overview page until somebody asks for that.
+     */
+    public function testACopyKeepsTheExcludedRolesButNotTheOverviewMark(): void
+    {
+        $original = new StatisticDefinition(7, 3, 'History', 'T', 'S', 12, array(TableDefinition::createEmpty()), array(5, 9), true);
+        $copy = $original->asCopyNamed('History (copy)');
+
+        $this->assertSame(array(5, 9), $copy->excludedRoleIds);
+        $this->assertFalse($copy->showOnOverview);
+        $this->assertTrue($original->showOnOverview, 'the original is untouched');
+    }
+
+    public function testTheRoleTheDayAndTheRepetitionOfARowAndAColumnAreRead(): void
+    {
+        $row = RowDefinition::fromRecord(array(
+            'str_label' => '',
+            'str_role' => '15',
+            'str_ref_date' => '2020-01-01',
+            'str_repeat' => DateSeries::MONTHLY,
+            'str_repeat_max' => '24'
+        ), '');
+
+        $this->assertSame(15, $row->roleId);
+        $this->assertSame('2020-01-01', $row->referenceDate);
+        $this->assertSame(DateSeries::MONTHLY, $row->repeat);
+        $this->assertSame(24, $row->repeatMax);
+        $this->assertTrue($row->isSeries());
+
+        $column = ColumnDefinition::fromRecord(array(
+            'stc_role' => '16',
+            'stc_ref_date' => '2021-02-28',
+            'stc_repeat' => DateSeries::YEARLY,
+            'stc_repeat_max' => null
+        ), '');
+
+        $this->assertSame(16, $column->roleId);
+        $this->assertSame('2021-02-28', $column->referenceDate);
+        $this->assertSame(DateSeries::YEARLY, $column->repeat);
+        $this->assertNull($column->repeatMax);
+        $this->assertTrue($column->isSeries());
+
+        // A record of version 4.0 has none of the four columns.
+        $old = ColumnDefinition::fromRecord(array('stc_label' => 'Count'), '');
+        $this->assertNull($old->roleId);
+        $this->assertNull($old->referenceDate);
+        $this->assertSame(DateSeries::NONE, $old->repeat);
+        $this->assertFalse($old->isSeries());
+    }
+
+    /**
+     * Only a real day of the calendar is a reference date; anything else means "the day the statistic
+     * is shown for", so no other text reaches a query.
+     */
+    public function testOnlyARealDayIsAReferenceDate(): void
+    {
+        $this->assertSame('2024-02-29', RowDefinition::toDate('2024-02-29'));
+        $this->assertSame('2024-02-29', RowDefinition::toDate(' 2024-02-29 '));
+
+        foreach (array(null, '', '0000-00-00', '2023-02-29', '2024-13-01', '1.1.2024', '2024-01-01 00:00:00', "2024-01-01' OR 1=1") as $value) {
+            $this->assertNull(RowDefinition::toDate($value), var_export($value, true));
+        }
+    }
+
+    /**
+     * A repetition without a day is no series; the editor refuses to save one, and the evaluator
+     * treats it as a plain row.
+     */
+    public function testARepetitionWithoutADayIsNoSeries(): void
+    {
+        $this->assertFalse((new RowDefinition('', null, '', null, null, DateSeries::YEARLY))->isSeries());
+        $this->assertFalse((new ColumnDefinition('', null, '', StatisticFunction::COUNT, null, '', null, '2020-01-01'))->isSeries());
+    }
+
+    public function testAStatisticWithADayOnAnyRowOrColumnIsAHistory(): void
+    {
+        $plain = new TableDefinition('', null, '', array(new ColumnDefinition('Count')), array(new RowDefinition('All')));
+        $datedRow = new TableDefinition('', null, '', array(new ColumnDefinition('Count')), array(new RowDefinition('', null, '', null, '2020-01-01')));
+        $datedColumn = new TableDefinition('', null, '', array(new ColumnDefinition('', null, '', StatisticFunction::COUNT, null, '', null, '2020-01-01')), array());
+
+        $this->assertFalse((new StatisticDefinition(null, 3, 'S', '', '', 12, array($plain)))->usesReferenceDates());
+        $this->assertTrue((new StatisticDefinition(null, 3, 'S', '', '', 12, array($plain, $datedRow)))->usesReferenceDates());
+        $this->assertTrue((new StatisticDefinition(null, 3, 'S', '', '', 12, array($datedColumn)))->usesReferenceDates());
+
+        $this->assertTrue($datedRow->rowsUseReferenceDates());
+        $this->assertFalse($datedRow->columnsUseReferenceDates());
+        $this->assertTrue($datedColumn->columnsUseReferenceDates());
+        $this->assertFalse($datedColumn->rowsUseReferenceDates());
     }
 
     public function testAnEmptyStatisticHasOneTableWithOneColumnAndOneRow(): void

@@ -214,6 +214,64 @@ final class StatisticRepositoryTest extends AdministratorTestCase
     }
 
     /**
+     * An excluded role that is deleted leaves the statistic, which keeps the other excluded roles and
+     * can still be read and saved.
+     */
+    public function testDeletingAnExcludedRoleTakesItOutOfTheStatistic(): void
+    {
+        $fixture = new AdmidioTestFixture($this->getDatabase());
+        $kept = (int)$fixture->createAndSaveRole('Statistics kept excluded role', $this->orgId)['rol_id'];
+        $deleted = (int)$fixture->createAndSaveRole('Statistics deleted excluded role', $this->orgId)['rol_id'];
+
+        $id = $this->repository->save(
+            new StatisticDefinition(null, $this->orgId, 'Excluding', '', '', 12, $this->definition()->tables, array($kept, $deleted))
+        );
+        $this->assertCount(2, $this->repository->find($id, $this->orgId)->excludedRoleIds);
+
+        $this->assertTrue($fixture->deleteRole($deleted));
+
+        $read = $this->repository->find($id, $this->orgId);
+        $this->assertNotNull($read, 'the statistic itself survives');
+        $this->assertSame(array($kept), $read->excludedRoleIds);
+
+        $this->repository->save($read);
+        $this->assertSame(array($kept), $this->repository->find($id, $this->orgId)->excludedRoleIds);
+    }
+
+    /**
+     * A row or a column whose role is deleted stays, and counts the role of its table from then on.
+     */
+    public function testDeletingTheRoleOfARowOrAColumnLeavesThemWithTheRoleOfTheTable(): void
+    {
+        $fixture = new AdmidioTestFixture($this->getDatabase());
+        $kept = (int)$fixture->createAndSaveRole('Statistics kept row role', $this->orgId)['rol_id'];
+        $deleted = (int)$fixture->createAndSaveRole('Statistics deleted row role', $this->orgId)['rol_id'];
+
+        $table = new TableDefinition(
+            '',
+            null,
+            '',
+            array(
+                new ColumnDefinition('Gone', null, '', StatisticFunction::COUNT, null, '', $deleted),
+                new ColumnDefinition('Kept', null, '', StatisticFunction::COUNT, null, '', $kept)
+            ),
+            array(new RowDefinition('Gone', null, '', $deleted, '2020-01-01'))
+        );
+        $id = $this->repository->save(new StatisticDefinition(null, $this->orgId, 'Roles', '', '', 12, array($table)));
+
+        $this->assertTrue($fixture->deleteRole($deleted));
+
+        $read = $this->repository->find($id, $this->orgId)->tables[0];
+        $this->assertCount(2, $read->columns, 'the column stays');
+        $this->assertNull($read->columns[0]->roleId);
+        $this->assertSame('Gone', $read->columns[0]->label);
+        $this->assertSame($kept, $read->columns[1]->roleId);
+        $this->assertCount(1, $read->rows, 'the row stays');
+        $this->assertNull($read->rows[0]->roleId);
+        $this->assertSame('2020-01-01', $read->rows[0]->referenceDate, 'only the role is taken out');
+    }
+
+    /**
      * The comparison characters are stored as braces, so that the submitted value survives the tag
      * stripping, and they come back as the user typed them.
      */

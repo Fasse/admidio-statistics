@@ -3,7 +3,7 @@
     Statistics plugin 4.1: the history of the memberships, excluded roles and the overview widget.
 
     A row and a column may name a role of their own and the day on which the memberships are looked
-    at, and that day may repeat every year, month or week. A statistic may name roles whose members it leaves out, and it may ask to be shown on the
+    at, and that day may repeat every year, month or week. A deleted role is taken out of them. A statistic may name roles whose members it leaves out, and it may ask to be shown on the
     overview page, where its computed figures are kept in a table of their own.
 
     The steps that change a table ignore their error, so that they can meet a table that already has
@@ -49,5 +49,17 @@ COLLATE = utf8mb4_unicode_ci</step>
         only to a plugin that has none after these steps, and points this one at the page.
     -->
     <step id="120">UPDATE %PREFIX%_menu SET men_url = '/plugins/statistics/modules/index.php', men_com_id = (SELECT com_id FROM %PREFIX%_components WHERE com_type = 'PLUGIN' AND com_name_intern = 'statistics') WHERE men_name_intern = 'statistics' AND men_com_id IS NULL</step>
+    <!--
+        A row or column whose role is deleted falls back to the role of its table. A role that was
+        deleted before the foreign key existed is cleared first, or the key could not be added.
+    -->
+    <step id="130">UPDATE %PREFIX%_statistics_columns SET stc_role = NULL
+ WHERE stc_role IS NOT NULL AND stc_role NOT IN (SELECT rol_id FROM %PREFIX%_roles)</step>
+    <step id="140" error="ignore">ALTER TABLE %PREFIX%_statistics_columns ADD CONSTRAINT %PREFIX%_FK_STC_ROL FOREIGN KEY (stc_role)
+        REFERENCES %PREFIX%_roles (rol_id) ON DELETE SET NULL ON UPDATE CASCADE</step>
+    <step id="150">UPDATE %PREFIX%_statistics_rows SET str_role = NULL
+ WHERE str_role IS NOT NULL AND str_role NOT IN (SELECT rol_id FROM %PREFIX%_roles)</step>
+    <step id="160" error="ignore">ALTER TABLE %PREFIX%_statistics_rows ADD CONSTRAINT %PREFIX%_FK_STR_ROL FOREIGN KEY (str_role)
+        REFERENCES %PREFIX%_roles (rol_id) ON DELETE SET NULL ON UPDATE CASCADE</step>
     <step>stop</step>
 </update>
