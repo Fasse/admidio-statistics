@@ -330,6 +330,40 @@ final class StatisticWidgetTest extends AdministratorTestCase
     }
 
     /**
+     * A statistic whose condition no longer fits its profile field cannot be computed. The widget shows
+     * a note for it and the other statistics as usual, instead of failing the overview page.
+     */
+    public function testAStatisticThatCannotBeComputedDoesNotTakeTheWidgetDown(): void
+    {
+        global $gProfileFields;
+
+        $birthdayId = (int)$gProfileFields->getProperty('BIRTHDAY', 'usf_id');
+        $this->assertGreaterThan(0, $birthdayId);
+
+        $this->save('B works', true);
+        $table = new TableDefinition(
+            'Broken',
+            null,
+            'Group',
+            array(new ColumnDefinition('Count', null, '', StatisticFunction::COUNT)),
+            array(new RowDefinition('Born', $birthdayId, 'not a date'))
+        );
+        $this->repository->save(
+            new StatisticDefinition(null, $this->orgId, 'A broken', 'Broken', 'a subtitle', $this->roleId, array($table), array(), true)
+        );
+
+        $plugin = Plugin::read(dirname(__DIR__, 2));
+        $statistics = StatisticWidget::statistics($plugin, $this->repository, $this->orgId);
+
+        $this->assertCount(2, $statistics);
+        $this->assertSame('Broken', $statistics[0]['title']);
+        $this->assertSame(array(), $statistics[0]['tables']);
+        $this->assertNotSame('', $statistics[0]['error']);
+        $this->assertSame('', $statistics[1]['error']);
+        $this->assertSame(array(array('All', '1')), $statistics[1]['tables'][0]['rows']);
+    }
+
+    /**
      * A page that was never set up: enough for the cases in which the widget declines before it
      * renders anything. A real one needs a session, which a test does not have.
      */

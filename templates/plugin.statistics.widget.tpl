@@ -9,6 +9,9 @@
         {if $staStatistic.subtitle neq ''}
             <p>{$staStatistic.subtitle|escape}</p>
         {/if}
+        {if $staStatistic.error neq ''}
+            <p class="text-muted">{$staStatistic.error|escape}</p>
+        {/if}
 
         {foreach $staStatistic.tables as $staTable}
             {if $staTable.title neq ''}

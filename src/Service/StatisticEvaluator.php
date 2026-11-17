@@ -130,6 +130,29 @@ final class StatisticEvaluator
     }
 
     /**
+     * Whether every condition of a statistic can be turned into a query, so that a statistic that
+     * cannot be computed is refused when it is saved and not found out on the overview page.
+     *
+     * @param StatisticDefinition $definition
+     * @return void
+     * @throws Exception The error of the parser, such as SYS_NOT_NUMERIC naming the profile field.
+     */
+    public function assertConditionsValid(StatisticDefinition $definition): void
+    {
+        foreach ($definition->tables as $table) {
+            foreach (array_merge($table->columns, $table->rows) as $element) {
+                if ($element->profileFieldId === null || $element->condition === ''
+                    || $this->isKeyword($element->condition, 'PLG_STATISTICS_MISSING', array('FEHLT', 'MISSING'))
+                    || $this->isKeyword($element->condition, 'PLG_STATISTICS_AVAILABLE', array('VORHANDEN', 'AVAILABLE'))) {
+                    continue;
+                }
+
+                $this->conditionToSql($element->profileFieldId, $element->condition);
+            }
+        }
+    }
+
+    /**
      * The number of members a role has on the day of the figures, without the members of the
      * excluded roles.
      *
@@ -724,7 +747,7 @@ final class StatisticEvaluator
             ConditionCompiler::encode($condition),
             'usd_value',
             $dataType,
-            '',
+            (string) $this->profileFields->getPropertyById($fieldId, 'usf_name'),
             $this->database
         );
     }

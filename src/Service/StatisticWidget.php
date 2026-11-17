@@ -18,6 +18,10 @@ use AdmidioPlugin\Statistics\ValueObject\StatisticResult;
  *
  * The figures come through StatisticCache, because this is rendered on every view of the overview.
  *
+ * A statistic that cannot be computed - a condition that no longer fits its profile field, say - is
+ * shown with a note instead of its tables. The widget is part of the start page of every member, and
+ * an exception would take that page down with it.
+ *
  * @copyright 2004-2025 The Admidio Team
  * @see https://www.admidio.org/
  * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License v2.0 only
@@ -66,7 +70,7 @@ final class StatisticWidget
      */
     public static function statistics(Plugin $plugin, StatisticRepository $repository, int $orgId): array
     {
-        global $gDb, $gProfileFields, $gL10n, $gSettingsManager;
+        global $gDb, $gProfileFields, $gL10n, $gSettingsManager, $gLogger;
 
         $definitions = $repository->findForOverview($orgId);
         if ($definitions === array()) {
@@ -82,12 +86,32 @@ final class StatisticWidget
 
         $statistics = array();
         foreach ($definitions as $definition) {
-            $result = $cache->remember(
-                $definition,
-                $date,
-                $gL10n->getLanguage() . '|' . $dateFormat,
-                static fn (): StatisticResult => $evaluator->evaluate($definition, $asOf, $date)
-            );
+            $url = SecurityUtils::encodeUrl($plugin->getUrl('show.php'), array('sta_id' => $definition->id));
+
+            try {
+                $result = $cache->remember(
+                    $definition,
+                    $date,
+                    $gL10n->getLanguage() . '|' . $dateFormat,
+                    static fn (): StatisticResult => $evaluator->evaluate($definition, $asOf, $date)
+                );
+            } catch (\Throwable $exception) {
+                if ($gLogger instanceof \Psr\Log\LoggerInterface) {
+                    $gLogger->warning('The statistic could not be computed for the overview page.', array(
+                        'sta_id' => $definition->id,
+                        'exception' => $exception
+                    ));
+                }
+
+                $statistics[] = array(
+                    'title' => $definition->title !== '' ? $definition->title : $definition->name,
+                    'subtitle' => '',
+                    'url' => $url,
+                    'tables' => array(),
+                    'error' => $gL10n->get('PLG_STATISTICS_NOT_COMPUTED')
+                );
+                continue;
+            }
 
             $tables = array();
             foreach ($result->tables as $table) {
@@ -102,8 +126,9 @@ final class StatisticWidget
             $statistics[] = array(
                 'title' => $result->title !== '' ? $result->title : $definition->name,
                 'subtitle' => $result->subtitle,
-                'url' => SecurityUtils::encodeUrl($plugin->getUrl('show.php'), array('sta_id' => $definition->id)),
-                'tables' => $tables
+                'url' => $url,
+                'tables' => $tables,
+                'error' => ''
             );
         }
 

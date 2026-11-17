@@ -49,6 +49,7 @@
     <string name="PLG_STATISTICS_NO_INFORMATION">No information</string>
     <string name="PLG_STATISTICS_NO_ROLE_AVAILABLE">There is no role the example statistics could count.</string>
     <string name="PLG_STATISTICS_NONE">none</string>
+    <string name="PLG_STATISTICS_NOT_COMPUTED">This statistic could not be computed. Open it to see why.</string>
     <string name="PLG_STATISTICS_NUMBER">Number</string>
     <string name="PLG_STATISTICS_OPEN_MANUAL">Open the statistics plugin manual (German)</string>
     <string name="PLG_STATISTICS_OVERVIEW_DESC">Choose a statistic to display.</string>

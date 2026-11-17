@@ -49,6 +49,7 @@
     <string name="PLG_STATISTICS_NO_INFORMATION">Keine Angabe</string>
     <string name="PLG_STATISTICS_NO_ROLE_AVAILABLE">Es gibt keine Rolle, die die Beispielstatistiken auswerten könnten.</string>
     <string name="PLG_STATISTICS_NONE">keine</string>
+    <string name="PLG_STATISTICS_NOT_COMPUTED">Diese Statistik konnte nicht berechnet werden. Öffnen Sie sie, um den Grund zu sehen.</string>
     <string name="PLG_STATISTICS_NUMBER">Anzahl</string>
     <string name="PLG_STATISTICS_OPEN_MANUAL">Handbuch des Statistik-Plugins öffnen</string>
     <string name="PLG_STATISTICS_OVERVIEW_DESC">Wählen Sie eine Statistik aus, die angezeigt werden soll.</string>

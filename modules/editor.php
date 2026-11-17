@@ -83,12 +83,14 @@ try {
             $previewResult = $evaluator->evaluate($definition, $asOf);
         } elseif ($action === StatisticEditorPresenter::ACTION_SAVE) {
             StatisticFormService::assertSaveable($definition);
+            (new StatisticEvaluator($gDb, $gProfileFields, $gL10n))->assertConditionsValid($definition);
             $savedId = $repository->save($definition);
 
             admRedirect(SecurityUtils::encodeUrl($plugin->getUrl('editor.php'), array('sta_id' => $savedId)));
             // => EXIT
         } elseif ($action === StatisticEditorPresenter::ACTION_SAVE_AS) {
             StatisticFormService::assertSaveable($definition);
+            (new StatisticEvaluator($gDb, $gProfileFields, $gL10n))->assertConditionsValid($definition);
             $copy = $definition->asCopyNamed(
                 $gL10n->get('PLG_STATISTICS_COPY_OF_NAME', array($definition->name))
             );

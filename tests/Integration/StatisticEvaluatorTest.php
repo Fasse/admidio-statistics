@@ -18,6 +18,7 @@ namespace AdmidioPlugin\Statistics\Tests\Integration;
 
 require_once dirname(__DIR__) . '/autoload.php';
 
+use Admidio\Infrastructure\Exception;
 use Admidio\Tests\Support\AdministratorTestCase;
 use Admidio\Tests\Support\AdmidioTestFixture;
 use Admidio\Users\Entity\User;
@@ -439,6 +440,44 @@ final class StatisticEvaluatorTest extends AdministratorTestCase
             $table->rows,
             'on 1 January 1995 only the member born in 1990 has an age; on 1 January 2000 the other one is nought; in 1980 nobody has one'
         );
+    }
+
+    /**
+     * A condition the parser cannot read is refused when the statistic is saved, with the name of
+     * the profile field; the keywords and an empty condition are not conditions for the parser.
+     */
+    public function testAConditionThatCannotBeReadIsFoundBeforeTheStatisticIsSaved(): void
+    {
+        global $gCurrentOrgId, $gProfileFields;
+
+        $birthdayId = (int)$gProfileFields->getProperty('BIRTHDAY', 'usf_id');
+        $definition = fn(array $rows): StatisticDefinition => new StatisticDefinition(
+            null,
+            (int)$gCurrentOrgId,
+            'Test',
+            'Title',
+            '',
+            $this->roleId,
+            array(new TableDefinition('T', null, 'Label', array(new ColumnDefinition('Count')), $rows))
+        );
+
+        $this->evaluator->assertConditionsValid($definition(array(
+            new RowDefinition('Alpha', $this->lastNameId, 'Alpha'),
+            new RowDefinition('Missing', $birthdayId, 'missing'),
+            new RowDefinition('Available', $birthdayId, 'available'),
+            new RowDefinition('Any', $birthdayId, '')
+        )));
+
+        try {
+            $this->evaluator->assertConditionsValid($definition(array(new RowDefinition('Born', $birthdayId, 'not a date'))));
+            $this->fail('a condition that is not a date was accepted for a date field');
+        } catch (Exception $exception) {
+            $this->assertSame('SYS_NOT_VALID_DATE_FORMAT', $exception->getTranslationId());
+            $this->assertStringContainsString(
+                (string)$gProfileFields->getPropertyById($birthdayId, 'usf_name'),
+                $exception->getMessage()
+            );
+        }
     }
 
     /**
