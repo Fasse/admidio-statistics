@@ -80,8 +80,8 @@ Version 4 fixes four faults in the calculation, so some saved statistics will sh
 - A new example, "Membership development", shows the first two together.
 - **A statistic can be shown on the overview page.** The checkbox "Show on the overview page" in the
   editor puts it into the statistics widget there, for logged-in users. The figures of the widget are
-  cached: they are computed again when the statistic was edited, when a membership or a profile has
-  changed, and on every new day.
+  cached: they are computed again when the statistic was edited, when a membership, a profile, a role
+  or a profile field has changed, and on every new day.
 
 Only the memberships have a history. A condition on a profile field always tests the value the
 member has today.

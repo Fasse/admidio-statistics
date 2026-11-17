@@ -5,6 +5,8 @@
  * What the cache has to get right is when not to answer: a stored result is only good for the
  * definition, the day and the data it was computed from. So every test here changes one of those and
  * expects the statistic to be computed again - and expects it not to be when nothing has changed.
+ * The data is watched through the entity hooks, which the plugin registers when it is loaded; the
+ * tests register them themselves.
  *
  * @copyright 2004-2025 The Admidio Team
  * @see https://www.admidio.org/
@@ -15,8 +17,13 @@ namespace AdmidioPlugin\Statistics\Tests\Integration;
 
 require_once dirname(__DIR__) . '/autoload.php';
 
+use Admidio\Hooks\Hooks;
+use Admidio\Hooks\Service\EntityHookQueue;
 use Admidio\Infrastructure\Database;
 use Admidio\Infrastructure\Plugins\Plugin;
+use Admidio\ProfileFields\Entity\SelectOptions;
+use Admidio\Roles\Entity\Membership;
+use Admidio\Roles\Entity\Role;
 use Admidio\Tests\Support\AdministratorTestCase;
 use Admidio\Tests\Support\AdmidioTestFixture;
 use Admidio\UI\Presenter\PagePresenter;
@@ -24,6 +31,7 @@ use AdmidioPlugin\Statistics\Service\StatisticCache;
 use AdmidioPlugin\Statistics\Service\StatisticEvaluator;
 use AdmidioPlugin\Statistics\Service\StatisticRepository;
 use AdmidioPlugin\Statistics\Service\StatisticWidget;
+use AdmidioPlugin\Statistics\Statistics;
 use AdmidioPlugin\Statistics\ValueObject\ColumnDefinition;
 use AdmidioPlugin\Statistics\ValueObject\RowDefinition;
 use AdmidioPlugin\Statistics\ValueObject\StatisticDefinition;
@@ -74,14 +82,29 @@ final class StatisticWidgetTest extends AdministratorTestCase
         $this->fixture = new AdmidioTestFixture($this->getDatabase());
         $this->computations = 0;
 
+        Statistics::registerCacheInvalidation();
+
         $this->roleId = (int)$this->fixture->createAndSaveRole('Statistics widget role', $this->orgId)['rol_id'];
         $this->addMember('sta_widget_one');
     }
 
-    private function addMember(string $login): void
+    protected function tearDown(): void
+    {
+        foreach (StatisticCache::invalidatingHooks() as $hook) {
+            Hooks::removeAction($hook, StatisticCache::HOOK_ID);
+        }
+
+        parent::tearDown();
+    }
+
+    /**
+     * @return int The id of the membership.
+     */
+    private function addMember(string $login): int
     {
         $userId = (int)$this->fixture->createAndSaveUser($login, $login . '@example.org')['usr_id'];
-        $this->fixture->assignUserToRolePeriod($userId, $this->roleId, '1970-01-01', '9999-12-31');
+
+        return $this->fixture->assignUserToRolePeriod($userId, $this->roleId, '1970-01-01', '9999-12-31')['mem_id'];
     }
 
     private function save(string $name, bool $showOnOverview, ?int $id = null, string $title = 'Members'): StatisticDefinition
@@ -103,10 +126,15 @@ final class StatisticWidgetTest extends AdministratorTestCase
 
     /**
      * The result through the cache, counting how often it really was computed.
+     *
+     * The entity hooks fire when the outermost transaction commits. A test runs inside one that is
+     * rolled back, so the queue is flushed here, where the commit before the next page view would be.
      */
     private function remember(StatisticDefinition $definition, ?string $date = null, string $context = 'en'): StatisticResult
     {
         global $gProfileFields, $gL10n;
+
+        EntityHookQueue::flush();
 
         $date ??= date('Y-m-d');
         $evaluator = new StatisticEvaluator($this->getDatabase(), $gProfileFields, $gL10n);
@@ -196,8 +224,7 @@ final class StatisticWidgetTest extends AdministratorTestCase
     }
 
     /**
-     * A row without a label is named after its role. Renaming the role moves no timestamp the data
-     * fingerprint looks at, so the name itself has to be part of the key.
+     * A row without a label is named after its role, so renaming the role has to show at once.
      */
     public function testARenamedRoleIsShownAtOnce(): void
     {
@@ -215,10 +242,9 @@ final class StatisticWidgetTest extends AdministratorTestCase
 
         $this->assertSame('Statistics widget role', $this->remember($definition)->tables[0]->rows[0][0]);
 
-        $this->getDatabase()->queryPrepared(
-            'UPDATE ' . TBL_ROLES . ' SET rol_name = ? WHERE rol_id = ?',
-            array('Renamed widget role', $this->roleId)
-        );
+        $role = new Role($this->getDatabase(), $this->roleId);
+        $role->setValue('rol_name', 'Renamed widget role');
+        $role->save();
 
         $this->assertSame('Renamed widget role', $this->remember($definition)->tables[0]->rows[0][0]);
         $this->assertSame(2, $this->computations);
@@ -257,13 +283,47 @@ final class StatisticWidgetTest extends AdministratorTestCase
         )->fetchColumn();
         $this->assertGreaterThan(0, $optionId);
 
-        $this->getDatabase()->queryPrepared(
-            'UPDATE ' . TBL_USER_FIELD_OPTIONS . ' SET ufo_value = ? WHERE ufo_id = ?',
-            array('Something', $optionId)
-        );
+        $options = new SelectOptions($this->getDatabase(), $genderId);
+        $options->readDataById($optionId);
+        $options->setValue('ufo_value', 'Something');
+        $options->save();
 
         $this->remember($definition);
         $this->assertSame(2, $this->computations);
+    }
+
+    /**
+     * Admidio leaves the change timestamp of a membership alone when the user who created it changes
+     * it again within a quarter of an hour, so ending a membership right after adding it changed
+     * nothing a fingerprint of the members table could see.
+     */
+    public function testAMembershipEndedRightAfterItWasAddedIsCountedAtOnce(): void
+    {
+        $definition = $this->save('Cached', true);
+        $membershipId = $this->addMember('sta_widget_two');
+
+        $this->assertSame('2', $this->remember($definition)->tables[0]->rows[0][1]);
+
+        $membership = new Membership($this->getDatabase(), $membershipId);
+        $membership->setValue('mem_end', (new \DateTimeImmutable('yesterday'))->format('Y-m-d'));
+        $membership->save();
+
+        $this->assertSame('1', $this->remember($definition)->tables[0]->rows[0][1]);
+        $this->assertSame(2, $this->computations);
+    }
+
+    /**
+     * Only the entities a figure is computed from empty the cache, not every save in Admidio.
+     */
+    public function testAChangeOfAnythingElseKeepsTheStoredResult(): void
+    {
+        $definition = $this->save('Cached', true);
+        $this->remember($definition);
+
+        $this->fixture->createAndSaveCategory('Statistics widget category', 'ROL', $this->orgId);
+
+        $this->remember($definition);
+        $this->assertSame(1, $this->computations);
     }
 
     public function testThereIsOneStoredResultForAStatisticAndItGoesWithIt(): void
@@ -352,6 +412,7 @@ final class StatisticWidgetTest extends AdministratorTestCase
             new StatisticDefinition(null, $this->orgId, 'A broken', 'Broken', 'a subtitle', $this->roleId, array($table), array(), true)
         );
 
+        EntityHookQueue::flush();
         $plugin = Plugin::read(dirname(__DIR__, 2));
         $statistics = StatisticWidget::statistics($plugin, $this->repository, $this->orgId);
 

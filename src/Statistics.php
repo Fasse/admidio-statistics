@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace AdmidioPlugin\Statistics;
 
+use Admidio\Hooks\Hooks;
 use Admidio\Infrastructure\Plugins\Plugin;
 use Admidio\Infrastructure\Plugins\PluginRegistry;
 use Admidio\Infrastructure\Plugins\PluginWidget;
+use AdmidioPlugin\Statistics\Service\StatisticCache;
 use AdmidioPlugin\Statistics\Service\StatisticWidget;
 
 /**
@@ -46,9 +48,9 @@ final class Statistics
     public const DEFAULT_SEQUENCE = 20;
 
     /**
-     * Declare the widget of the overview page. Who sees it follows the access preference of the
-     * plugin and where it stands follows **statistics_overview_sequence**, the two names Admidio
-     * derives from the plugin id.
+     * Declare the widget of the overview page, and keep its cache right. Who sees the widget follows
+     * the access preference of the plugin and where it stands follows
+     * **statistics_overview_sequence**, the two names Admidio derives from the plugin id.
      *
      * @return void
      */
@@ -62,5 +64,25 @@ final class Statistics
         PluginWidget::register($plugin, array(StatisticWidget::class, 'render'), array(
             'sequence' => self::DEFAULT_SEQUENCE
         ));
+
+        self::registerCacheInvalidation();
+    }
+
+    /**
+     * Throw the cached figures away whenever data they are computed from changes.
+     *
+     * @return void
+     */
+    public static function registerCacheInvalidation(): void
+    {
+        foreach (StatisticCache::invalidatingHooks() as $hook) {
+            Hooks::addAction(
+                $hook,
+                array(StatisticCache::class, 'invalidate'),
+                Hooks::DEFAULT_PRIORITY,
+                0,
+                StatisticCache::HOOK_ID
+            );
+        }
     }
 }

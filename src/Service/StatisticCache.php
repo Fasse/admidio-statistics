@@ -15,26 +15,25 @@ use AdmidioPlugin\Statistics\ValueObject\StatisticResult;
  * opens. So the widget there asks this class first, and the statistic is only computed again when
  * its figures can have changed.
  *
- * Whether they can is decided by a key, and a result is only used under the key it was stored with.
- * The key is made of everything the figures depend on:
+ * A stored result is used under the key it was stored with, and the key is made of:
  *
  * - the definition of the statistic, so that editing it shows at once;
  * - the day, so that the figures are new every morning;
- * - the language and the date format, because the result holds finished labels;
- * - a fingerprint of the memberships and of the users: how many there are and when one was last
- *   created or changed. A membership that is added, ended or deleted moves it, and so does a profile
- *   that is saved;
- * - the names of the roles and the types and selection options of the profile fields the statistic
- *   names. A row or a column without a label is named after its role, and a condition on a selection
- *   is matched against the options the field offers now. These are read themselves rather than
- *   through a timestamp: the options have none, and Admidio does not move the timestamp of a role
- *   its creator changes within a quarter of an hour.
+ * - the language and the date format, because the result holds finished labels.
+ *
+ * Everything else a figure is computed from - the users and their profile values, the memberships,
+ * the roles and their names, the profile fields and their selection options - is watched through
+ * the hooks of these entities: a change of any of them throws every stored result away. A
+ * fingerprint of the tables could not see all of these changes, because Admidio does not move the
+ * change timestamp of a record its creator changes again within a quarter of an hour, and the
+ * selection options have no timestamp at all. A change that bypasses the entities, such as a direct
+ * database edit, shows on the next day.
  *
  * There is one stored result per statistic, the latest, so the table does not grow. It goes with its
  * statistic through the foreign key.
  *
- * The cache never stands in the way: when it cannot be read or written, for whatever reason, the
- * statistic is computed and shown as if there were no cache.
+ * The cache never stands in the way: when it cannot be read, written or emptied, for whatever
+ * reason, the statistic is computed and shown as if there were no cache.
  *
  * @copyright 2004-2025 The Admidio Team
  * @see https://www.admidio.org/
@@ -47,6 +46,28 @@ final class StatisticCache
      * to 65535 bytes; a statistic larger than this is simply computed every time.
      */
     private const MAX_LENGTH = 60000;
+
+    /**
+     * The entities whose changes can change a figure, by the ID of their hooks.
+     */
+    public const WATCHED_ENTITIES = array(
+        'user',
+        'user_data',
+        'membership',
+        'role',
+        'profile_field',
+        'profile_field_select_option'
+    );
+
+    /**
+     * The stages of those hooks after which the change is in the database.
+     */
+    public const WATCHED_STAGES = array('created', 'updated', 'deleted');
+
+    /**
+     * The registration ID of the callbacks, so that they can be removed again.
+     */
+    public const HOOK_ID = 'statistics_cache';
 
     /**
      * @param Database $database
@@ -63,6 +84,47 @@ final class StatisticCache
     public static function table(): string
     {
         return TABLE_PREFIX . '_statistics_cache';
+    }
+
+    /**
+     * The names of the hooks after which the stored results are thrown away: the specific hooks of
+     * the watched entities, so that the far more frequent changes of everything else cost nothing.
+     *
+     * @return array<int,string>
+     */
+    public static function invalidatingHooks(): array
+    {
+        $hooks = array();
+        foreach (self::WATCHED_ENTITIES as $entity) {
+            foreach (self::WATCHED_STAGES as $stage) {
+                $hooks[] = $entity . '_' . $stage;
+            }
+        }
+
+        return $hooks;
+    }
+
+    /**
+     * Throw away every stored result, after a change of data a figure may be computed from.
+     *
+     * Admidio calls it when the transaction of the change commits, never for a change that was
+     * rolled back. It must not fail whatever the caller does next, so a failure is swallowed.
+     *
+     * @return void
+     */
+    public static function invalidate(): void
+    {
+        global $gDb;
+
+        if (!$gDb instanceof Database) {
+            return;
+        }
+
+        try {
+            $gDb->queryPrepared('DELETE FROM ' . self::table(), array(), false);
+        } catch (\Throwable) {
+            // Nothing is lost: the results are computed again on the next day at the latest.
+        }
     }
 
     /**
@@ -103,104 +165,15 @@ final class StatisticCache
      * @param StatisticDefinition $definition
      * @param string $date
      * @param string $context
-     * @return string|null **null** when the state of the data cannot be read, so nothing is cached.
+     * @return string|null **null** when the definition cannot be encoded, so nothing is cached.
      */
     private function key(StatisticDefinition $definition, string $date, string $context): ?string
     {
-        $fingerprint = $this->dataFingerprint();
-        $metadata = $this->metadataFingerprint($definition);
-        if ($fingerprint === null || $metadata === null) {
-            return null;
-        }
-
         try {
-            return hash('sha256', json_encode(array($definition, $date, $context, $fingerprint, $metadata), JSON_THROW_ON_ERROR));
+            return hash('sha256', json_encode(array($definition, $date, $context), JSON_THROW_ON_ERROR));
         } catch (\Throwable) {
             return null;
         }
-    }
-
-    /**
-     * The state of everything a figure is computed from, in one query.
-     *
-     * @return string|null
-     */
-    private function dataFingerprint(): ?string
-    {
-        $sql = 'SELECT (SELECT COUNT(*) FROM ' . TBL_MEMBERS . ') AS members,
-                       (SELECT MAX(mem_timestamp_create) FROM ' . TBL_MEMBERS . ') AS member_created,
-                       (SELECT MAX(mem_timestamp_change) FROM ' . TBL_MEMBERS . ') AS member_changed,
-                       (SELECT COUNT(*) FROM ' . TBL_USERS . ') AS users,
-                       (SELECT MAX(usr_timestamp_create) FROM ' . TBL_USERS . ') AS user_created,
-                       (SELECT MAX(usr_timestamp_change) FROM ' . TBL_USERS . ') AS user_changed';
-
-        try {
-            $statement = $this->database->queryPrepared($sql, array(), false);
-            $record = $statement === false ? false : $statement->fetch(\PDO::FETCH_NUM);
-        } catch (\Throwable) {
-            return null;
-        }
-
-        return $record === false ? null : implode('|', array_map('strval', $record));
-    }
-
-    /**
-     * The names of the roles and the types and selection options of the profile fields that the
-     * statistic names, as the evaluator reads them.
-     *
-     * @param StatisticDefinition $definition
-     * @return array<string,mixed>|null
-     */
-    private function metadataFingerprint(StatisticDefinition $definition): ?array
-    {
-        $roleIds = array($definition->standardRoleId => true);
-        foreach ($definition->excludedRoleIds as $roleId) {
-            $roleIds[$roleId] = true;
-        }
-        $fieldIds = array();
-
-        foreach ($definition->tables as $table) {
-            $roleIds[(int) $table->roleId] = true;
-            foreach (array_merge($table->rows, $table->columns) as $element) {
-                $roleIds[(int) $element->roleId] = true;
-                $fieldIds[(int) $element->profileFieldId] = true;
-            }
-            foreach ($table->columns as $column) {
-                $fieldIds[(int) $column->functionArgument] = true;
-            }
-        }
-
-        $roleIds = array_values(array_filter(array_keys($roleIds), static fn (int $id): bool => $id > 0));
-        $fieldIds = array_values(array_filter(array_keys($fieldIds), static fn (int $id): bool => $id > 0));
-        sort($roleIds);
-        sort($fieldIds);
-
-        $queries = array(
-            'roles' => array('SELECT rol_id, rol_name FROM ' . TBL_ROLES . ' WHERE rol_id IN (%s) ORDER BY rol_id', $roleIds),
-            'fields' => array('SELECT usf_id, usf_type FROM ' . TBL_USER_FIELDS . ' WHERE usf_id IN (%s) ORDER BY usf_id', $fieldIds),
-            'options' => array('SELECT ufo_id, ufo_usf_id, ufo_value, ufo_obsolete FROM ' . TBL_USER_FIELD_OPTIONS
-                . ' WHERE ufo_usf_id IN (%s) ORDER BY ufo_id', $fieldIds)
-        );
-
-        $metadata = array();
-        try {
-            foreach ($queries as $name => list($sql, $ids)) {
-                $metadata[$name] = array();
-                if ($ids === array()) {
-                    continue;
-                }
-
-                $statement = $this->database->queryPrepared(sprintf($sql, Database::getQmForValues($ids)), $ids, false);
-                if ($statement === false) {
-                    return null;
-                }
-                $metadata[$name] = $statement->fetchAll(\PDO::FETCH_NUM);
-            }
-        } catch (\Throwable) {
-            return null;
-        }
-
-        return $metadata;
     }
 
     /**
