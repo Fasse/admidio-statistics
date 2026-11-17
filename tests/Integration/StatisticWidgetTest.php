@@ -195,6 +195,77 @@ final class StatisticWidgetTest extends AdministratorTestCase
         $this->assertSame(3, $this->computations);
     }
 
+    /**
+     * A row without a label is named after its role. Renaming the role moves no timestamp the data
+     * fingerprint looks at, so the name itself has to be part of the key.
+     */
+    public function testARenamedRoleIsShownAtOnce(): void
+    {
+        $table = new TableDefinition(
+            'By role',
+            null,
+            'Group',
+            array(new ColumnDefinition('Count', null, '', StatisticFunction::COUNT)),
+            array(new RowDefinition('', null, '', $this->roleId))
+        );
+        $id = $this->repository->save(
+            new StatisticDefinition(null, $this->orgId, 'Named', 'Members', '', $this->roleId, array($table), array(), true)
+        );
+        $definition = $this->repository->find($id, $this->orgId);
+
+        $this->assertSame('Statistics widget role', $this->remember($definition)->tables[0]->rows[0][0]);
+
+        $this->getDatabase()->queryPrepared(
+            'UPDATE ' . TBL_ROLES . ' SET rol_name = ? WHERE rol_id = ?',
+            array('Renamed widget role', $this->roleId)
+        );
+
+        $this->assertSame('Renamed widget role', $this->remember($definition)->tables[0]->rows[0][0]);
+        $this->assertSame(2, $this->computations);
+    }
+
+    /**
+     * A condition on a selection is matched against the options the field offers, which have no
+     * timestamp at all.
+     */
+    public function testAChangedSelectionOptionIsComputedAgain(): void
+    {
+        global $gProfileFields;
+
+        $genderId = (int)$gProfileFields->getProperty('GENDER', 'usf_id');
+        $this->assertGreaterThan(0, $genderId);
+
+        $table = new TableDefinition(
+            'By gender',
+            null,
+            'Gender',
+            array(new ColumnDefinition('Count', null, '', StatisticFunction::COUNT)),
+            array(new RowDefinition('Some', $genderId, 'Something'))
+        );
+        $id = $this->repository->save(
+            new StatisticDefinition(null, $this->orgId, 'Options', 'Members', '', $this->roleId, array($table), array(), true)
+        );
+        $definition = $this->repository->find($id, $this->orgId);
+
+        $this->remember($definition);
+        $this->remember($definition);
+        $this->assertSame(1, $this->computations);
+
+        $optionId = (int)$this->getDatabase()->queryPrepared(
+            'SELECT MIN(ufo_id) FROM ' . TBL_USER_FIELD_OPTIONS . ' WHERE ufo_usf_id = ?',
+            array($genderId)
+        )->fetchColumn();
+        $this->assertGreaterThan(0, $optionId);
+
+        $this->getDatabase()->queryPrepared(
+            'UPDATE ' . TBL_USER_FIELD_OPTIONS . ' SET ufo_value = ? WHERE ufo_id = ?',
+            array('Something', $optionId)
+        );
+
+        $this->remember($definition);
+        $this->assertSame(2, $this->computations);
+    }
+
     public function testThereIsOneStoredResultForAStatisticAndItGoesWithIt(): void
     {
         $definition = $this->save('Cached', true);

@@ -23,7 +23,12 @@ use AdmidioPlugin\Statistics\ValueObject\StatisticResult;
  * - the language and the date format, because the result holds finished labels;
  * - a fingerprint of the memberships and of the users: how many there are and when one was last
  *   created or changed. A membership that is added, ended or deleted moves it, and so does a profile
- *   that is saved.
+ *   that is saved;
+ * - the names of the roles and the types and selection options of the profile fields the statistic
+ *   names. A row or a column without a label is named after its role, and a condition on a selection
+ *   is matched against the options the field offers now. These are read themselves rather than
+ *   through a timestamp: the options have none, and Admidio does not move the timestamp of a role
+ *   its creator changes within a quarter of an hour.
  *
  * There is one stored result per statistic, the latest, so the table does not grow. It goes with its
  * statistic through the foreign key.
@@ -103,12 +108,13 @@ final class StatisticCache
     private function key(StatisticDefinition $definition, string $date, string $context): ?string
     {
         $fingerprint = $this->dataFingerprint();
-        if ($fingerprint === null) {
+        $metadata = $this->metadataFingerprint($definition);
+        if ($fingerprint === null || $metadata === null) {
             return null;
         }
 
         try {
-            return hash('sha256', json_encode(array($definition, $date, $context, $fingerprint), JSON_THROW_ON_ERROR));
+            return hash('sha256', json_encode(array($definition, $date, $context, $fingerprint, $metadata), JSON_THROW_ON_ERROR));
         } catch (\Throwable) {
             return null;
         }
@@ -136,6 +142,65 @@ final class StatisticCache
         }
 
         return $record === false ? null : implode('|', array_map('strval', $record));
+    }
+
+    /**
+     * The names of the roles and the types and selection options of the profile fields that the
+     * statistic names, as the evaluator reads them.
+     *
+     * @param StatisticDefinition $definition
+     * @return array<string,mixed>|null
+     */
+    private function metadataFingerprint(StatisticDefinition $definition): ?array
+    {
+        $roleIds = array($definition->standardRoleId => true);
+        foreach ($definition->excludedRoleIds as $roleId) {
+            $roleIds[$roleId] = true;
+        }
+        $fieldIds = array();
+
+        foreach ($definition->tables as $table) {
+            $roleIds[(int) $table->roleId] = true;
+            foreach (array_merge($table->rows, $table->columns) as $element) {
+                $roleIds[(int) $element->roleId] = true;
+                $fieldIds[(int) $element->profileFieldId] = true;
+            }
+            foreach ($table->columns as $column) {
+                $fieldIds[(int) $column->functionArgument] = true;
+            }
+        }
+
+        $roleIds = array_values(array_filter(array_keys($roleIds), static fn (int $id): bool => $id > 0));
+        $fieldIds = array_values(array_filter(array_keys($fieldIds), static fn (int $id): bool => $id > 0));
+        sort($roleIds);
+        sort($fieldIds);
+
+        $queries = array(
+            'roles' => array('SELECT rol_id, rol_name FROM ' . TBL_ROLES . ' WHERE rol_id IN (%s) ORDER BY rol_id', $roleIds),
+            'fields' => array('SELECT usf_id, usf_type FROM ' . TBL_USER_FIELDS . ' WHERE usf_id IN (%s) ORDER BY usf_id', $fieldIds),
+            'options' => array('SELECT ufo_id, ufo_usf_id, ufo_value, ufo_obsolete FROM ' . TBL_USER_FIELD_OPTIONS
+                . ' WHERE ufo_usf_id IN (%s) ORDER BY ufo_id', $fieldIds)
+        );
+
+        $metadata = array();
+        try {
+            foreach ($queries as $name => list($sql, $ids)) {
+                $metadata[$name] = array();
+                if ($ids === array()) {
+                    continue;
+                }
+
+                $statement = $this->database->queryPrepared(sprintf($sql, Database::getQmForValues($ids)), $ids, false);
+                if ($statement === false) {
+                    return null;
+                }
+                $metadata[$name] = $statement->fetchAll(\PDO::FETCH_NUM);
+            }
+        } catch (\Throwable) {
+            return null;
+        }
+
+        return $metadata;
     }
 
     /**

@@ -402,6 +402,46 @@ final class StatisticEvaluatorTest extends AdministratorTestCase
     }
 
     /**
+     * A day in the past can come before the birthday of a member who was given a membership from
+     * earlier on. That member has no age on that day, rather than the one they reach as many years
+     * after it; one born on that very day is nought.
+     */
+    public function testAMemberBornAfterTheDayOfTheCellHasNoAge(): void
+    {
+        global $gProfileFields;
+
+        $birthdayId = (int)$gProfileFields->getProperty('BIRTHDAY', 'usf_id');
+        $this->assertGreaterThan(0, $birthdayId);
+
+        foreach (array('sta_one' => '1990-06-15', 'sta_two' => '2000-01-01') as $login => $birthday) {
+            $this->getDatabase()->queryPrepared(
+                'INSERT INTO ' . TBL_USER_DATA . ' (usd_usr_id, usd_usf_id, usd_value) VALUES (?, ?, ?)',
+                array($this->userIds[$login], $birthdayId, $birthday)
+            );
+        }
+
+        $age = fn(string $function, string $date): ColumnDefinition
+            => new ColumnDefinition('', null, '', $function, $birthdayId, '', null, $date);
+
+        $table = $this->computeResult(
+            array(new RowDefinition('All')),
+            array(
+                $age(StatisticFunction::MINIMUM, '1995-01-01'),
+                $age(StatisticFunction::MAXIMUM, '1995-01-01'),
+                $age(StatisticFunction::SUM, '1995-01-01'),
+                $age(StatisticFunction::MINIMUM, '2000-01-01'),
+                $age(StatisticFunction::MINIMUM, '1980-01-01')
+            )
+        )->tables[0];
+
+        $this->assertSame(
+            array(array('All', '4', '4', '4', '0', '')),
+            $table->rows,
+            'on 1 January 1995 only the member born in 1990 has an age; on 1 January 2000 the other one is nought; in 1980 nobody has one'
+        );
+    }
+
+    /**
      * @param array<int,RowDefinition> $rows
      * @param array<int,ColumnDefinition> $columns
      */

@@ -759,9 +759,10 @@ final class StatisticEvaluator
     }
 
     /**
-     * The ages, in whole years, of a list of dates of birth on the day a cell looks at. A value that is not a date is left out
-     * rather than producing a nonsensical age, which is what version 3 did by handing whatever it
-     * found to explode().
+     * The ages, in whole years, of a list of dates of birth on the day a cell looks at. A value that is
+     * not a date is left out rather than producing a nonsensical age, which is what version 3 did by
+     * handing whatever it found to explode(). So is a birthday after that day: nobody has an age yet
+     * before they are born.
      *
      * @param array<int,string> $dates
      * @param string $onDate The day (Y-m-d) the ages are taken on.
@@ -788,6 +789,14 @@ final class StatisticEvaluator
             try {
                 $birthday = new \DateTimeImmutable($date);
             } catch (\Throwable) {
+                continue;
+            }
+
+            /*
+             * A reference date in the past can come before the birthday. diff() measures the distance
+             * either way, so such a member would be given the age they reach that many years later.
+             */
+            if ($birthday > $today) {
                 continue;
             }
 
