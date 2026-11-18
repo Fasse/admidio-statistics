@@ -27,6 +27,26 @@ final class FieldNamesTest extends TestCase
         $this->assertSame('table1_row3_condition', FieldNames::row(1, 3, 'condition'));
     }
 
+    /**
+     * The parts of version 4.1: the role and the reference date of a row and a column, and how the
+     * date repeats. The form service reads them under exactly these names.
+     */
+    public function testTheRoleAndTheDayOfARowAndAColumnHaveNamesOfTheirOwn(): void
+    {
+        foreach (array('role', 'ref_date', 'repeat', 'repeat_max') as $part) {
+            $this->assertContains($part, FieldNames::COLUMN_PARTS);
+            $this->assertContains($part, FieldNames::ROW_PARTS);
+        }
+
+        $this->assertSame('table0_column1_ref_date', FieldNames::column(0, 1, 'ref_date'));
+        $this->assertSame('table3_row2_repeat_max', FieldNames::row(3, 2, 'repeat_max'));
+        $this->assertSame(
+            array('kind' => FieldNames::KIND_ROW, 'table' => 1, 'index' => 4, 'part' => 'role'),
+            FieldNames::parse('table1_row4_role')
+        );
+        $this->assertNull(FieldNames::parse('table0_column0_ref'), 'a prefix of a part is not a part');
+    }
+
     public function testEveryNameItBuildsParsesBackToItself(): void
     {
         foreach (array(0, 1, 12) as $table) {

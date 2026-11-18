@@ -91,6 +91,62 @@ final class TableDefinition
     }
 
     /**
+     * @return bool Whether any row names a day of its own.
+     */
+    public function rowsUseReferenceDates(): bool
+    {
+        foreach ($this->rows as $row) {
+            if ($row->referenceDate !== null) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool Whether any column names a day of its own.
+     */
+    public function columnsUseReferenceDates(): bool
+    {
+        foreach ($this->columns as $column) {
+            if ($column->referenceDate !== null) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Whether any cell counts the role of the table. A cell does unless its row or its column names
+     * a role of its own, so the role of the table is unused as soon as every row does or every
+     * column does.
+     *
+     * @return bool
+     */
+    public function usesTableRole(): bool
+    {
+        $everyRow = $this->rows !== array();
+        foreach ($this->rows as $row) {
+            if ($row->roleId === null) {
+                $everyRow = false;
+                break;
+            }
+        }
+
+        $everyColumn = $this->columns !== array();
+        foreach ($this->columns as $column) {
+            if ($column->roleId === null) {
+                $everyColumn = false;
+                break;
+            }
+        }
+
+        return !$everyRow && !$everyColumn;
+    }
+
+    /**
      * @return bool Whether any column declares a total, which is what decides whether the rendered
      *              table gets a total row.
      */

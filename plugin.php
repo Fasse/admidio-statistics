@@ -3,10 +3,11 @@
  ***********************************************************************************************
  * Statistics - entry file.
  *
- * The entry file is included once when the plugin is loaded. This plugin contributes only its own
- * pages and a settings panel that Admidio generates from the manifest, so there is nothing to
- * register here: the pages are found in modules/, the menu entry is created when the plugin is
- * installed, and the panel is built from the "settings" and "preferences" keys of plugin.json.
+ * The entry file is included once when the plugin is loaded. The pages of the plugin are found in
+ * modules/, the menu entry is created when the plugin is installed, and the settings panel is built
+ * from the "settings" and "preferences" keys of plugin.json, so none of that is registered here.
+ * What is registered is the widget of the overview page, which shows the statistics that are marked
+ * for it.
  *
  * @copyright 2004-2025 The Admidio Team
  * @see https://www.admidio.org/
@@ -21,3 +22,5 @@
 if (realpath($_SERVER['SCRIPT_FILENAME'] ?? '') === __FILE__) {
     exit('This page may not be called directly!');
 }
+
+\AdmidioPlugin\Statistics\Statistics::register();

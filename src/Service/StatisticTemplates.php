@@ -6,6 +6,7 @@ namespace AdmidioPlugin\Statistics\Service;
 
 use Admidio\Infrastructure\Exception;
 use AdmidioPlugin\Statistics\ValueObject\ColumnDefinition;
+use AdmidioPlugin\Statistics\ValueObject\DateSeries;
 use AdmidioPlugin\Statistics\ValueObject\RowDefinition;
 use AdmidioPlugin\Statistics\ValueObject\StatisticDefinition;
 use AdmidioPlugin\Statistics\ValueObject\StatisticFunction;
@@ -87,7 +88,13 @@ final class StatisticTemplates
 
         $created = 0;
 
-        foreach (array(self::ageStatistic($orgId, $standardRoleId), self::completeness($orgId, $standardRoleId)) as $example) {
+        $examples = array(
+            self::ageStatistic($orgId, $standardRoleId),
+            self::completeness($orgId, $standardRoleId),
+            self::membershipDevelopment($orgId, $standardRoleId)
+        );
+
+        foreach ($examples as $example) {
             if ($example === null) {
                 continue;
             }
@@ -97,6 +104,65 @@ final class StatisticTemplates
         }
 
         return $created;
+    }
+
+    /**
+     * How many years the membership development looks back.
+     */
+    private const DEVELOPMENT_YEARS = 5;
+
+    /**
+     * The members of every role on the first of January of the last years and today: a row for each
+     * role, one column that repeats every year and one for today. The rows and the repeating column
+     * carry no label, so they are named after their role and their day - and next January the
+     * statistic has its new column without being edited.
+     *
+     * @param int $orgId
+     * @param int $standardRoleId
+     * @return StatisticDefinition|null **null** when this user may see no role.
+     * @throws Exception
+     */
+    private static function membershipDevelopment(int $orgId, int $standardRoleId): ?StatisticDefinition
+    {
+        global $gL10n;
+
+        $rows = array();
+        foreach (StatisticFormService::roleOptions(null) as $option) {
+            $rows[] = new RowDefinition('', null, '', (int) $option[0]);
+        }
+
+        if ($rows === array()) {
+            return null;
+        }
+
+        $firstYear = (int) date('Y') - self::DEVELOPMENT_YEARS + 1;
+        $columns = array(
+            new ColumnDefinition(
+                '',
+                null,
+                '',
+                StatisticFunction::COUNT,
+                null,
+                '',
+                null,
+                $firstYear . '-01-01',
+                DateSeries::YEARLY,
+                self::DEVELOPMENT_YEARS
+            ),
+            new ColumnDefinition($gL10n->get('PLG_STATISTICS_TODAY'))
+        );
+
+        $table = new TableDefinition('', null, $gL10n->get('SYS_ROLE'), $columns, $rows);
+
+        return new StatisticDefinition(
+            null,
+            $orgId,
+            $gL10n->get('PLG_STATISTICS_MEMBERSHIP_DEVELOPMENT'),
+            $gL10n->get('PLG_STATISTICS_MEMBERSHIP_DEVELOPMENT'),
+            '',
+            $standardRoleId,
+            array($table)
+        );
     }
 
     /**

@@ -40,6 +40,15 @@
                     {$l10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC')}
                 </a>
             </div>
+            {include file='sys-template-parts/form.select.tpl' data=$elements[$staFieldExcludedRoles]}
+            <div class="offset-sm-3">
+                <a class="icon-text-link openPopup" href="javascript:void(0);" data-class="modal-lg"
+                   data-href="{$staHelpExcludedRoles}">
+                    <i class="bi bi-info-circle-fill admidio-info-icon"></i>
+                    {$l10n->get('PLG_STATISTICS_SHOW_HELP_ON_THIS_TOPIC')}
+                </a>
+            </div>
+            {include file='sys-template-parts/form.checkbox.tpl' data=$elements[$staFieldOverview]}
         </div>
     </div>
 

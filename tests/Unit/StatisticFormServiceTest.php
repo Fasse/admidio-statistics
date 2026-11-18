@@ -18,8 +18,13 @@ require_once dirname(__DIR__) . '/autoload.php';
 use Admidio\Infrastructure\Exception;
 use Admidio\Tests\Unit\Plugins\Support\PluginTestCase;
 use AdmidioPlugin\Statistics\Service\StatisticFormService;
+use AdmidioPlugin\Statistics\ValueObject\ColumnDefinition;
+use AdmidioPlugin\Statistics\ValueObject\DateSeries;
 use AdmidioPlugin\Statistics\ValueObject\FieldNames;
+use AdmidioPlugin\Statistics\ValueObject\RowDefinition;
 use AdmidioPlugin\Statistics\ValueObject\StatisticDefinition;
+use AdmidioPlugin\Statistics\ValueObject\StatisticFunction;
+use AdmidioPlugin\Statistics\ValueObject\TableDefinition;
 
 final class StatisticFormServiceTest extends PluginTestCase
 {
@@ -36,7 +41,8 @@ final class StatisticFormServiceTest extends PluginTestCase
             StatisticFormService::FIELD_NAME,
             StatisticFormService::FIELD_TITLE,
             StatisticFormService::FIELD_SUBTITLE,
-            StatisticFormService::FIELD_STANDARD_ROLE
+            StatisticFormService::FIELD_STANDARD_ROLE,
+            StatisticFormService::FIELD_EXCLUDED_ROLES
         );
 
         foreach ($shape as $table => $counts) {
@@ -69,6 +75,8 @@ final class StatisticFormServiceTest extends PluginTestCase
             StatisticFormService::FIELD_TITLE => 'Our members',
             StatisticFormService::FIELD_SUBTITLE => 'by age',
             StatisticFormService::FIELD_STANDARD_ROLE => '12',
+            // What a multi-select submits, with the empty entry the form adds when nothing is left.
+            StatisticFormService::FIELD_EXCLUDED_ROLES => array('', '21', '22', '21'),
             'table0_title' => 'First table',
             'table0_role' => '0',
             'table0_first_column_label' => 'Group',
@@ -91,15 +99,25 @@ final class StatisticFormServiceTest extends PluginTestCase
             'table1_role' => '5',
             'table1_first_column_label' => '',
             'table1_column0_label' => 'Percent',
+            'table1_column0_role' => '',
+            'table1_column0_ref_date' => '2020-01-01',
+            'table1_column0_repeat' => 'monthly',
+            'table1_column0_repeat_max' => '500',
             'table1_column0_profile_field' => '4',
             'table1_column0_condition' => 'VORHANDEN',
             'table1_column0_func_arg' => '',
             'table1_column0_func_main' => '%',
             'table1_column0_func_total' => '',
             'table1_row0_label' => 'Row one',
+            'table1_row0_role' => '31',
+            'table1_row0_ref_date' => '',
             'table1_row0_profile_field' => '9',
             'table1_row0_condition' => '<30',
             'table1_row1_label' => 'Row two',
+            'table1_row1_role' => 'x',
+            'table1_row1_ref_date' => '2020-02-30',
+            'table1_row1_repeat' => 'hourly',
+            'table1_row1_repeat_max' => '-3',
             'table1_row1_profile_field' => '',
             'table1_row1_condition' => ''
         );
@@ -153,6 +171,77 @@ final class StatisticFormServiceTest extends PluginTestCase
         $this->assertSame(9, $rows[0]->profileFieldId);
         $this->assertSame('<30', $rows[0]->condition);
         $this->assertNull($rows[1]->profileFieldId, 'an empty selection means all members');
+    }
+
+    public function testTheRoleAndTheDayOfARowAndAColumnAreRead(): void
+    {
+        $table = $this->parse()->tables[1];
+
+        $this->assertNull($table->columns[0]->roleId);
+        $this->assertSame('2020-01-01', $table->columns[0]->referenceDate);
+        $this->assertSame(31, $table->rows[0]->roleId);
+        $this->assertNull($table->rows[0]->referenceDate);
+
+        $this->assertNull($table->rows[1]->roleId, 'anything but a number is no role');
+        $this->assertNull($table->rows[1]->referenceDate, 'a day the calendar does not have is no day');
+
+        $first = $this->parse()->tables[0];
+        $this->assertNull($first->columns[0]->roleId, 'a field the request left out is empty');
+        $this->assertNull($first->columns[0]->referenceDate);
+    }
+
+    public function testTheRepetitionOfADayIsRead(): void
+    {
+        $table = $this->parse()->tables[1];
+
+        $this->assertSame(DateSeries::MONTHLY, $table->columns[0]->repeat);
+        $this->assertSame(DateSeries::HIGHEST_MAXIMUM, $table->columns[0]->repeatMax, 'the number is capped');
+        $this->assertTrue($table->columns[0]->isSeries());
+
+        $this->assertSame(DateSeries::NONE, $table->rows[1]->repeat, 'an interval that does not exist is none');
+        $this->assertNull($table->rows[1]->repeatMax);
+        $this->assertSame(DateSeries::NONE, $table->rows[0]->repeat, 'a field the request left out is empty');
+    }
+
+    public function testARepetitionNeedsADay(): void
+    {
+        $table = new TableDefinition(
+            '',
+            null,
+            '',
+            array(new ColumnDefinition('', null, '', StatisticFunction::COUNT, null, '', null, null, DateSeries::YEARLY)),
+            array(new RowDefinition())
+        );
+
+        try {
+            StatisticFormService::assertSaveable(new StatisticDefinition(null, 1, 'Name', '', '', 5, array($table)));
+            $this->fail('a repetition without a day was accepted');
+        } catch (Exception $exception) {
+            $this->assertSame('PLG_STATISTICS_REPEAT_NEEDS_REFERENCE_DATE', $exception->getTranslationId());
+        }
+    }
+
+    public function testTheExcludedRolesAreReadOnceEach(): void
+    {
+        $this->assertSame(array(21, 22), $this->parse()->excludedRoleIds);
+    }
+
+    public function testATableCannotHaveDaysOnBothItsRowsAndItsColumns(): void
+    {
+        $table = new TableDefinition(
+            '',
+            null,
+            '',
+            array(new ColumnDefinition('', null, '', StatisticFunction::COUNT, null, '', null, '2020-01-01')),
+            array(new RowDefinition('', null, '', null, '2021-01-01'))
+        );
+
+        try {
+            StatisticFormService::assertSaveable(new StatisticDefinition(null, 1, 'Name', '', '', 5, array($table)));
+            $this->fail('a table with days on both sides was accepted');
+        } catch (Exception $exception) {
+            $this->assertSame('PLG_STATISTICS_REFERENCE_DATES_ON_BOTH_AXES', $exception->getTranslationId());
+        }
     }
 
     public function testATableWithoutItsOwnRoleUsesTheStandardRole(): void

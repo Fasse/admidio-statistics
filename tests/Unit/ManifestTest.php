@@ -22,7 +22,7 @@ final class ManifestTest extends PluginTestCase
      * so the list is frozen here on purpose.
      * @var array<int,string>
      */
-    private const SETTINGS = array('statistics_plugin_enabled');
+    private const SETTINGS = array('statistics_plugin_enabled', 'statistics_overview_sequence');
 
     private function readPlugin(): Plugin
     {

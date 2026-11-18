@@ -75,14 +75,15 @@ final class StatisticTotalsTest extends TestCase
 
     /**
      * @param array<int,string> $dates
+     * @param string|null $onDate The day the ages are taken on, today when left out.
      * @return array<int,string>
      */
-    private function ages(array $dates): array
+    private function ages(array $dates, ?string $onDate = null): array
     {
         $method = $this->reflection->getMethod('agesFromDates');
         $method->setAccessible(true);
 
-        return (array)$method->invoke($this->evaluator, $dates);
+        return (array)$method->invoke($this->evaluator, $dates, $onDate ?? date('Y-m-d'));
     }
 
     /**
@@ -145,6 +146,12 @@ final class StatisticTotalsTest extends TestCase
             $this->ages(array($twentyYearsAgo->add(new DateInterval('P1D'))->format('Y-m-d'))),
             'a birthday one day away is still the year before'
         );
+    }
+
+    public function testAnAgeIsTakenOnTheDayTheCellLooksAt(): void
+    {
+        $this->assertSame(array('19'), $this->ages(array('2000-06-15'), '2020-01-01'));
+        $this->assertSame(array('20'), $this->ages(array('2000-06-15'), '2020-06-15'));
     }
 
     /**

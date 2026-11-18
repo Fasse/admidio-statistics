@@ -8,6 +8,8 @@
  * sta_id : id of the statistic to show
  * mode   : html  - the normal page (default)
  *          print - the print view
+ * date   : the day (Y-m-d) the memberships are looked at, today when absent. Ignored for a
+ *          statistic whose rows or columns name days of their own.
  *
  * @copyright 2004-2025 The Admidio Team
  * @see https://www.admidio.org/
@@ -24,6 +26,7 @@ use AdmidioPlugin\Statistics\Service\StatisticEvaluator;
 use AdmidioPlugin\Statistics\Service\StatisticRepository;
 use AdmidioPlugin\Statistics\Service\StatisticsAccess;
 use AdmidioPlugin\Statistics\Statistics;
+use AdmidioPlugin\Statistics\ValueObject\RowDefinition;
 
 try {
     require_once(__DIR__ . '/../../../system/common.php');
@@ -52,10 +55,20 @@ try {
         throw new Exception('SYS_INVALID_PAGE_VIEW');
     }
 
-    $asOf = (new DateTime(DATE_NOW))->format($gSettingsManager->getString('system_date'));
+    /*
+     * A statistic can be shown for another day than today, unless a row or a column of it names a
+     * day of its own: that one is a history already. Anything that is not a day means today.
+     */
+    $dateFormat = $gSettingsManager->getString('system_date');
+    $date = null;
+    if (!$definition->usesReferenceDates()) {
+        $date = RowDefinition::toDate(admFuncVariableIsValid($_GET, 'date', 'string'));
+    }
 
-    $evaluator = new StatisticEvaluator($gDb, $gProfileFields, $gL10n);
-    $result = $evaluator->evaluate($definition, $asOf);
+    $asOf = (new DateTime($date ?? DATE_NOW))->format($dateFormat);
+
+    $evaluator = new StatisticEvaluator($gDb, $gProfileFields, $gL10n, $dateFormat);
+    $result = $evaluator->evaluate($definition, $asOf, $date);
 
     $gNavigation->addUrl(CURRENT_URL, $result->title);
 
@@ -64,10 +77,11 @@ try {
     if ($getMode === 'print') {
         $page->setPrintMode();
     } else {
-        $printUrl = SecurityUtils::encodeUrl($plugin->getUrl('show.php'), array(
-            'sta_id' => $getStatisticId,
-            'mode' => 'print'
-        ));
+        $printParameters = array('sta_id' => $getStatisticId, 'mode' => 'print');
+        if ($date !== null) {
+            $printParameters['date'] = $date;
+        }
+        $printUrl = SecurityUtils::encodeUrl($plugin->getUrl('show.php'), $printParameters);
 
         $page->addJavascript('
             $("#adm_menu_item_plg_statistics_print").click(function() {
@@ -85,6 +99,11 @@ try {
     $page->addTemplateFolder($plugin->getDirectory(Plugin::DIR_TEMPLATES));
     $page->addTemplateFile(StatisticResultPresenter::TEMPLATE);
     StatisticResultPresenter::assign($page, $result, $getMode === 'print');
+
+    if ($getMode !== 'print' && !$definition->usesReferenceDates()) {
+        StatisticResultPresenter::assignDateForm($page, $plugin->getUrl('show.php'), $getStatisticId, $date ?? DATE_NOW);
+    }
+
     $page->show();
 } catch (Throwable $e) {
     handleException($e);
