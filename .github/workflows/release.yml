@@ -1,0 +1,17 @@
+name: Release
+
+# Builds the archive that Admidio's plugin manager installs and attaches it to the GitHub release of
+# a version tag. The address and SHA-256 of the archive are what the plugin directory on admidio.org
+# asks for.
+on:
+  push:
+    tags: [ 'v*' ]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    uses: Admidio/admidio/.github/workflows/plugin-release.yml@master
+    with:
+      plugin-id: statistics
