@@ -77,3 +77,9 @@
     gap: 0.5rem;
     margin-bottom: 1rem;
 }
+
+/* The editor's actions are submit buttons styled as links. Admidio's theme gives every .btn the
+   page background as text colour, which would leave these icons white on white until hovered. */
+.btn.btn-link.adm-statistics-action {
+    color: var(--bs-link-color);
+}
