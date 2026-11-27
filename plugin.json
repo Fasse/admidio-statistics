@@ -1,7 +1,7 @@
 {
     "name": "PLG_STATISTICS_STATISTICS",
     "description": "PLG_STATISTICS_STATISTICS_DESC",
-    "version": "4.1.0",
+    "version": "4.1.1",
     "author": "Fasse",
     "url": "https://www.admidio.org/dokuwiki/doku.php?id=en:plugins:statistics",
     "icon": "bi-bar-chart-line-fill",
